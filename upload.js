@@ -1,6 +1,4 @@
 import { put } from "@vercel/blob";
-import { kv } from "@vercel/kv";
-import { nanoid } from "nanoid";
 
 export const config = {
   api: {
@@ -13,7 +11,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // Optional: simple API key auth to prevent abuse
+  // Optional API key protection
   const authHeader = req.headers["x-api-key"];
   if (process.env.UPLOAD_API_KEY && authHeader !== process.env.UPLOAD_API_KEY) {
     return res.status(401).json({ error: "Unauthorized" });
@@ -26,7 +24,6 @@ export default async function handler(req, res) {
     }
     const buffer = Buffer.concat(chunks);
 
-    // Parse multipart form data manually
     const contentType = req.headers["content-type"] || "";
     if (!contentType.includes("multipart/form-data")) {
       return res.status(400).json({ error: "Must be multipart/form-data" });
@@ -37,7 +34,6 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "No boundary found" });
     }
 
-    // Extract file from multipart
     const boundaryBuffer = Buffer.from("--" + boundary);
     const parts = splitBuffer(buffer, boundaryBuffer);
 
@@ -48,18 +44,13 @@ export default async function handler(req, res) {
     for (const part of parts) {
       const headerEnd = part.indexOf("\r\n\r\n");
       if (headerEnd === -1) continue;
-
       const headerStr = part.slice(0, headerEnd).toString();
       const body = part.slice(headerEnd + 4);
-
       if (headerStr.includes('name="file"')) {
         const nameMatch = headerStr.match(/filename="([^"]+)"/);
         if (nameMatch) fileName = nameMatch[1];
-
         const mimeMatch = headerStr.match(/Content-Type:\s*([^\r\n]+)/i);
         if (mimeMatch) mimeType = mimeMatch[1].trim();
-
-        // Remove trailing \r\n
         fileBuffer = body.slice(0, body.length - 2);
         break;
       }
@@ -69,40 +60,28 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "No file found in request" });
     }
 
-    // Validate it's an image
     const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"];
     if (!allowedTypes.includes(mimeType)) {
       return res.status(400).json({ error: "Only image files are allowed" });
     }
 
-    // File size limit: 10MB
     if (fileBuffer.length > 10 * 1024 * 1024) {
       return res.status(400).json({ error: "File too large (max 10MB)" });
     }
 
-    // Generate short ID
-    const id = nanoid(8);
-
-    // Get file extension
+    // Generate a short random ID
+    const id = randomId(8);
     const ext = fileName.split(".").pop() || "jpg";
-    const blobPath = `images/${id}.${ext}`;
 
-    // Upload to Vercel Blob
-    const blob = await put(blobPath, fileBuffer, {
+    // Store the file in Vercel Blob using the ID as the path
+    // This way we can reconstruct the blob URL from just the ID
+    const blob = await put(`i/${id}.${ext}`, fileBuffer, {
       access: "public",
       contentType: mimeType,
     });
 
-    // Store mapping in KV: id -> { url, originalName, uploadedAt, size }
-    await kv.set(`img:${id}`, {
-      url: blob.url,
-      originalName: fileName,
-      uploadedAt: new Date().toISOString(),
-      size: fileBuffer.length,
-      mimeType,
-    });
-
-    const shortUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "https://mattothemoon.xyz"}/i/${id}`;
+    const base = process.env.NEXT_PUBLIC_BASE_URL || "https://mattothemoon.xyz";
+    const shortUrl = `${base}/i/${id}`;
 
     return res.status(200).json({
       id,
@@ -113,6 +92,15 @@ export default async function handler(req, res) {
     console.error("Upload error:", err);
     return res.status(500).json({ error: "Upload failed", detail: err.message });
   }
+}
+
+function randomId(length) {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
 }
 
 function splitBuffer(buf, delimiter) {

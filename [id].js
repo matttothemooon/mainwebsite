@@ -1,4 +1,4 @@
-import { kv } from "@vercel/kv";
+import { list } from "@vercel/blob";
 
 export default async function handler(req, res) {
   const { id } = req.query;
@@ -8,16 +8,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    const data = await kv.get(`img:${id}`);
+    // List blobs with this ID as prefix — finds i/XXXXXXXX.ext
+    const { blobs } = await list({ prefix: `i/${id}.` });
 
-    if (!data) {
+    if (!blobs || blobs.length === 0) {
       return res.status(404).send(`
         <!DOCTYPE html>
         <html>
           <head>
             <title>Not Found — mattothemoon.xyz</title>
             <style>
-              body { background: #0a0a0f; color: #00e5ff; font-family: monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; flex-direction: column; gap: 12px; }
+              body { background: #07070f; color: #00e5ff; font-family: monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; flex-direction: column; gap: 12px; }
               a { color: #00e5ff; }
             </style>
           </head>
@@ -31,9 +32,9 @@ export default async function handler(req, res) {
     }
 
     // Redirect to the actual blob URL
-    return res.redirect(301, data.url);
+    return res.redirect(301, blobs[0].url);
   } catch (err) {
     console.error("Redirect error:", err);
-    return res.status(500).json({ error: "Lookup failed" });
+    return res.status(500).json({ error: "Lookup failed", detail: err.message });
   }
 }
