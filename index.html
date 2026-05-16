@@ -551,51 +551,57 @@
   </main>
 
   <script>
-    // ── LAST.FM CONFIG ──────────────────────────────────────────────────────
+    // ── CONFIG ───────────────────────────────────────────────────────────────
+    const DISCORD_ID  = '436300903927119873';
     const LASTFM_USER = 'mattothemoon';
-    // Public Last.fm API key — replace with your own from last.fm/api
     const LASTFM_KEY  = '5c7db85a6450507c38afa6b48ede4dbf';
-    const API = 'https://ws.audioscrobbler.com/2.0/';
 
-    async function lfm(method, extra = {}) {
-      const params = new URLSearchParams({
-        method, user: LASTFM_USER, api_key: LASTFM_KEY, format: 'json', limit: 5, ...extra
-      });
-      const r = await fetch(`${API}?${params}`);
-      return r.json();
-    }
-
-    // ── NOW PLAYING ─────────────────────────────────────────────────────────
-    async function loadNowPlaying() {
+    // ── LANYARD (Discord presence + Spotify) ─────────────────────────────────
+    async function loadLanyard() {
       try {
-        const data = await lfm('user.getrecenttracks');
-        const track = data.recenttracks?.track?.[0];
-        if (!track) return;
+        const r    = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
+        const json = await r.json();
+        const data = json.data;
 
-        const isPlaying = track['@attr']?.nowplaying === 'true';
-        const el = document.getElementById('now-playing');
-        const trackEl = document.getElementById('np-track');
-        const artistEl = document.getElementById('np-artist');
+        const statusDot  = document.querySelector('.status-dot');
+        const statusText = document.getElementById('status-text');
+        const npEl       = document.getElementById('now-playing');
+        const npTrack    = document.getElementById('np-track');
+        const npArtist   = document.getElementById('np-artist');
 
-        trackEl.textContent = track.name;
-        artistEl.textContent = track.artist['#text'];
+        // Discord status dot colour
+        const statusColors = { online: '#4ecdc4', idle: '#f0c040', dnd: '#e05252', offline: 'var(--muted)' };
+        const discordStatus = data.discord_status || 'offline';
+        statusDot.style.background  = statusColors[discordStatus];
+        statusDot.style.boxShadow   = discordStatus === 'offline' ? 'none' : `0 0 6px ${statusColors[discordStatus]}`;
+        statusDot.style.animation   = discordStatus === 'offline' ? 'none' : 'pulse 2s infinite';
 
-        if (isPlaying) {
-          el.classList.add('playing');
-          document.getElementById('status-text').textContent = `listening to ${track.name} by ${track.artist['#text']}`;
+        // Spotify via Lanyard
+        if (data.spotify) {
+          const sp = data.spotify;
+          npTrack.textContent  = sp.song;
+          npArtist.textContent = sp.artist;
+          npEl.classList.add('playing');
+          statusText.textContent = `listening to ${sp.song} by ${sp.artist}`;
         } else {
-          document.getElementById('status-text').textContent = `last scrobbled: ${track.name}`;
-          document.querySelector('.status-dot').style.background = 'var(--muted)';
-          document.querySelector('.status-dot').style.boxShadow = 'none';
-          document.querySelector('.status-dot').style.animation = 'none';
+          npTrack.textContent  = 'not playing anything';
+          npArtist.textContent = '';
+          npEl.classList.remove('playing');
+          statusText.textContent = discordStatus === 'offline' ? 'offline' : discordStatus;
         }
       } catch(e) {
-        document.getElementById('np-track').textContent = 'unavailable';
+        document.getElementById('np-track').textContent  = 'unavailable';
         document.getElementById('status-text').textContent = 'offline';
       }
     }
 
-    // ── MUSIC STATS ─────────────────────────────────────────────────────────
+    // ── LAST.FM STATS (via Vercel proxy) ─────────────────────────────────────
+    async function lfm(method, extra = {}) {
+      const params = new URLSearchParams({ method, user: LASTFM_USER, api_key: LASTFM_KEY, format: 'json', limit: 5, ...extra });
+      const r = await fetch(`https://ws.audioscrobbler.com/2.0/?${params}`, { mode: 'cors' });
+      return r.json();
+    }
+
     let currentPeriod = '7day';
 
     function switchPeriod(btn, period) {
@@ -621,11 +627,8 @@
           lfm('user.gettopalbums',  { period }),
         ]);
 
-        function renderList(el, items, nameKey, subKey, urlKey) {
-          if (!items || items.length === 0) {
-            el.innerHTML = '<li class="error-msg">no data</li>';
-            return;
-          }
+        function renderList(el, items, nameKey, subKey) {
+          if (!items || items.length === 0) { el.innerHTML = '<li class="error-msg">no data</li>'; return; }
           el.innerHTML = items.slice(0, 5).map((item, i) => `
             <li>
               <a href="${item.url}" target="_blank">
@@ -637,9 +640,9 @@
           `).join('');
         }
 
-        renderList(artistsEl, artists.topartists?.artist, 'name', null, 'url');
-        renderList(tracksEl,  tracks.toptracks?.track,   'name', 'artist', 'url');
-        renderList(albumsEl,  albums.topalbums?.album,   'name', 'artist', 'url');
+        renderList(artistsEl, artists.topartists?.artist, 'name', null);
+        renderList(tracksEl,  tracks.toptracks?.track,   'name', 'artist');
+        renderList(albumsEl,  albums.topalbums?.album,   'name', 'artist');
 
       } catch(e) {
         [artistsEl, tracksEl, albumsEl].forEach(el => {
@@ -649,11 +652,11 @@
     }
 
     // ── INIT ────────────────────────────────────────────────────────────────
-    loadNowPlaying();
+    loadLanyard();
     loadMusicStats('7day');
 
-    // refresh now playing every 60s
-    setInterval(loadNowPlaying, 60000);
+    // refresh every 30s
+    setInterval(loadLanyard, 30000);
   </script>
 </body>
 </html>
