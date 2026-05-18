@@ -12,6 +12,7 @@ Personal landing page and image host for mattothemoon.xyz.
 - If `UPLOAD_API_KEY` is configured, add `x-api-key` to the request headers.
 - The upload page now uses a simple username/password login form.
 - Use `mattothemoon` / `moon1234` to log in, or edit the credentials directly in `upload.html` if you want a different pair.
+- The upload request accepts the form field name `file`, `image`, or `img`.
 - The upload response returns `shortUrl` and `directUrl`. ShareX can use `directUrl` as the output field and Chatterino can display the direct image URL.
 
 ## ShareX / Chatterino

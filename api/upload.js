@@ -28,12 +28,13 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Must be multipart/form-data" });
     }
 
-    const boundary = contentType.split("boundary=")[1];
-    if (!boundary) {
+    const boundaryMatch = contentType.match(/boundary=(.*)$/i);
+    if (!boundaryMatch) {
       return res.status(400).json({ error: "No boundary found" });
     }
 
-    const boundaryBuffer = Buffer.from("--" + boundary);
+    const boundary = boundaryMatch[1].trim();
+    const boundaryBuffer = Buffer.from(`--${boundary}`);
     const parts = splitBuffer(buffer, boundaryBuffer);
 
     let fileBuffer = null;
@@ -43,14 +44,29 @@ export default async function handler(req, res) {
     for (const part of parts) {
       const headerEnd = part.indexOf("\r\n\r\n");
       if (headerEnd === -1) continue;
-      const headerStr = part.slice(0, headerEnd).toString();
+
+      const headerStr = part.slice(0, headerEnd).toString("utf8");
       const body = part.slice(headerEnd + 4);
-      if (headerStr.includes('name="file"')) {
-        const nameMatch = headerStr.match(/filename="([^"]+)"/);
-        if (nameMatch) fileName = nameMatch[1];
+      const dispositionMatch = headerStr.match(/Content-Disposition:\s*form-data;\s*name="([^"]+)"(?:;\s*filename="([^"]+)")?/i);
+      if (!dispositionMatch) continue;
+
+      const fieldName = dispositionMatch[1];
+      const filenameMatch = dispositionMatch[2];
+      if (!filenameMatch) {
+        if (fieldName !== "file" && fieldName !== "image" && fieldName !== "img") {
+          continue;
+        }
+      }
+
+      if (fieldName === "file" || fieldName === "image" || fieldName === "img") {
+        if (filenameMatch) fileName = filenameMatch;
         const mimeMatch = headerStr.match(/Content-Type:\s*([^\r\n]+)/i);
         if (mimeMatch) mimeType = mimeMatch[1].trim();
-        fileBuffer = body.slice(0, body.length - 2);
+
+        fileBuffer = body;
+        if (fileBuffer.length >= 2 && fileBuffer.slice(fileBuffer.length - 2).equals(Buffer.from("\r\n"))) {
+          fileBuffer = fileBuffer.slice(0, fileBuffer.length - 2);
+        }
         break;
       }
     }
@@ -87,7 +103,7 @@ export default async function handler(req, res) {
       return res.status(200).send(directUrl);
     }
 
-    return res.status(200).json({ id, shortUrl, directUrl });
+    return res.status(200).json({ id, shortUrl, directUrl, url: directUrl });
   } catch (err) {
     console.error("Upload error:", err);
     return res.status(500).json({ error: "Upload failed", detail: err.message });
