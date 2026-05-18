@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>imghost — mattothemoon.xyz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #07070f;
+      --surface: #0d0d1a;
+      --border: #1a1a30;
+      --aqua: #00e5ff;
+      --aqua-dim: rgba(0, 229, 255, 0.12);
+      --aqua-glow: rgba(0, 229, 255, 0.35);
+      --text: #c8d6e5;
+      --muted: #4a5568;
+      --danger: #ff4f6a;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      overflow-x: hidden;
+    }
+
+    /* starfield */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: white;
+      animation: twinkle var(--d) ease-in-out infinite;
+      opacity: 0;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; transform: scale(0.8); }
+      50% { opacity: var(--o); transform: scale(1); }
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 20px 80px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(28px, 5vw, 40px);
+      color: var(--aqua);
+      letter-spacing: -1px;
+      text-shadow: 0 0 30px var(--aqua-glow);
+    }
+
+    .logo span { color: var(--text); opacity: 0.5; }
+
+    .subtitle {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    /* drop zone */
+    .dropzone {
+      width: 100%;
+      max-width: 560px;
+      border: 1.5px dashed var(--border);
+      border-radius: 16px;
+      background: var(--surface);
+      padding: 48px 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--aqua);
+      background: var(--aqua-dim);
+      box-shadow: 0 0 40px var(--aqua-glow), inset 0 0 40px rgba(0,229,255,0.04);
+    }
+
+    .dropzone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .drop-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+      filter: drop-shadow(0 0 12px var(--aqua-glow));
+    }
+
+    .drop-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--aqua);
+      margin-bottom: 8px;
+    }
+
+    .drop-sub {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    /* preview */
+    .preview-wrap {
+      display: none;
+      width: 100%;
+      max-width: 560px;
+      margin-top: 20px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .preview-wrap.show { display: block; }
+
+    .preview-wrap img {
+      width: 100%;
+      max-height: 320px;
+      object-fit: contain;
+      display: block;
+      background: #000;
+    }
+
+    .preview-name {
+      padding: 10px 14px;
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+
+    /* upload button */
+    .btn {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 560px;
+      padding: 16px;
+      background: var(--aqua);
+      color: #000;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: opacity 0.2s, box-shadow 0.2s, transform 0.1s;
+      box-shadow: 0 0 24px var(--aqua-glow);
+      display: none;
+    }
+
+    .btn.show { display: block; }
+    .btn:hover { opacity: 0.9; box-shadow: 0 0 40px var(--aqua-glow); }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    /* progress */
+    .progress-wrap {
+      width: 100%;
+      max-width: 560px;
+      margin-top: 16px;
+      display: none;
+    }
+
+    .progress-wrap.show { display: block; }
+
+    .progress-bar-bg {
+      height: 3px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--aqua);
+      width: 0%;
+      transition: width 0.3s;
+      box-shadow: 0 0 8px var(--aqua);
+    }
+
+    .progress-label {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    /* result */
+    .result {
+      display: none;
+      width: 100%;
+      max-width: 560px;
+      margin-top: 20px;
+      background: var(--surface);
+      border: 1px solid var(--aqua);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 0 30px var(--aqua-glow);
+    }
+
+    .result.show { display: block; }
+
+    .result-label {
+      font-size: 10px;
+      color: var(--aqua);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .result-url-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+    }
+
+    .result-direct-wrap {
+      margin-bottom: 10px;
+      background: rgba(0,0,0,0.04);
+      padding: 10px 14px;
+      border: 1px solid rgba(0,229,255,0.12);
+      border-radius: 8px;
+    }
+
+    .result-url {
+      flex: 1;
+      font-size: 13px;
+      color: var(--aqua);
+      word-break: break-all;
+      text-decoration: none;
+    }
+
+    .result-direct-url {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      word-break: break-all;
+      text-decoration: none;
+    }
+
+    .copy-btn {
+      background: var(--aqua-dim);
+      border: 1px solid var(--aqua);
+      color: var(--aqua);
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .copy-btn:hover { background: var(--aqua); color: #000; }
+    .copy-btn.copied { background: var(--aqua); color: #000; }
+
+    .result-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .result-actions a, .reset-btn {
+      font-size: 11px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 1px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: 'Space Mono', monospace;
+      padding: 0;
+      transition: color 0.2s;
+    }
+
+    .result-actions a:hover, .reset-btn:hover { color: var(--aqua); }
+
+    /* error */
+    .error-msg {
+      display: none;
+      width: 100%;
+      max-width: 560px;
+      margin-top: 16px;
+      padding: 14px 18px;
+      background: rgba(255, 79, 106, 0.1);
+      border: 1px solid var(--danger);
+      border-radius: 10px;
+      font-size: 12px;
+      color: var(--danger);
+    }
+
+    .error-msg.show { display: block; }
+
+    /* api key input */
+    .api-key-wrap {
+      width: 100%;
+      max-width: 560px;
+      margin-bottom: 20px;
+    }
+
+    .api-key-wrap label {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .api-key-wrap input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .api-key-wrap input:focus { border-color: var(--aqua); }
+
+    .login-wrap {
+      width: 100%;
+      max-width: 560px;
+      display: grid;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .login-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .login-input {
+      width: 100%;
+      max-width: 300px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .login-input:focus { border-color: var(--aqua); }
+
+    .login-btn, .logout-btn {
+      padding: 14px 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: background 0.2s, opacity 0.2s;
+    }
+
+    .login-btn {
+      background: var(--aqua);
+      color: #000;
+      box-shadow: 0 0 24px rgba(0, 229, 255, 0.35);
+    }
+
+    .logout-btn {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .login-btn:hover, .logout-btn:hover { opacity: 0.94; }
+
+    .login-status {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    footer {
+      margin-top: 64px;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-align: center;
+    }
+
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--aqua); }
+  </style>
+</head>
+<body>
+
+<canvas class="stars" id="stars"></canvas>
+
+<div class="page">
+  <header>
+    <div class="logo">img<span>.</span>mattothemoon<span>.</span>xyz</div>
+    <div class="subtitle">personal image host</div>
+  </header>
+
+  <div class="api-key-wrap" id="apiKeyWrap">
+    <label>API Key (if required)</label>
+    <input type="password" id="apiKey" placeholder="leave blank if not set" autocomplete="off" />
+  </div>
+
+  <div class="login-wrap" id="loginWrap">
+    <div class="login-row">
+      <input class="login-input" id="loginUsername" placeholder="Username" autocomplete="username" />
+      <input class="login-input" id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" />
+    </div>
+    <div class="login-row">
+      <button class="login-btn" id="loginBtn" type="button">Login</button>
+      <button class="logout-btn" id="logoutBtn" type="button" style="display:none;">Logout</button>
+    </div>
+    <div class="login-status" id="loginStatus">Not logged in</div>
+  </div>
+
+  <div class="dropzone" id="dropzone">
+    <input type="file" id="fileInput" accept="image/*" />
+    <span class="drop-icon">🌙</span>
+    <div class="drop-label">drop an image here</div>
+    <div class="drop-sub">or click to browse · jpg, png, gif, webp, svg · max 10mb</div>
+  </div>
+
+  <div class="preview-wrap" id="previewWrap">
+    <img id="previewImg" src="" alt="preview" />
+    <div class="preview-name" id="previewName"></div>
+  </div>
+
+  <button class="btn" id="uploadBtn">Upload →</button>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-bar-bg">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="progress-label" id="progressLabel">uploading...</div>
+  </div>
+
+  <div class="result" id="result">
+    <div class="result-label">✓ uploaded</div>
+    <div class="result-url-wrap">
+      <a class="result-url" id="resultUrl" href="#" target="_blank"></a>
+      <button class="copy-btn" id="copyBtn">copy</button>
+    </div>
+    <div class="result-url-wrap result-direct-wrap">
+      <a class="result-direct-url" id="resultDirectUrl" href="#" target="_blank"></a>
+      <button class="copy-btn" id="copyDirectBtn">copy direct</button>
+    </div>
+    <div class="result-actions">
+      <a id="openLink" href="#" target="_blank">open direct ↗</a>
+      <button class="reset-btn" id="resetBtn">upload another</button>
+    </div>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <footer>
+    <a href="/">← mattothemoon.xyz</a>
+  </footer>
+</div>
+
+<script>
+  // Stars
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function createStars() {
+    stars = [];
+    for (let i = 0; i < 180; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.2 + 0.2,
+        o: Math.random() * 0.6 + 0.1,
+        speed: Math.random() * 0.003 + 0.001,
+        phase: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  function drawStars(t) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const s of stars) {
+      const opacity = s.o * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${opacity})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(drawStars);
+  }
+
+  resizeCanvas();
+  createStars();
+  requestAnimationFrame(drawStars);
+  window.addEventListener('resize', () => { resizeCanvas(); createStars(); });
+
+  // Upload logic
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const previewWrap = document.getElementById('previewWrap');
+  const previewImg = document.getElementById('previewImg');
+  const previewName = document.getElementById('previewName');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const progressWrap = document.getElementById('progressWrap');
+  const progressBar = document.getElementById('progressBar');
+  const progressLabel = document.getElementById('progressLabel');
+  const result = document.getElementById('result');
+  const resultUrl = document.getElementById('resultUrl');
+  const resultDirectUrl = document.getElementById('resultDirectUrl');
+  const copyBtn = document.getElementById('copyBtn');
+  const copyDirectBtn = document.getElementById('copyDirectBtn');
+  const openLink = document.getElementById('openLink');
+  const resetBtn = document.getElementById('resetBtn');
+  const errorMsg = document.getElementById('errorMsg');
+  const apiKey = document.getElementById('apiKey');
+  const loginUsername = document.getElementById('loginUsername');
+  const loginPassword = document.getElementById('loginPassword');
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const loginStatus = document.getElementById('loginStatus');
+
+  const apiBase = location.protocol === 'file:' ? 'http://localhost:3000' : location.origin;
+  const apiUrl = `${apiBase}/api/upload`;
+  const AUTH_USERNAME = 'mattothemoon';
+  const AUTH_PASSWORD = 'moon1234';
+
+  let selectedFile = null;
+  let loggedInUser = loadSessionUser();
+
+  function saveSessionUser(user) {
+    localStorage.setItem('uploadUser', JSON.stringify(user));
+  }
+
+  function clearSessionUser() {
+    localStorage.removeItem('uploadUser');
+  }
+
+  function loadSessionUser() {
+    const stored = localStorage.getItem('uploadUser');
+    if (!stored) return null;
+    try {
+      return JSON.parse(stored);
+    } catch (err) {
+      console.warn('Invalid login session', err);
+      localStorage.removeItem('uploadUser');
+      return null;
+    }
+  }
+
+  function updateLoginState() {
+    const isLoggedIn = Boolean(loggedInUser);
+    uploadBtn.disabled = !isLoggedIn;
+    if (isLoggedIn) {
+      loginStatus.textContent = `Logged in as ${loggedInUser.username}`;
+      loginBtn.textContent = 'Login';
+      logoutBtn.style.display = 'inline-flex';
+    } else {
+      loginStatus.textContent = 'Not logged in';
+      loginBtn.textContent = 'Login';
+      logoutBtn.style.display = 'none';
+    }
+  }
+
+  loginBtn.addEventListener('click', () => {
+    const username = loginUsername.value.trim();
+    const password = loginPassword.value.trim();
+
+    if (!username || !password) {
+      showError('Enter both username and password to log in.');
+      return;
+    }
+
+    if (username !== AUTH_USERNAME || password !== AUTH_PASSWORD) {
+      showError('Invalid username or password.');
+      return;
+    }
+
+    loggedInUser = { username };
+    saveSessionUser(loggedInUser);
+    hideError();
+    updateLoginState();
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    loggedInUser = null;
+    clearSessionUser();
+    updateLoginState();
+  });
+
+  updateLoginState();
+
+  if (location.protocol === 'file:') {
+    showError('The uploader must be served over HTTP. Run `npx vercel dev --listen 3000` and open http://localhost:3000/upload.');
+  }
+
+  function ensureLoggedIn() {
+    if (!loggedInUser) {
+      showError('Please log in before uploading.');
+      return false;
+    }
+    return true;
+  }
+
+  dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  });
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) handleFile(fileInput.files[0]);
+  });
+
+  function handleFile(file) {
+    if (!file.type.startsWith('image/')) {
+      showError('Only image files are allowed.');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      showError('File too large (max 10MB).');
+      return;
+    }
+
+    selectedFile = file;
+    hideError();
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      previewImg.src = e.target.result;
+      previewName.textContent = `${file.name} · ${(file.size / 1024).toFixed(1)} KB`;
+      previewWrap.classList.add('show');
+    };
+    reader.readAsDataURL(file);
+
+    uploadBtn.classList.add('show');
+    result.classList.remove('show');
+  }
+
+  uploadBtn.addEventListener('click', async () => {
+    if (!selectedFile) return;
+    if (!ensureLoggedIn()) return;
+
+    uploadBtn.disabled = true;
+    progressWrap.classList.add('show');
+    progressBar.style.width = '0%';
+    progressLabel.textContent = 'uploading...';
+    hideError();
+
+    // Simulate progress (XHR doesn't give upload progress easily with fetch)
+    let fakeProgress = 0;
+    const ticker = setInterval(() => {
+      fakeProgress = Math.min(fakeProgress + Math.random() * 15, 85);
+      progressBar.style.width = fakeProgress + '%';
+    }, 150);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      const headers = {};
+      if (apiKey.value.trim()) {
+        headers['x-api-key'] = apiKey.value.trim();
+      }
+
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers,
+        body: formData,
+      });
+
+      clearInterval(ticker);
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Upload failed');
+      }
+
+      progressBar.style.width = '100%';
+      progressLabel.textContent = 'done!';
+
+      setTimeout(() => {
+        progressWrap.classList.remove('show');
+        resultUrl.textContent = data.shortUrl;
+        resultUrl.href = data.shortUrl;
+        if (data.directUrl) {
+          resultDirectUrl.textContent = data.directUrl;
+          resultDirectUrl.href = data.directUrl;
+          copyDirectBtn.style.display = 'inline-flex';
+        } else {
+          resultDirectUrl.textContent = '';
+          resultDirectUrl.href = '#';
+          copyDirectBtn.style.display = 'none';
+        }
+        openLink.href = data.directUrl || data.shortUrl;
+        openLink.textContent = data.directUrl ? 'open direct ↗' : 'open ↗';
+        result.classList.add('show');
+        uploadBtn.classList.remove('show');
+      }, 400);
+
+    } catch (err) {
+      clearInterval(ticker);
+      progressWrap.classList.remove('show');
+      showError(err.message);
+      uploadBtn.disabled = false;
+    }
+  });
+
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(resultUrl.textContent).then(() => {
+      copyBtn.textContent = 'copied!';
+      copyBtn.classList.add('copied');
+      setTimeout(() => {
+        copyBtn.textContent = 'copy';
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    });
+  });
+
+  copyDirectBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(resultDirectUrl.textContent).then(() => {
+      copyDirectBtn.textContent = 'copied!';
+      copyDirectBtn.classList.add('copied');
+      setTimeout(() => {
+        copyDirectBtn.textContent = 'copy direct';
+        copyDirectBtn.classList.remove('copied');
+      }, 2000);
+    });
+  });
+
+  resetBtn.addEventListener('click', () => {
+    selectedFile = null;
+    fileInput.value = '';
+    previewImg.src = '';
+    previewWrap.classList.remove('show');
+    uploadBtn.classList.remove('show');
+    uploadBtn.disabled = false;
+    result.classList.remove('show');
+    progressWrap.classList.remove('show');
+    hideError();
+  });
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorMsg.classList.add('show');
+  }
+
+  function hideError() {
+    errorMsg.classList.remove('show');
+  }
+</script>
+
+</body>
+</html>
