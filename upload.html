@@ -609,13 +609,12 @@
   function updateLoginState() {
     const isLoggedIn = Boolean(loggedInUser);
     uploadBtn.disabled = !isLoggedIn;
+    loginBtn.textContent = 'Login';
     if (isLoggedIn) {
       loginStatus.textContent = `Logged in as ${loggedInUser.username}`;
-      loginBtn.textContent = 'Login';
       logoutBtn.style.display = 'inline-flex';
     } else {
       loginStatus.textContent = 'Not logged in';
-      loginBtn.textContent = 'Login';
       logoutBtn.style.display = 'none';
     }
   }
