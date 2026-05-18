@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { blobs } = await list({ prefix: `i/${id}.` });
+    const { blobs } = await list({ prefix: `i/${id}` });
 
     if (!blobs || blobs.length === 0) {
       return res.status(404).send(`

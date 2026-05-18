@@ -182,98 +182,6 @@
       background: var(--border);
     }
 
-    /* ── MUSIC ── */
-    .period-tabs {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 20px;
-    }
-
-    .period-tabs button {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 3px;
-      cursor: pointer;
-      transition: all 0.2s;
-      letter-spacing: 0.04em;
-    }
-
-    .period-tabs button:hover,
-    .period-tabs button.active {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: rgba(78, 205, 196, 0.06);
-    }
-
-    .music-cols {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 24px;
-    }
-
-    @media (max-width: 500px) {
-      .music-cols { grid-template-columns: 1fr; }
-    }
-
-    .music-col h3 {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-    }
-
-    .music-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .music-list li {
-      font-size: 13px;
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .music-list li .rank {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--muted);
-    }
-
-    .music-list li .name {
-      color: var(--white);
-      font-size: 13px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .music-list li .sub {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .music-list li a {
-      color: inherit;
-      text-decoration: none;
-    }
-    .music-list li a:hover .name { color: var(--accent); }
-
-    .music-loading {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      color: var(--muted);
-      font-style: italic;
-    }
 
     /* ── NOW PLAYING ── */
     .now-playing {
@@ -470,30 +378,6 @@
       </div>
     </section>
 
-    <!-- MUSIC STATS -->
-    <section>
-      <div class="section-label">music</div>
-      <div class="period-tabs">
-        <button class="active" data-period="7day" onclick="switchPeriod(this,'7day')">7d</button>
-        <button data-period="1month" onclick="switchPeriod(this,'1month')">30d</button>
-        <button data-period="12month" onclick="switchPeriod(this,'12month')">1y</button>
-        <button data-period="overall" onclick="switchPeriod(this,'overall')">all</button>
-      </div>
-      <div class="music-cols">
-        <div class="music-col">
-          <h3>artists</h3>
-          <ul class="music-list" id="top-artists"><li class="music-loading">loading…</li></ul>
-        </div>
-        <div class="music-col">
-          <h3>tracks</h3>
-          <ul class="music-list" id="top-tracks"><li class="music-loading">loading…</li></ul>
-        </div>
-        <div class="music-col">
-          <h3>albums</h3>
-          <ul class="music-list" id="top-albums"><li class="music-loading">loading…</li></ul>
-        </div>
-      </div>
-    </section>
 
     <!-- ABOUT -->
     <section>
@@ -553,8 +437,6 @@
   <script>
     // ── CONFIG ───────────────────────────────────────────────────────────────
     const DISCORD_ID  = '436300903927119873';
-    const LASTFM_USER = 'mattothemoon';
-    const LASTFM_KEY  = '5c7db85a6450507c38afa6b48ede4dbf';
 
     // ── LANYARD (Discord presence + Spotify) ─────────────────────────────────
     async function loadLanyard() {
@@ -594,69 +476,15 @@
         document.getElementById('status-text').textContent = 'offline';
       }
     }
-
-    // ── LAST.FM STATS (via Vercel proxy) ─────────────────────────────────────
-    async function lfm(method, extra = {}) {
-      const params = new URLSearchParams({ method, user: LASTFM_USER, api_key: LASTFM_KEY, format: 'json', limit: 5, ...extra });
-      const r = await fetch(`https://ws.audioscrobbler.com/2.0/?${params}`, { mode: 'cors' });
-      return r.json();
-    }
-
-    let currentPeriod = '7day';
-
-    function switchPeriod(btn, period) {
-      document.querySelectorAll('.period-tabs button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentPeriod = period;
-      loadMusicStats(period);
-    }
-
-    async function loadMusicStats(period) {
-      const artistsEl = document.getElementById('top-artists');
-      const tracksEl  = document.getElementById('top-tracks');
-      const albumsEl  = document.getElementById('top-albums');
-
-      artistsEl.innerHTML = '<li class="music-loading">loading…</li>';
-      tracksEl.innerHTML  = '<li class="music-loading">loading…</li>';
-      albumsEl.innerHTML  = '<li class="music-loading">loading…</li>';
-
-      try {
-        const [artists, tracks, albums] = await Promise.all([
-          lfm('user.gettopartists', { period }),
-          lfm('user.gettoptracks',  { period }),
-          lfm('user.gettopalbums',  { period }),
-        ]);
-
-        function renderList(el, items, nameKey, subKey) {
-          if (!items || items.length === 0) { el.innerHTML = '<li class="error-msg">no data</li>'; return; }
-          el.innerHTML = items.slice(0, 5).map((item, i) => `
-            <li>
-              <a href="${item.url}" target="_blank">
-                <span class="rank">${String(i+1).padStart(2,'0')}</span>
-                <span class="name">${item[nameKey]}</span>
-                ${subKey ? `<span class="sub">${item[subKey]?.['#text'] || item[subKey] || ''}</span>` : ''}
-              </a>
-            </li>
-          `).join('');
-        }
-
-        renderList(artistsEl, artists.topartists?.artist, 'name', null);
-        renderList(tracksEl,  tracks.toptracks?.track,   'name', 'artist');
-        renderList(albumsEl,  albums.topalbums?.album,   'name', 'artist');
-
-      } catch(e) {
-        [artistsEl, tracksEl, albumsEl].forEach(el => {
-          el.innerHTML = '<li class="error-msg">couldn\'t load</li>';
-        });
-      }
-    }
-
-    // ── INIT ────────────────────────────────────────────────────────────────
     loadLanyard();
-    loadMusicStats('7day');
 
     // refresh every 30s
     setInterval(loadLanyard, 30000);
   </script>
+  <!-- Vercel Speed Insights -->
+  <script>
+  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
 </html>

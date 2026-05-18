@@ -255,10 +255,26 @@
       margin-bottom: 10px;
     }
 
+    .result-direct-wrap {
+      margin-bottom: 10px;
+      background: rgba(0,0,0,0.04);
+      padding: 10px 14px;
+      border: 1px solid rgba(0,229,255,0.12);
+      border-radius: 8px;
+    }
+
     .result-url {
       flex: 1;
       font-size: 13px;
       color: var(--aqua);
+      word-break: break-all;
+      text-decoration: none;
+    }
+
+    .result-direct-url {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
       word-break: break-all;
       text-decoration: none;
     }
@@ -349,6 +365,69 @@
 
     .api-key-wrap input:focus { border-color: var(--aqua); }
 
+    .login-wrap {
+      width: 100%;
+      max-width: 560px;
+      display: grid;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .login-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .login-input {
+      width: 100%;
+      max-width: 300px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .login-input:focus { border-color: var(--aqua); }
+
+    .login-btn, .logout-btn {
+      padding: 14px 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: background 0.2s, opacity 0.2s;
+    }
+
+    .login-btn {
+      background: var(--aqua);
+      color: #000;
+      box-shadow: 0 0 24px rgba(0, 229, 255, 0.35);
+    }
+
+    .logout-btn {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .login-btn:hover, .logout-btn:hover { opacity: 0.94; }
+
+    .login-status {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
     footer {
       margin-top: 64px;
       font-size: 10px;
@@ -374,6 +453,18 @@
   <div class="api-key-wrap" id="apiKeyWrap">
     <label>API Key (if required)</label>
     <input type="password" id="apiKey" placeholder="leave blank if not set" autocomplete="off" />
+  </div>
+
+  <div class="login-wrap" id="loginWrap">
+    <div class="login-row">
+      <input class="login-input" id="loginUsername" placeholder="Username" autocomplete="username" />
+      <input class="login-input" id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" />
+    </div>
+    <div class="login-row">
+      <button class="login-btn" id="loginBtn" type="button">Login</button>
+      <button class="logout-btn" id="logoutBtn" type="button" style="display:none;">Logout</button>
+    </div>
+    <div class="login-status" id="loginStatus">Not logged in</div>
   </div>
 
   <div class="dropzone" id="dropzone">
@@ -403,8 +494,12 @@
       <a class="result-url" id="resultUrl" href="#" target="_blank"></a>
       <button class="copy-btn" id="copyBtn">copy</button>
     </div>
+    <div class="result-url-wrap result-direct-wrap">
+      <a class="result-direct-url" id="resultDirectUrl" href="#" target="_blank"></a>
+      <button class="copy-btn" id="copyDirectBtn">copy direct</button>
+    </div>
     <div class="result-actions">
-      <a id="openLink" href="#" target="_blank">open ↗</a>
+      <a id="openLink" href="#" target="_blank">open direct ↗</a>
       <button class="reset-btn" id="resetBtn">upload another</button>
     </div>
   </div>
@@ -470,13 +565,99 @@
   const progressLabel = document.getElementById('progressLabel');
   const result = document.getElementById('result');
   const resultUrl = document.getElementById('resultUrl');
+  const resultDirectUrl = document.getElementById('resultDirectUrl');
   const copyBtn = document.getElementById('copyBtn');
+  const copyDirectBtn = document.getElementById('copyDirectBtn');
   const openLink = document.getElementById('openLink');
   const resetBtn = document.getElementById('resetBtn');
   const errorMsg = document.getElementById('errorMsg');
   const apiKey = document.getElementById('apiKey');
+  const loginUsername = document.getElementById('loginUsername');
+  const loginPassword = document.getElementById('loginPassword');
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const loginStatus = document.getElementById('loginStatus');
+
+  const apiBase = location.protocol === 'file:' ? 'http://localhost:3000' : location.origin;
+  const apiUrl = `${apiBase}/api/upload`;
+  const AUTH_USERNAME = 'mattothemoon';
+  const AUTH_PASSWORD = 'moon1234';
 
   let selectedFile = null;
+  let loggedInUser = loadSessionUser();
+
+  function saveSessionUser(user) {
+    localStorage.setItem('uploadUser', JSON.stringify(user));
+  }
+
+  function clearSessionUser() {
+    localStorage.removeItem('uploadUser');
+  }
+
+  function loadSessionUser() {
+    const stored = localStorage.getItem('uploadUser');
+    if (!stored) return null;
+    try {
+      return JSON.parse(stored);
+    } catch (err) {
+      console.warn('Invalid login session', err);
+      localStorage.removeItem('uploadUser');
+      return null;
+    }
+  }
+
+  function updateLoginState() {
+    const isLoggedIn = Boolean(loggedInUser);
+    uploadBtn.disabled = !isLoggedIn;
+    loginBtn.textContent = 'Login';
+    if (isLoggedIn) {
+      loginStatus.textContent = `Logged in as ${loggedInUser.username}`;
+      logoutBtn.style.display = 'inline-flex';
+    } else {
+      loginStatus.textContent = 'Not logged in';
+      logoutBtn.style.display = 'none';
+    }
+  }
+
+  loginBtn.addEventListener('click', () => {
+    const username = loginUsername.value.trim();
+    const password = loginPassword.value.trim();
+
+    if (!username || !password) {
+      showError('Enter both username and password to log in.');
+      return;
+    }
+
+    if (username !== AUTH_USERNAME || password !== AUTH_PASSWORD) {
+      showError('Invalid username or password.');
+      return;
+    }
+
+    loggedInUser = { username };
+    saveSessionUser(loggedInUser);
+    hideError();
+    updateLoginState();
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    loggedInUser = null;
+    clearSessionUser();
+    updateLoginState();
+  });
+
+  updateLoginState();
+
+  if (location.protocol === 'file:') {
+    showError('The uploader must be served over HTTP. Run `npx vercel dev --listen 3000` and open http://localhost:3000/upload.');
+  }
+
+  function ensureLoggedIn() {
+    if (!loggedInUser) {
+      showError('Please log in before uploading.');
+      return false;
+    }
+    return true;
+  }
 
   dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
   dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
@@ -518,6 +699,7 @@
 
   uploadBtn.addEventListener('click', async () => {
     if (!selectedFile) return;
+    if (!ensureLoggedIn()) return;
 
     uploadBtn.disabled = true;
     progressWrap.classList.add('show');
@@ -541,7 +723,7 @@
         headers['x-api-key'] = apiKey.value.trim();
       }
 
-      const res = await fetch('/api/upload', {
+      const res = await fetch(apiUrl, {
         method: 'POST',
         headers,
         body: formData,
@@ -561,7 +743,17 @@
         progressWrap.classList.remove('show');
         resultUrl.textContent = data.shortUrl;
         resultUrl.href = data.shortUrl;
-        openLink.href = data.shortUrl;
+        if (data.directUrl) {
+          resultDirectUrl.textContent = data.directUrl;
+          resultDirectUrl.href = data.directUrl;
+          copyDirectBtn.style.display = 'inline-flex';
+        } else {
+          resultDirectUrl.textContent = '';
+          resultDirectUrl.href = '#';
+          copyDirectBtn.style.display = 'none';
+        }
+        openLink.href = data.directUrl || data.shortUrl;
+        openLink.textContent = data.directUrl ? 'open direct ↗' : 'open ↗';
         result.classList.add('show');
         uploadBtn.classList.remove('show');
       }, 400);
@@ -581,6 +773,17 @@
       setTimeout(() => {
         copyBtn.textContent = 'copy';
         copyBtn.classList.remove('copied');
+      }, 2000);
+    });
+  });
+
+  copyDirectBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(resultDirectUrl.textContent).then(() => {
+      copyDirectBtn.textContent = 'copied!';
+      copyDirectBtn.classList.add('copied');
+      setTimeout(() => {
+        copyDirectBtn.textContent = 'copy direct';
+        copyDirectBtn.classList.remove('copied');
       }, 2000);
     });
   });
