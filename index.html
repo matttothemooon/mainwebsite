@@ -20,157 +20,25 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;1,9..40,300&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body data-page="home">
   <div class="ambient"></div>
   <nav>
     <a class="nav-logo" href="index.html">Matt</a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="experience.html">Experience</a></li>
-      <li><a href="skills.html">Skills</a></li>
-      <li><a href="recommendations.html">Recs</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
+    <ul class="nav-links"></ul>
     <div class="nav-right">
       <span class="status-dot offline"></span>
       <span class="status-label">Offline</span>
       <button class="nav-burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </nav>
-  <div class="nav-drawer" id="drawer"><a href="index.html">Home</a><a href="experience.html">Experience</a><a href="skills.html">Skills</a><a href="recommendations.html">Recs</a><a href="contact.html">Contact</a></div>
+  <div class="nav-drawer" id="drawer"></div>
   <main>
     <div class="page">
-      <div class="container">
-
-        <!-- INTRO -->
-        <div class="intro">
-          <h1>hey, i'm <span>matt.</span></h1>
-          <p>
-            community manager and tool builder.
-            i build things for the streaming world.
-          </p>
-          <div class="intro-actions">
-            <a class="btn btn-primary" href="contact.html">Work with me</a>
-            <a class="btn" href="recommendations.html">See recommendations</a>
-          </div>
-        </div>
-
-    <!-- STATUS -->
-    <div class="status" id="status-bar">
-      <div class="status-dot"></div>
-      <span id="status-text">loading presence…</span>
+      <div class="container" id="page-content">
+        <p>Loading page…</p>
+      </div>
     </div>
-
-    <!-- SOCIALS -->
-    <div class="socials">
-      <a href="https://twitch.tv/mattothemoon" target="_blank">
-        <!-- Twitch -->
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
-        twitch
-      </a>
-      <a href="https://discord.com/users/436300903927119873" target="_blank">
-        <!-- Discord -->
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-        discord
-      </a>
-      <a href="https://twitter.com/matttttothemoon" target="_blank">
-        <!-- Twitter/X -->
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.261 5.638L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        twitter
-      </a>
-
-      <a href="https://www.last.fm/user/mattothemoon" target="_blank">
-        <!-- Last.fm -->
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.584 17.21l-.88-2.392s-1.43 1.595-3.573 1.595c-1.897 0-3.244-1.652-3.244-4.3 0-3.387 1.704-4.6 3.381-4.6 2.42 0 3.189 1.567 3.849 3.573l.88 2.42c.88 2.667 2.529 4.81 7.296 4.81 3.409 0 5.72-1.046 5.72-3.793 0-2.227-1.265-3.38-3.63-3.932l-1.759-.385c-1.21-.275-1.567-.77-1.567-1.595 0-.935.742-1.484 1.952-1.484 1.32 0 2.034.494 2.144 1.677l2.749-.33c-.22-2.474-1.924-3.49-4.728-3.49-2.474 0-4.893.935-4.893 3.932 0 1.87.907 3.051 3.189 3.601l1.869.44c1.374.33 1.869.907 1.869 1.786 0 1.072-.99 1.512-2.914 1.512-2.831 0-4.013-1.484-4.673-3.41l-.907-2.474C12.29 7.59 10.64 6 7.45 6 3.875 6 1.016 8.332 1.016 12.18c0 3.711 2.034 6.405 6.074 6.405 3.134 0 4.728-1.374 4.728-1.374z"/></svg>
-        last.fm
-      </a>
-    </div>
-
-    <section>
-      <div class="section-label">featured work</div>
-      <div class="featured-grid">
-        <article class="feature-card">
-          <h3>Custom moderation tooling</h3>
-          <p>Built bots and automations for Twitch and Discord that keep communities safe and reduce moderator overhead.</p>
-        </article>
-        <article class="feature-card">
-          <h3>Community support systems</h3>
-          <p>Designed onboarding and escalation workflows for midsize communities to help them grow without chaos.</p>
-        </article>
-        <article class="feature-card">
-          <h3>Stream operations support</h3>
-          <p>Created moderation and raid-handling systems that keep live streams running smoothly and chat aligned.</p>
-        </article>
-      </div>
-    </section>
-
-    <!-- NOW PLAYING -->
-    <section>
-      <div class="section-label">now playing</div>
-      <div class="now-playing" id="now-playing">
-        <div class="np-icon"></div>
-        <div class="np-text">
-          <div class="np-label">last.fm</div>
-          <div class="np-track" id="np-track">loading…</div>
-          <div class="np-artist" id="np-artist"></div>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- ABOUT -->
-    <section>
-      <div class="section-label">about</div>
-      <div class="about-grid">
-        <div class="about-item">
-          <span class="about-key">role</span>
-          <span class="about-val">community manager / tool builder</span>
-        </div>
-
-        <div class="about-item">
-          <span class="about-key">builds</span>
-          <span class="about-val">twitch bots, discord tools, chat moderation systems</span>
-        </div>
-        <div class="about-item">
-          <span class="about-key">contact</span>
-          <span class="about-val"><a href="mailto:mattothemoon06@gmail.com">mattothemoon06@gmail.com</a></span>
-        </div>
-      </div>
-    </section>
-
-    <!-- LINKS -->
-    <section>
-      <div class="section-label">links</div>
-      <div class="link-list">
-        <a class="link-item" href="https://twitch.tv/mattothemoon" target="_blank">
-          <div>
-            <div>twitch</div>
-            <div class="link-sub">twitch.tv/mattothemoon</div>
-          </div>
-          <span class="link-arrow">→</span>
-        </a>
-
-        <a class="link-item" href="https://twitter.com/matttttothemoon" target="_blank">
-          <div>
-            <div>twitter / x</div>
-            <div class="link-sub">@matttttothemoon</div>
-          </div>
-          <span class="link-arrow">→</span>
-        </a>
-        <a class="link-item" href="mailto:mattothemoon06@gmail.com">
-          <div>
-            <div>email</div>
-            <div class="link-sub">mattothemoon06@gmail.com</div>
-          </div>
-          <span class="link-arrow">→</span>
-        </a>
-      </div>
-    </section>
-
-    <footer>
-      mattothemoon · built with love · <a href="https://mattothemoon.xyz" style="color:inherit;text-decoration:none;">mattothemoon.xyz</a>
-    </footer>
-
+  </main>
   </main>
   <script src="site.js"></script>
   <!-- Vercel Speed Insights -->

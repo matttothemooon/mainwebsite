@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — Matt</title>
+  <meta name="theme-color" content="#0d0f14" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="ambient"></div>
+  <div class="page">
+    <nav>
+      <a class="nav-logo" href="index.html">Matt</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="experience.html">Experience</a></li>
+        <li><a href="skills.html">Skills</a></li>
+        <li><a href="recommendations.html">Recs</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-right">
+        <button class="nav-burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+    <div class="nav-drawer" id="drawer"><a href="index.html">Home</a><a href="experience.html">Experience</a><a href="skills.html">Skills</a><a href="recommendations.html">Recs</a><a href="contact.html">Contact</a></div>
+    <div class="container">
+      <section>
+        <div class="eyebrow">Admin Dashboard</div>
+        <h1>Update site content</h1>
+        <p class="lead">Edit the homepage content JSON and save it to the repository with a secure admin password.</p>
+      </section>
+      <section style="padding-top:0;">
+        <div class="contact-wrap" style="display:grid;gap:1.5rem;">
+          <div class="form-row" style="display:grid;gap:1rem;">
+            <div class="form-group">
+              <label for="page-select">Page to edit</label>
+              <select id="page-select">
+                <option value="">Loading pages…</option>
+              </select>
+            </div>
+            <div class="form-row" style="display:grid;gap:0.75rem;">
+              <div class="form-group">
+                <label for="new-page-slug">New page slug</label>
+                <input type="text" id="new-page-slug" placeholder="example: projects" />
+              </div>
+              <div class="form-group">
+                <label for="new-page-title">New page title</label>
+                <input type="text" id="new-page-title" placeholder="Projects" />
+              </div>
+              <button class="btn" id="add-page-btn" type="button">Add new page</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="admin-password">Admin password</label>
+            <input type="password" id="admin-password" placeholder="Enter admin password" />
+          </div>
+          <div class="form-group">
+            <label for="content-json">Site content JSON</label>
+            <textarea id="content-json" rows="18"></textarea>
+          </div>
+          <div class="form-row" style="display:flex;flex-wrap:wrap;gap:1rem;">
+            <button class="btn btn-primary" id="save-btn">Save content</button>
+            <button class="btn" id="download-btn" type="button">Download JSON</button>
+          </div>
+          <div id="admin-status" style="margin-top:1rem;color:var(--muted2);"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <script src="admin.js"></script>
+</body>
+</html>

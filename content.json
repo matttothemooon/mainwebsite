@@ -1,0 +1,92 @@
+{
+  "site": {
+    "nav": [
+      { "label": "Home", "href": "index.html", "slug": "home" },
+      { "label": "Experience", "href": "experience.html", "slug": "experience" },
+      { "label": "Skills", "href": "skills.html", "slug": "skills" },
+      { "label": "Recs", "href": "recommendations.html", "slug": "recommendations" },
+      { "label": "Contact", "href": "contact.html", "slug": "contact" }
+    ]
+  },
+  "pages": {
+    "home": {
+      "slug": "home",
+      "title": "mattothemoon",
+      "description": "Community manager and tool builder for streamers. Twitch and Discord moderation tools.",
+      "hero": {
+        "headline": "hey, i'm <span>matt.</span>",
+        "subline": "community manager and tool builder. i build things for the streaming world.",
+        "ctaPrimary": { "text": "Work with me", "href": "contact.html" },
+        "ctaSecondary": { "text": "See recommendations", "href": "recommendations.html" }
+      },
+      "featuredWork": [
+        {
+          "title": "Custom moderation tooling",
+          "description": "Built bots and automations for Twitch and Discord that keep communities safe and reduce moderator overhead."
+        },
+        {
+          "title": "Community support systems",
+          "description": "Designed onboarding and escalation workflows for midsize communities to help them grow without chaos."
+        },
+        {
+          "title": "Stream operations support",
+          "description": "Created moderation and raid-handling systems that keep live streams running smoothly and chat aligned."
+        }
+      ],
+      "aboutItems": [
+        { "key": "role", "value": "community manager / tool builder" },
+        { "key": "builds", "value": "twitch bots, discord tools, chat moderation systems" },
+        { "key": "contact", "value": "<a href=\"mailto:mattothemoon06@gmail.com\">mattothemoon06@gmail.com</a>" }
+      ],
+      "links": [
+        { "label": "twitch", "href": "https://twitch.tv/mattothemoon", "sub": "twitch.tv/mattothemoon" },
+        { "label": "twitter / x", "href": "https://twitter.com/matttttothemoon", "sub": "@matttttothemoon" },
+        { "label": "email", "href": "mailto:mattothemoon06@gmail.com", "sub": "mattothemoon06@gmail.com" }
+      ]
+    },
+    "experience": {
+      "slug": "experience",
+      "title": "Experience — Matt",
+      "description": "9+ years of community building across Discord and Twitch — from ground-floor mod to Community Manager.",
+      "hero": {
+        "eyebrow": "Work History",
+        "headline": "Moderation<br><span>Experience</span>",
+        "lead": "9+ years of community building across Discord and Twitch — from ground-floor mod to Community Manager."
+      },
+      "contentHtml": "<section><div class=\"eyebrow\">Currently Active</div><h2>Active Roles</h2><div class=\"timeline\"><div class=\"t-card\"><div class=\"t-header\"><div><h3>ChubsC</h3><div style=\"font-size:0.8rem;color:var(--muted2);margin-top:0.15rem;\">Discord Server</div></div><div style=\"text-align:right;\"><div class=\"t-date\">Present</div><div class=\"t-meta\"><span class=\"tag tag-green\">Admin</span><span class=\"tag tag-green\">Active</span></div></div></div><p class=\"t-desc\">Currently serving as Admin — managing the community, enforcing guidelines, and keeping everything running smoothly.</p></div><div class=\"t-card\"><div class=\"t-header\"><div><h3>Cizzorz</h3><div style=\"font-size:0.8rem;color:var(--muted2);margin-top:0.15rem;\">Discord Server</div></div><div style=\"text-align:right;\"><div class=\"t-date\">Present</div><div class=\"t-meta\"><span class=\"tag tag-green\">Discord Mod</span><span class=\"tag tag-green\">Active</span></div></div></div><p class=\"t-desc\">Active Discord Moderator — maintaining a positive and welcoming environment for the whole community.</p></div></div></section><section><div class=\"eyebrow\">Past Roles</div><h2>Past Experience</h2><div class=\"timeline\"><div class=\"t-card\"><div class=\"t-header\"><div><h3>The Reapers</h3><div style=\"font-size:0.8rem;color:var(--muted2);margin-top:0.15rem;\">Discord Server</div></div><div style=\"text-align:right;\"><div class=\"t-date\">Jun 2019 – Jan 2025</div><div class=\"t-meta\"><span class=\"tag\">Community Manager</span><span class=\"tag tag-accent\">Long-Term</span></div></div></div><p class=\"t-desc\">Community Manager for The Reapers — overseeing moderation efforts and fostering a great environment for members.</p></div><div class=\"t-card\"><div class=\"t-header\"><div><h3>Sinnski</h3><div style=\"font-size:0.8rem;color:var(--muted2);margin-top:0.15rem;\">Discord Server</div></div><div style=\"text-align:right;\"><div class=\"t-date\">Jun 2021 – Jan 2025</div><div class=\"t-meta\"><span class=\"tag\">Community Manager</span></div></div></div><p class=\"t-desc\">Community Manager role — keeping the server active, well-moderated, and engaging for all members.</p></div><div class=\"t-card\"><div class=\"t-header\"><div><h3>Flynn</h3><div style=\"font-size:0.8rem;color:var(--muted2);margin-top:0.15rem;\">Discord Server</div></div><div style=\"text-align:right;\"><div class=\"t-date\">Oct 2021 – Jan 2025</div><div class=\"t-meta\"><span class=\"tag\">Head Mod</span><span class=\"tag tag-accent\">Team Lead</span></div></div></div><p class=\"t-desc\">Head Mod — led the moderation team, kept the community safe, positive, and well-managed.</p></div><div class=\"t-card\"><div class=\"t-header\"><div><h3>VerCord</h3><div style=\"font-size:0.8rem;color:var(--muted2);margin-top:0.15rem;\">Discord Verification Bot</div></div><div style=\"text-align:right;\"><div class=\"t-date\">2024 – 2025</div><div class=\"t-meta\"><span class=\"tag\">Past Mod</span><span class=\"tag\">Verification Bot</span></div></div></div><p class=\"t-desc\">VerCord is the <strong style=\"color:var(--text);\">#1 Discord verification bot</strong>. Contributed as a past moderator.</p></div></div></section>"
+    },
+    "skills": {
+      "slug": "skills",
+      "title": "Skills — Matt",
+      "description": "Community management skills: Discord setup, Twitch moderation, regex, team building.",
+      "hero": {
+        "eyebrow": "What I Bring",
+        "headline": "Skills &amp;<br><span>Capabilities</span>",
+        "lead": "A toolkit refined across 9+ years of real-world community management on multiple platforms."
+      },
+      "contentHtml": "<section><div class=\"skills-grid\"><div class=\"sk-card\"><div class=\"sk-icon\">🏗️</div><h3>Discord Server Setup</h3><p>Clean, professional servers from scratch — channels, roles, bots, formatting, the whole thing done right.</p></div><div class=\"sk-card\"><div class=\"sk-icon\">📺</div><h3>Twitch Moderation</h3><p>Real-time chat moderation at scale — keeping the vibe right, handling bans, managing high-volume streams.</p></div><div class=\"sk-card\"><div class=\"sk-icon\">&lt;/&gt;</div><h3>Regex Automation</h3><p>Building regex patterns for automated moderation — filtering messages, detecting patterns, keeping things hands-off.</p></div><div class=\"sk-card\"><div class=\"sk-icon\">🛡️</div><h3>Building Mod Teams</h3><p>Recruiting the right people, setting expectations, and keeping a team working together effectively.</p></div><div class=\"sk-card\"><div class=\"sk-icon\">📋</div><h3>Community Guidelines</h3><p>Writing clear, enforceable rules — concise enough people actually read them, detailed enough they hold up.</p></div><div class=\"sk-card\"><div class=\"sk-icon\">🤝</div><h3>Conflict Resolution</h3><p>De-escalating situations, handling appeals fairly, making tough calls while keeping trust on both sides.</p></div></div></section><div class=\"cta-band\"><div class=\"eyebrow\" style=\"display:flex;justify-content:center;\">Interested?</div><h2>Let\'s work together</h2><p>Looking for a Community Manager or Head Mod? I\'m available.</p><div class=\"cta-buttons\"><a class=\"btn btn-primary\" href=\"contact.html\">Get in Touch</a><a class=\"btn\" href=\"experience.html\">See My Experience</a></div></div>"
+    },
+    "recommendations": {
+      "slug": "recommendations",
+      "title": "Recommendations — Matt",
+      "description": "Tools Matt recommends for Discord and Twitch moderation: Bleed Bot and Fossabot.",
+      "hero": {
+        "eyebrow": "Handpicked Tools",
+        "headline": "Stuff I<br><span>Recommend</span>",
+        "lead": "Tools I\'ve personally used and vouch for when running and moderating online communities. No fluff—just the best utilities I actually recommend."
+      },
+      "contentHtml": "<section><div class=\"recs-grid\"><div class=\"rec-card\"><div class=\"rec-header\"><span style=\"font-size:1.3rem;\">🩸</span><h3>Bleed Bot</h3><span class=\"tag\" style=\"margin-left:auto;\">Tool</span></div><p>A solid Discord bot for keeping your server in check. Great for moderation, management, and keeping things running smoothly.</p><a class=\"btn\" href=\"https://bleed.bot\" target=\"_blank\">Check it out →</a></div></div><div class=\"rec-card\" style=\"margin-top:0.75rem;\"><div class=\"rec-header\"><span style=\"font-size:1.3rem;\">🐸</span><h3>Fossabot</h3><span class=\"tag\" style=\"margin-left:auto;\">Tool</span><span class=\"tag tag-accent\" style=\"margin-left:0.5rem;\">Made by Twitch Staff</span></div><p style=\"margin-top:0.75rem;\">Fossabot is amazing — built by people who actually work at Twitch, so they know exactly what streamers need. Trusted by the biggest names on the platform. Visit <a href=\"https://fossabot.com\" target=\"_blank\" style=\"color:var(--accent);text-decoration:none;\">fossabot.com</a> for details.</p><div class=\"fossa-grid\"><div class=\"fossa-item\"><div class=\"fossa-num\">01 · Standard Commands</div><p>Commands like <code>!followage</code> and <code>!uptime</code> built right in.</p></div><div class=\"fossa-item\"><div class=\"fossa-num\">02 · Auto-Mod Actions</div><p>Auto-ban on blocked words — beyond what Twitch\'s native tools can do.</p></div><div class=\"fossa-item\"><div class=\"fossa-num\">03 · Spam Filter</div><p>Blocks non-English spam and filler messages hands-free.</p></div><div class=\"fossa-item\"><div class=\"fossa-num\">04 · Used by the Biggest</div><p>xQc, Kai, Poki and more. If it\'s good enough for them, it\'s good enough for you.</p></div></div><div style=\"display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:1.25rem;\"><a class=\"btn btn-primary\" href=\"https://fossabot.com\" target=\"_blank\">Visit fossabot.com</a><a class=\"btn\" href=\"#\" target=\"_blank\">💬 Support Server</a><a class=\"btn\" href=\"#\" target=\"_blank\">🐦 Twitter</a></div></div></section>"
+    },
+    "contact": {
+      "slug": "contact",
+      "title": "Contact — Matt",
+      "description": "Get in touch with Matt for moderation inquiries, collaborations, or general questions.",
+      "hero": {
+        "eyebrow": "Get in Touch",
+        "headline": "Send me<br><span>a message</span>",
+        "lead": "Got a question, collab idea, or just want to say hi? I'll get back to you."
+      },
+      "contentHtml": "<section><div class=\"contact-actions\"><p class=\"lead\" style=\"margin-bottom:1.5rem;max-width:none;\">Want to reach me directly? Click the button below to open your email client, or use one of the direct links if you prefer Discord or social chat.</p><a class=\"btn btn-primary\" href=\"mailto:mattothemoon06@gmail.com?subject=Contact from mattothemoon.xyz\">Email Matt</a><div class=\"contact-fallback\" style=\"margin-top:2rem;\"><p style=\"margin-bottom:0.85rem;color:var(--muted2);\">Other ways to reach me:</p><div class=\"contact-links\"><a class=\"contact-link\" href=\"https://discord.com/users/436300903927119873\" target=\"_blank\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z\"/></svg>Discord Profile</a><a class=\"contact-link\" href=\"https://x.com/matttttothemoon\" target=\"_blank\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z\"/></svg>Twitter / X</a><a class=\"contact-link\" href=\"mailto:mattothemoon06@gmail.com\" target=\"_blank\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 2-8 5-8-5h16Zm-16 12V8l8 5 8-5v10H4Z\"/></svg>Email</a></div></div></section>"
+    }
+  }
+}
