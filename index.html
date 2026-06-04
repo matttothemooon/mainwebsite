@@ -47,6 +47,10 @@
         community manager and tool builder.
         i build things for the streaming world.
       </p>
+      <div class="intro-actions">
+        <a class="btn btn-primary" href="contact.html">Work with me</a>
+        <a class="btn" href="recommendations.html">See recommendations</a>
+      </div>
     </div>
 
     <!-- STATUS -->
@@ -167,54 +171,6 @@
 
   </main>
   <script src="site.js"></script>
-
-  <script>
-    // ── CONFIG ───────────────────────────────────────────────────────────────
-    const DISCORD_ID  = '436300903927119873';
-
-    // ── LANYARD (Discord presence + Spotify) ─────────────────────────────────
-    async function loadLanyard() {
-      try {
-        const r    = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
-        const json = await r.json();
-        const data = json.data;
-
-        const statusDot  = document.querySelector('.status-dot');
-        const statusText = document.getElementById('status-text');
-        const npEl       = document.getElementById('now-playing');
-        const npTrack    = document.getElementById('np-track');
-        const npArtist   = document.getElementById('np-artist');
-
-        // Discord status dot colour
-        const statusColors = { online: '#4ecdc4', idle: '#f0c040', dnd: '#e05252', offline: 'var(--muted)' };
-        const discordStatus = data.discord_status || 'offline';
-        statusDot.style.background  = statusColors[discordStatus];
-        statusDot.style.boxShadow   = discordStatus === 'offline' ? 'none' : `0 0 6px ${statusColors[discordStatus]}`;
-        statusDot.style.animation   = discordStatus === 'offline' ? 'none' : 'pulse 2s infinite';
-
-        // Spotify via Lanyard
-        if (data.spotify) {
-          const sp = data.spotify;
-          npTrack.textContent  = sp.song;
-          npArtist.textContent = sp.artist;
-          npEl.classList.add('playing');
-          statusText.textContent = `listening to ${sp.song} by ${sp.artist}`;
-        } else {
-          npTrack.textContent  = 'not playing anything';
-          npArtist.textContent = '';
-          npEl.classList.remove('playing');
-          statusText.textContent = discordStatus === 'offline' ? 'offline' : discordStatus;
-        }
-      } catch(e) {
-        document.getElementById('np-track').textContent  = 'unavailable';
-        document.getElementById('status-text').textContent = 'offline';
-      }
-    }
-    loadLanyard();
-
-    // refresh every 30s
-    setInterval(loadLanyard, 30000);
-  </script>
   <!-- Vercel Speed Insights -->
   <script>
   window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };

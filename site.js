@@ -86,4 +86,49 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  const DISCORD_ID = '436300903927119873';
+
+  async function loadLanyard() {
+    const statusDot = document.querySelector('.status-dot');
+    const statusText = document.getElementById('status-text');
+    const npEl = document.getElementById('now-playing');
+    const npTrack = document.getElementById('np-track');
+    const npArtist = document.getElementById('np-artist');
+
+    if (!statusDot || !statusText || !npEl || !npTrack || !npArtist) return;
+
+    try {
+      const response = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
+      const json = await response.json();
+      const data = json.data;
+
+      const statusColors = { online: '#4ecdc4', idle: '#f0c040', dnd: '#e05252', offline: 'var(--muted)' };
+      const discordStatus = data.discord_status || 'offline';
+      statusDot.style.background = statusColors[discordStatus];
+      statusDot.style.boxShadow = discordStatus === 'offline' ? 'none' : `0 0 6px ${statusColors[discordStatus]}`;
+      statusDot.style.animation = discordStatus === 'offline' ? 'none' : 'pulse 2s infinite';
+
+      if (data.spotify) {
+        const sp = data.spotify;
+        npTrack.textContent = sp.song;
+        npArtist.textContent = sp.artist;
+        npEl.classList.add('playing');
+        statusText.textContent = `listening to ${sp.song} by ${sp.artist}`;
+      } else {
+        npTrack.textContent = 'not playing anything';
+        npArtist.textContent = '';
+        npEl.classList.remove('playing');
+        statusText.textContent = discordStatus === 'offline' ? 'offline' : discordStatus;
+      }
+    } catch (error) {
+      npTrack.textContent = 'unavailable';
+      statusText.textContent = 'offline';
+    }
+  }
+
+  if (document.querySelector('.status-dot')) {
+    loadLanyard();
+    setInterval(loadLanyard, 30000);
+  }
 });
