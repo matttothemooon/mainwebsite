@@ -4,20 +4,20 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Recommendations — Matt</title>
-<meta name="description" content="Tools Matt recommends for Discord and Twitch moderation: VerCord, Bleed Bot, Fossabot."/>
+<meta name="description" content="Tools Matt recommends for Discord and Twitch moderation: Bleed Bot and Fossabot."/>
 <meta name="author" content="Matt"/>
 <meta name="theme-color" content="#060608"/>
 <!-- Open Graph -->
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://mattothemoon.xyz/recommendations"/>
 <meta property="og:title" content="Recommendations — Matt"/>
-<meta property="og:description" content="Tools Matt recommends for Discord and Twitch moderation: VerCord, Bleed Bot, Fossabot."/>
+<meta property="og:description" content="Tools Matt recommends for Discord and Twitch moderation: Bleed Bot and Fossabot."/>
 <meta property="og:image" content="https://mattothemoon.xyz/og.png"/>
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:site" content="@matttttothemoon"/>
 <meta name="twitter:title" content="Recommendations — Matt"/>
-<meta name="twitter:description" content="Tools Matt recommends for Discord and Twitch moderation: VerCord, Bleed Bot, Fossabot."/>
+<meta name="twitter:description" content="Tools Matt recommends for Discord and Twitch moderation: Bleed Bot and Fossabot."/>
 <meta name="twitter:image" content="https://mattothemoon.xyz/og.png"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>"/>
 <link rel="stylesheet" href="styles.css" />
@@ -39,19 +39,14 @@
 <section>
   <div class="eyebrow">Handpicked Tools</div>
   <h1>Stuff I<br><span>Recommend</span></h1>
-  <p class="lead">Tools I've personally used and vouch for when running and moderating online communities.</p>
+  <p class="lead">Tools I've personally used and vouch for when running and moderating online communities. No fluff—just the best utilities I actually recommend.</p>
 </section>
 <section>
   <div class="recs-grid">
     <div class="rec-card">
-      <div class="rec-header"><span style="font-size:1.3rem;">✅</span><h3>VerCord</h3><span class="tag" style="margin-left:auto;">Tool</span></div>
-      <p>The #1 Discord verification bot. Keeps your server secure and makes sure only real people get in. Highly recommend.</p>
-      <a class="btn" href="#" target="_blank">Check it out →</a>
-    </div>
-    <div class="rec-card">
       <div class="rec-header"><span style="font-size:1.3rem;">🩸</span><h3>Bleed Bot</h3><span class="tag" style="margin-left:auto;">Tool</span></div>
       <p>A solid Discord bot for keeping your server in check. Great for moderation, management, and keeping things running smoothly.</p>
-      <a class="btn" href="#" target="_blank">Check it out →</a>
+      <a class="btn" href="https://bleed.bot" target="_blank">Check it out →</a>
     </div>
   </div>
   <div class="rec-card" style="margin-top:0.75rem;">
@@ -60,7 +55,7 @@
       <span class="tag" style="margin-left:auto;">Tool</span>
       <span class="tag tag-accent">Made by Twitch Staff</span>
     </div>
-    <p style="margin-top:0.75rem;">Fossabot is amazing — built by people who actually work at Twitch, so they know exactly what streamers need. Trusted by the biggest names on the platform.</p>
+    <p style="margin-top:0.75rem;">Fossabot is amazing — built by people who actually work at Twitch, so they know exactly what streamers need. Trusted by the biggest names on the platform. Visit <a href="https://fossabot.com" target="_blank" style="color:var(--accent);text-decoration:none;">fossabot.com</a> for details.</p>
     <div class="fossa-grid">
       <div class="fossa-item"><div class="fossa-num">01 · Standard Commands</div><p>Commands like <code>!followage</code> and <code>!uptime</code> built right in.</p></div>
       <div class="fossa-item"><div class="fossa-num">02 · Auto-Mod Actions</div><p>Auto-ban on blocked words — beyond what Twitch's native tools can do.</p></div>
@@ -68,7 +63,7 @@
       <div class="fossa-item"><div class="fossa-num">04 · Used by the Biggest</div><p>xQc, Kai, Poki and more. If it's good enough for them, it's good enough for you.</p></div>
     </div>
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:1.25rem;">
-      <a class="btn btn-primary" href="#" target="_blank">📊 Dashboard</a>
+      <a class="btn btn-primary" href="https://fossabot.com" target="_blank">Visit fossabot.com</a>
       <a class="btn" href="#" target="_blank">💬 Support Server</a>
       <a class="btn" href="#" target="_blank">🐦 Twitter</a>
     </div>
@@ -84,82 +79,6 @@
   </div>
 </footer>
 </div>
-// ── Lanyard (Discord + Spotify) ──
-const UID='436300903927119873';
-const SL={online:'Online',idle:'Idle',dnd:'Do Not Disturb',offline:'Offline'};
-let _hb=null,_sp=null;
-function lc(){
-  const ws=new WebSocket('wss://api.lanyard.rest/socket');
-  ws.onopen=()=>ws.send(JSON.stringify({op:2,d:{subscribe_to_id:UID}}));
-  ws.onmessage=ev=>{
-    const m=JSON.parse(ev.data);
-    if(m.op===1){clearInterval(_hb);_hb=setInterval(()=>ws.readyState===1&&ws.send(JSON.stringify({op:3})),m.d.heartbeat_interval);}
-    if(m.op===0&&(m.t==='INIT_STATE'||m.t==='PRESENCE_UPDATE')){
-      const d=m.t==='INIT_STATE'?m.d[UID]:m.d;
-      if(d)ap(d);
-    }
-  };
-  ws.onclose=()=>{clearInterval(_hb);setTimeout(lc,3000);};
-  ws.onerror=()=>ws.close();
-}
-function ap(data){
-  const s=data.discord_status||'offline';
-  document.querySelectorAll('.status-dot').forEach(el=>el.className='status-dot '+s);
-  document.querySelectorAll('.status-label').forEach(el=>el.textContent=SL[s]||'Offline');
-  const ab=document.querySelector('.avatar-badge');
-  if(ab)ab.className='avatar-badge '+s;
-  const ds=document.querySelector('.discord-sub');
-  if(ds)ds.textContent=SL[s]||'Offline';
-  const cu=document.querySelector('.discord-custom');
-  if(cu){const ca=(data.activities||[]).find(a=>a.type===4);if(ca&&ca.state){cu.textContent=ca.state;cu.style.display='block';}else cu.style.display='none';}
-  // avatar from lanyard
-  const avImg=document.querySelector('.avatar img');
-  if(avImg&&data.discord_user){
-    const {id,avatar}=data.discord_user;
-    if(avatar){avImg.src=`https://cdn.discordapp.com/avatars/${id}/${avatar}.png?size=128`;avImg.style.display='block';avImg.nextElementSibling&&(avImg.nextElementSibling.style.display='none');}
-  }
-  usp(data);
-}
-function usp(data){
-  const card=document.querySelector('.spotify-widget');
-  if(!card)return;
-  const ai=card.querySelector('.sp-art img'),ap2=card.querySelector('.sp-art .ph');
-  const tr=card.querySelector('.sp-track'),ar=card.querySelector('.sp-artist');
-  const bt=card.querySelector('.sp-badge-txt'),dot=card.querySelector('.sp-dot');
-  const fill=card.querySelector('.sp-fill'),time=card.querySelector('.sp-time');
-  if(data.listening_to_spotify&&data.spotify){
-    const sp=data.spotify;
-    card.classList.add('playing');
-    if(ai){ai.src=sp.album_art_url||'';ai.style.display=sp.album_art_url?'block':'none';}
-    if(ap2)ap2.style.display=sp.album_art_url?'none':'block';
-    if(tr)tr.textContent=sp.song||'Unknown';
-    if(ar)ar.textContent=sp.artist||'—';
-    if(bt)bt.textContent='Now Playing';
-    if(dot)dot.style.display='block';
-    if(sp.timestamps)spp(sp.timestamps,fill,time);
-  }else{
-    card.classList.remove('playing');clearInterval(_sp);
-    if(ai)ai.style.display='none';
-    if(ap2)ap2.style.display='block';
-    if(tr)tr.textContent='Not listening right now';
-    if(ar)ar.textContent='—';
-    if(bt)bt.textContent='Spotify';
-    if(dot)dot.style.display='none';
-    if(fill)fill.style.width='0%';
-    if(time)time.textContent='';
-  }
-}
-function spp(ts,fill,time){
-  clearInterval(_sp);
-  function tick(){
-    const now=Date.now(),dur=ts.end-ts.start,el=now-ts.start;
-    if(fill)fill.style.width=Math.min(100,(el/dur)*100)+'%';
-    if(time){const r=Math.max(0,Math.round((ts.end-now)/1000));time.textContent='-'+Math.floor(r/60)+':'+String(r%60).padStart(2,'0');}
-  }
-  tick();_sp=setInterval(tick,1000);
-}
-document.addEventListener('DOMContentLoaded',lc);
-</script>
 <!-- Vercel Speed Insights -->
 <script>
 window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
