@@ -111,6 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const label = statusLabels[discordStatus] || statusLabels.offline;
 
       statusDots.forEach((dot) => {
+        dot.classList.remove('online', 'idle', 'dnd', 'offline');
+        dot.classList.add(discordStatus);
         dot.style.background = color;
         dot.style.boxShadow = discordStatus === 'offline' ? 'none' : `0 0 6px ${color}`;
         dot.style.animation = discordStatus === 'offline' ? 'none' : 'pulse 2s infinite';
