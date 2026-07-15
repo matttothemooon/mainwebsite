@@ -1,1 +1,1 @@
-{"cleanUrls":true,"trailingSlash":false}
+{"cleanUrls":true,"trailingSlash":false,"redirects":[{"source":"/discord","destination":"https://discord.gg/HCsUteFkmh","permanent":true}]}
