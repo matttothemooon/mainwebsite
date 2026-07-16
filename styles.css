@@ -154,7 +154,78 @@ h1 {
   color: var(--accent);
 }
 
+.prompt--section {
+  margin: 1.75rem 0 0.85rem;
+  font-size: 0.9rem;
+}
+
+.exp-block {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.exp-label {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.exp-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.exp-row:last-child {
+  border-bottom: none;
+}
+
+.exp-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.exp-role {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.exp-place {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+a.exp-place:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.exp-place::before {
+  content: "@ ";
+  color: var(--muted);
+}
+
+.exp-date {
+  color: var(--muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 @media (max-width: 640px) {
   body { padding: 0.75rem; }
   .terminal__content { padding: 1.25rem; }
+  .exp-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
 }
