@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusDot = document.querySelector('.status-dot');
   const statusText = document.getElementById('status-text');
   const nowPlaying = document.getElementById('now-playing');
+  const spotifyLink = document.getElementById('spotify-link');
 
   const DISCORD_ID = '436300903927119873';
 
@@ -33,8 +34,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (data?.spotify && nowPlaying) {
         const sp = data.spotify;
         nowPlaying.textContent = `now playing: ${sp.song} — ${sp.artist}`;
+        if (spotifyLink && sp.track_id) {
+          spotifyLink.href = `https://open.spotify.com/track/${sp.track_id}`;
+          spotifyLink.classList.remove('status-row--disabled');
+        }
       } else if (nowPlaying) {
         nowPlaying.textContent = 'nothing playing right now';
+        if (spotifyLink) {
+          spotifyLink.removeAttribute('href');
+          spotifyLink.classList.add('status-row--disabled');
+        }
       }
     } catch (error) {
       if (statusText) {
@@ -42,6 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (nowPlaying) {
         nowPlaying.textContent = 'Spotify unavailable';
+      }
+      if (spotifyLink) {
+        spotifyLink.removeAttribute('href');
+        spotifyLink.classList.add('status-row--disabled');
       }
     }
   }

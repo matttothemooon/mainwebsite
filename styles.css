@@ -116,6 +116,26 @@ h1 {
   gap: 0.7rem;
   color: var(--muted);
   min-height: 1.4rem;
+  text-decoration: none;
+  border-radius: 8px;
+  padding: 0.25rem 0.35rem;
+  margin: -0.25rem -0.35rem;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+
+.status-row:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+}
+
+.status-row--disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
+.status-row--disabled:hover {
+  background: transparent;
+  color: var(--muted);
 }
 
 .status-dot {
