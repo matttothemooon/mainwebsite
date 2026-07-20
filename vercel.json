@@ -1,1 +1,41 @@
-{"cleanUrls":true,"trailingSlash":false,"redirects":[{"source":"/discord","destination":"https://discord.gg/HCsUteFkmh","permanent":true}]}
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/discord",
+      "destination": "https://discord.com/invite/HCsUteFkmh",
+      "permanent": false
+    },
+    {
+      "source": "/twitch",
+      "destination": "https://www.twitch.tv/mattothemoon",
+      "permanent": false
+    },
+    {
+      "source": "/twitter",
+      "destination": "https://x.com/matttttothemoon",
+      "permanent": false
+    },
+    {
+      "source": "/youtube",
+      "destination": "https://www.youtube.com/@MatttToTheMoon",
+      "permanent": false
+    },
+    {
+      "source": "/github",
+      "destination": "https://github.com/mattothemoon",
+      "permanent": false
+    },
+    {
+      "source": "/email",
+      "destination": "mailto:mattothemoon06@gmail.com",
+      "permanent": false
+    },
+    {
+      "source": "/tip",
+      "destination": "https://streamelements.com/mattothemoon/tip",
+      "permanent": false
+    }
+  ]
+}
