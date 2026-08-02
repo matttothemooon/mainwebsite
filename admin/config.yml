@@ -1,0 +1,21 @@
+backend:
+  name: github
+  repo: matttothemooon/mainwebsite
+  branch: main
+  base_url: https://mainwebsite-ruby-psi.vercel.app
+  auth_endpoint: api/auth
+
+media_folder: "content/uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: "pages"
+    label: "Pages"
+    folder: "content/pages"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "URL Slug", name: "slug", widget: "string", hint: "e.g. 'projects' becomes /projects.html" }
+      - { label: "Description (SEO)", name: "description", widget: "string", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
