@@ -56,8 +56,9 @@ function copyUploads() {
 }
 
 function buildPages() {
-  if (!fs.existsSync(PAGES_DIR)) return;
+  if (!fs.existsSync(PAGES_DIR)) return [];
   const template = fs.readFileSync(TEMPLATE_PATH, "utf8");
+  const navEntries = [];
 
   for (const file of fs.readdirSync(PAGES_DIR)) {
     if (!file.endsWith(".md")) continue;
@@ -78,7 +79,12 @@ function buildPages() {
     fs.mkdirSync(path.dirname(outPath), { recursive: true });
     fs.writeFileSync(outPath, page);
     console.log(`built /${slug}.html`);
+
+    navEntries.push({ title, slug });
   }
+
+  fs.writeFileSync(path.join(OUT, "pages.json"), JSON.stringify(navEntries));
+  return navEntries;
 }
 
 rimraf(OUT);
