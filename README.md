@@ -1,41 +1,49 @@
-# Social Links Admin — setup for mainwebsite
+# mainwebsite
 
-Drop these into your `matttothemooon/mainwebsite` repo:
+Personal site for [mattothemoon.xyz](https://mattothemoon.xyz) — a terminal-styled presence page with live Discord/Spotify status and admin-editable social links.
+
+## Stack
+
+- Static HTML/CSS/JS, no build step
+- Vercel serverless functions (`/api`) for the admin backend
+- Vercel Blob for storage (JSON blob, no database)
+- Deployed via Vercel, auto-builds on push to `main`
+
+## Structure
 
 ```
-api/links.js
-api/admin/links.js
-lib/storage.js
-lib/auth.js
-admin.html          (new — the admin panel, visit at /admin)
-index.html           (replaces your current one — same content, .links div
-                       is now dynamic instead of hardcoded)
-package.json         (new — repo has no dependencies yet)
+index.html            homepage — links are rendered client-side from stored data
+admin.html             admin panel UI, reachable at /admin
+api/links.js            public endpoint — serves current links to the homepage
+api/admin/links.js      protected endpoint — add/edit/remove/reorder links
+lib/storage.js         reads/writes the links JSON blob in Vercel Blob
+lib/auth.js            checks ADMIN_SECRET on admin requests
+package.json           dependencies (@vercel/blob)
+vercel.json             routing config (cleanUrls: true — /admin maps to admin.html)
 ```
 
-## Steps
+## Setup
 
-1. Copy the files above into the repo at those paths.
-2. `npm install` locally once (adds `@vercel/blob` — Vercel will also run this
-   on deploy automatically).
-3. In Vercel project settings → Environment Variables, add:
-   - `ADMIN_SECRET` — pick any long random string, this is your admin password
-   - Enable Vercel Blob for the project (Storage tab) if you haven't already —
-     this sets `BLOB_READ_WRITE_TOKEN` automatically
-4. Commit and push. Vercel auto-detects `/api` as serverless functions —
-   nothing else to configure. `cleanUrls: true` in your `vercel.json` means
-   `/admin.html` is reachable at `/admin`.
-5. Go to `mattothemoon.xyz/admin`, enter your `ADMIN_SECRET`, and start
-   adding/editing/removing/reordering links. They'll show up on the homepage
-   immediately (cached 60s).
+1. Clone the repo and install dependencies:
+   ```
+   npm install
+   ```
+2. In the Vercel project settings → Environment Variables, add:
+   - `ADMIN_SECRET` — any long random string; this is the admin panel password
+   - Enable Vercel Blob for the project (Storage tab) if not already — this sets `BLOB_READ_WRITE_TOKEN` automatically
+3. Push to `main`. Vercel auto-detects `/api` as serverless functions — nothing else to configure.
 
-## What changed vs. before
+## Using the admin panel
 
-- Your six links (twitch, x, github, discord, discord profile, email) aren't
-  in `index.html` anymore — first time you load `/admin`, add them there so
-  they're in the system, then delete the old ones aren't needed since the
-  file already has them removed from HTML.
-- Everything else (styling, terminal look, Discord/Spotify status block,
-  experience section) is untouched.
-- Storage is a JSON blob (`admin/social-links.json`) in the same Vercel Blob
-  store your image host already uses — no new service needed.
+Go to `mattothemoon.xyz/admin`, enter your `ADMIN_SECRET`, and add/edit/remove/reorder links from there. Changes show up on the homepage immediately (cached 60s).
+
+## How links work
+
+Links used to be hardcoded in `index.html`. They're now stored as a JSON blob (`admin/social-links.json`) in Vercel Blob and fetched client-side by the homepage on load. `api/links.js` is the public read endpoint; `api/admin/links.js` is the protected write endpoint, guarded by `lib/auth.js` checking `ADMIN_SECRET`.
+
+Everything else on the page — terminal styling, the Discord/Spotify status block, the mod experience section — is untouched and still lives directly in `index.html`.
+
+## Notes
+
+- No database — storage is a single JSON blob in the same Vercel Blob store the image host (`/i/`) already uses.
+- `ADMIN_SECRET` is the only auth — anyone with it can edit links. Treat it like a password.
