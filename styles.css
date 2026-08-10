@@ -1,13 +1,13 @@
 /* ---------- design tokens ---------- */
 :root {
-  --bg: #06110a;
-  --panel: #0b1a10;
-  --border: #1b3324;
-  --text: #d7f5df;
-  --text-dim: #7fae8c;
+  --bg: #000000;
+  --panel: #0a0a0a;
+  --border: #1f1f1f;
+  --text: #e8e8e8;
+  --text-dim: #8a8a8a;
   --accent: #4ade80;
   --accent-dim: #2f6b45;
-  --offline: #55605a;
+  --offline: #4a4a4a;
 
   --font-mono: "SFMono-Regular", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
 
@@ -51,14 +51,14 @@ a {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
 .terminal__bar {
   display: flex;
   gap: var(--gap-xs);
   padding: var(--gap-sm);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid var(--border);
 }
 

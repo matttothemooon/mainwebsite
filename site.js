@@ -1,11 +1,6 @@
 // site.js
-// Two independent jobs:
-//   1. Poll Lanyard for live Discord/Spotify status
-//   2. Fetch page content (bio/links/mod experience) from the admin API
-
 const DISCORD_USER_ID = "436300903927119873";
 const LANYARD_URL = `https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`;
-const PROFILE_API = "https://mattothemoon.xyz/api/profile";
 const POLL_INTERVAL_MS = 15000;
 
 /* ---------- Lanyard status ---------- */
@@ -54,66 +49,24 @@ async function pollLanyard() {
   }
 }
 
-/* ---------- profile content (admin panel) ---------- */
+/* ---------- links (admin-managed) ---------- */
 
-function renderBio(bio) {
-  document.getElementById("bio").textContent = bio;
-}
-
-function renderLinks(links) {
-  const el = document.getElementById("links");
-  el.innerHTML = links
-    .map((l) => `<a href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`)
-    .join("");
-}
-
-function expRowHtml({ role, name, url, date }) {
-  const nameHtml = url
-    ? `<a class="exp-place" href="${url}" target="_blank" rel="noopener">${name}</a>`
-    : `<span class="exp-place">${name}</span>`;
-
-  return `
-    <div class="exp-row">
-      <div class="exp-main">
-        <span class="exp-role">${role}</span>
-        ${nameHtml}
-      </div>
-      <span class="exp-date">${date}</span>
-    </div>`;
-}
-
-function expGroupHtml(label, rows) {
-  return `
-    <div class="exp-group">
-      <div class="exp-label">${label}</div>
-      ${rows.map(expRowHtml).join("")}
-    </div>`;
-}
-
-function renderExperience(modExperience) {
-  const el = document.getElementById("exp-block");
-  el.innerHTML =
-    expGroupHtml("active", modExperience.active) +
-    expGroupHtml("past", modExperience.past);
-}
-
-async function loadProfile() {
+async function loadLinks() {
   try {
-    const res = await fetch(PROFILE_API);
-    if (!res.ok) throw new Error(`Profile fetch failed: ${res.status}`);
-    const data = await res.json();
+    const res = await fetch("/api/links");
+    if (!res.ok) throw new Error(`Links fetch failed: ${res.status}`);
+    const links = await res.json();
 
-    renderBio(data.bio);
-    renderLinks(data.links);
-    renderExperience(data.modExperience);
+    document.getElementById("links").innerHTML = links
+      .map((l) => `<a href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`)
+      .join("");
   } catch (err) {
-    // Fallback markup already in index.html stays visible on failure.
-    console.error("Profile load failed:", err);
+    console.error("Links load failed:", err);
   }
 }
 
 /* ---------- init ---------- */
 
-loadProfile();
+loadLinks();
 pollLanyard();
 setInterval(pollLanyard, POLL_INTERVAL_MS);

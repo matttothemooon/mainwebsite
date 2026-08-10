@@ -1,200 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#06110a" />
-<title>mattothemoon — admin</title>
-<style>
-  :root{
-    --bg:#06110a; --panel:#0b1a10; --border:#1c3324; --text:#c9f2d6;
-    --muted:#5f9273; --accent:#39ff88;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0; min-height:100vh; background:var(--bg); color:var(--text);
-    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
-    padding:2rem 1rem; display:flex; justify-content:center;
-  }
-  .wrap{max-width:640px; width:100%}
-  h1{font-size:1.1rem; margin:0 0 .2rem; color:var(--accent)}
-  .sub{color:var(--muted); font-size:.85rem; margin-bottom:1.5rem}
-  #authGate{display:flex; gap:.5rem; margin-bottom:1.5rem}
-  #authGate input{flex:1}
-  input{
-    background:#04110a; border:1px solid var(--border); color:var(--text);
-    padding:.5rem .7rem; border-radius:4px; font-family:inherit; font-size:.85rem;
-  }
-  button{
-    background:transparent; border:1px solid var(--accent); color:var(--accent);
-    padding:.5rem .8rem; border-radius:4px; font-family:inherit; font-size:.8rem;
-    cursor:pointer;
-  }
-  button:hover{background:rgba(57,255,136,.1)}
-  button.danger{border-color:#ff5c5c; color:#ff5c5c}
-  button.danger:hover{background:rgba(255,92,92,.1)}
-  button.ghost{border-color:var(--border); color:var(--muted)}
-
-  #addForm{
-    display:grid; grid-template-columns:1fr 1fr auto; gap:.5rem;
-    background:var(--panel); border:1px solid var(--border);
-    padding:1rem; border-radius:6px; margin-bottom:1.5rem;
-  }
-
-  #list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.4rem}
-  .link-row{
-    display:flex; align-items:center; gap:.6rem; background:var(--panel);
-    border:1px solid var(--border); border-radius:6px; padding:.5rem .7rem;
-    cursor:grab; font-size:.85rem;
-  }
-  .link-row.sortable-ghost{opacity:.3}
-  .link-row.disabled{opacity:.45}
-  .row-main{flex:1; min-width:0; display:flex; flex-direction:column}
-  .row-label{color:var(--accent)}
-  .row-url{color:var(--muted); font-size:.75rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-  .row-actions{display:flex; gap:.3rem}
-  #status{font-size:.78rem; color:var(--muted); margin-top:1rem; min-height:1.2em}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#000000" />
+  <title>admin — mattothemoon</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .admin-wrap { max-width: 560px; }
+    .row { display: flex; gap: var(--gap-sm); align-items: center; margin-bottom: var(--gap-sm); }
+    .row input { flex: 1; background: var(--panel); border: 1px solid var(--border); color: var(--text); font-family: var(--font-mono); padding: 8px 10px; border-radius: 6px; }
+    .row button, .btn { background: transparent; border: 1px solid var(--accent-dim); color: var(--accent); font-family: var(--font-mono); padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+    .row button:hover, .btn:hover { border-color: var(--accent); }
+    .btn--danger { border-color: #6b2f2f; color: #e08787; }
+    .btn--danger:hover { border-color: #e08787; }
+    #signin { text-align: center; padding: var(--gap-lg) 0; }
+    #status-msg { color: var(--text-dim); font-size: 0.85rem; margin-top: var(--gap-sm); min-height: 1em; }
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>guest@mattothemoon:~$ manage links</h1>
-  <div class="sub"># add / edit / reorder / remove the links shown on mattothemoon.xyz</div>
+  <div class="terminal admin-wrap">
+    <div class="terminal__bar"><span></span><span></span><span></span></div>
+    <main class="terminal__content">
+      <h1>admin</h1>
+      <p class="bio">manage social links</p>
 
-  <div id="authGate">
-    <input id="secretInput" type="password" placeholder="admin secret">
-    <button id="unlockBtn">unlock</button>
+      <div id="signin">
+        <a class="btn" href="/api/auth/login">sign in with github</a>
+      </div>
+
+      <div id="editor" style="display:none;">
+        <div id="link-rows"></div>
+        <button class="btn" id="add-row">+ add link</button>
+
+        <p class="prompt prompt--section" style="margin-top: var(--gap-lg);">
+          <a href="/api/auth/logout" style="color: var(--text-dim);">sign out</a>
+        </p>
+
+        <button class="btn" id="save" style="margin-top: var(--gap-sm);">save changes</button>
+        <div id="status-msg"></div>
+      </div>
+    </main>
   </div>
 
-  <div id="app" style="display:none">
-    <form id="addForm">
-      <input id="f_label" placeholder="label (e.g. twitch)" required>
-      <input id="f_url" placeholder="https://..." required>
-      <button type="submit">add</button>
-    </form>
+  <script>
+    const rowsEl = document.getElementById("link-rows");
+    let links = [];
 
-    <ul id="list"></ul>
-    <div id="status"></div>
-  </div>
-</div>
+    function renderRows() {
+      rowsEl.innerHTML = "";
+      links.forEach((link, i) => {
+        const row = document.createElement("div");
+        row.className = "row";
+        row.innerHTML = `
+          <input value="${link.label}" placeholder="label" data-field="label" data-index="${i}" />
+          <input value="${link.url}" placeholder="url" data-field="url" data-index="${i}" />
+          <button data-action="up" data-index="${i}" title="move up">↑</button>
+          <button data-action="down" data-index="${i}" title="move down">↓</button>
+          <button class="btn--danger" data-action="remove" data-index="${i}">×</button>
+        `;
+        rowsEl.appendChild(row);
+      });
+    }
 
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
-<script>
-let SECRET = '';
-const app = document.getElementById('app');
-const listEl = document.getElementById('list');
-const statusEl = document.getElementById('status');
-
-document.getElementById('unlockBtn').onclick = async () => {
-  SECRET = document.getElementById('secretInput').value.trim();
-  if (!SECRET) return;
-  const ok = await loadLinks();
-  if (ok) {
-    document.getElementById('authGate').style.display = 'none';
-    app.style.display = 'block';
-  } else {
-    setStatus('wrong secret or server error', true);
-  }
-};
-
-function authHeaders() {
-  return { 'Authorization': 'Bearer ' + SECRET, 'Content-Type': 'application/json' };
-}
-
-function setStatus(msg, isError) {
-  statusEl.textContent = msg;
-  statusEl.style.color = isError ? '#ff5c5c' : 'var(--muted)';
-  if (msg) setTimeout(() => { statusEl.textContent = ''; }, 2500);
-}
-
-async function loadLinks() {
-  const res = await fetch('/api/admin/links', { headers: authHeaders() });
-  if (!res.ok) return false;
-  render(await res.json());
-  return true;
-}
-
-function render(links) {
-  listEl.innerHTML = '';
-  links.sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).forEach((link) => {
-    const li = document.createElement('li');
-    li.className = 'link-row' + (link.enabled === false ? ' disabled' : '');
-    li.dataset.id = link.id;
-    li.innerHTML = `
-      <div class="row-main">
-        <span class="row-label">${escapeHtml(link.label)}</span>
-        <span class="row-url">${escapeHtml(link.url)}</span>
-      </div>
-      <div class="row-actions">
-        <button class="ghost toggle-btn">${link.enabled === false ? 'enable' : 'disable'}</button>
-        <button class="ghost edit-btn">edit</button>
-        <button class="danger del-btn">delete</button>
-      </div>
-    `;
-    li.querySelector('.toggle-btn').onclick = () => toggleLink(link);
-    li.querySelector('.edit-btn').onclick = () => editLink(link);
-    li.querySelector('.del-btn').onclick = () => deleteLink(link);
-    listEl.appendChild(li);
-  });
-}
-
-function escapeHtml(s) {
-  return s.replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-document.getElementById('addForm').onsubmit = async (e) => {
-  e.preventDefault();
-  const body = {
-    label: document.getElementById('f_label').value.trim(),
-    url: document.getElementById('f_url').value.trim(),
-  };
-  const res = await fetch('/api/admin/links', {
-    method: 'POST', headers: authHeaders(), body: JSON.stringify(body),
-  });
-  if (res.ok) { e.target.reset(); setStatus('added'); loadLinks(); }
-  else setStatus('failed to add', true);
-};
-
-async function toggleLink(link) {
-  const res = await fetch('/api/admin/links', {
-    method: 'PUT', headers: authHeaders(),
-    body: JSON.stringify({ id: link.id, enabled: link.enabled === false }),
-  });
-  if (res.ok) { setStatus('updated'); loadLinks(); }
-  else setStatus('failed to update', true);
-}
-
-async function editLink(link) {
-  const label = prompt('label', link.label); if (label === null) return;
-  const url = prompt('url', link.url); if (url === null) return;
-  const res = await fetch('/api/admin/links', {
-    method: 'PUT', headers: authHeaders(),
-    body: JSON.stringify({ id: link.id, label, url }),
-  });
-  if (res.ok) { setStatus('saved'); loadLinks(); }
-  else setStatus('failed to save', true);
-}
-
-async function deleteLink(link) {
-  if (!confirm(`delete "${link.label}"?`)) return;
-  const res = await fetch('/api/admin/links?id=' + encodeURIComponent(link.id), {
-    method: 'DELETE', headers: authHeaders(),
-  });
-  if (res.ok) { setStatus('deleted'); loadLinks(); }
-  else setStatus('failed to delete', true);
-}
-
-new Sortable(listEl, {
-  animation: 150,
-  onEnd: async () => {
-    const order = [...listEl.children].map((li) => li.dataset.id);
-    await fetch('/api/admin/links', {
-      method: 'PUT', headers: authHeaders(),
-      body: JSON.stringify({ action: 'reorder', order }),
+    rowsEl.addEventListener("input", (e) => {
+      const { field, index } = e.target.dataset;
+      if (!field) return;
+      links[Number(index)][field] = e.target.value;
     });
-    setStatus('reordered');
-  },
-});
-</script>
+
+    rowsEl.addEventListener("click", (e) => {
+      const { action, index } = e.target.dataset;
+      if (!action) return;
+      const i = Number(index);
+
+      if (action === "remove") links.splice(i, 1);
+      if (action === "up" && i > 0) [links[i - 1], links[i]] = [links[i], links[i - 1]];
+      if (action === "down" && i < links.length - 1) [links[i + 1], links[i]] = [links[i], links[i + 1]];
+
+      renderRows();
+    });
+
+    document.getElementById("add-row").addEventListener("click", () => {
+      links.push({ label: "", url: "" });
+      renderRows();
+    });
+
+    document.getElementById("save").addEventListener("click", async () => {
+      const statusEl = document.getElementById("status-msg");
+      statusEl.textContent = "saving…";
+      try {
+        const res = await fetch("/api/admin/links", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(links),
+        });
+        if (!res.ok) throw new Error(await res.text());
+        statusEl.textContent = "saved.";
+      } catch (err) {
+        statusEl.textContent = "save failed — check console.";
+        console.error(err);
+      }
+    });
+
+    async function init() {
+      const res = await fetch("/api/admin/links");
+      if (res.status === 401) {
+        document.getElementById("signin").style.display = "block";
+        document.getElementById("editor").style.display = "none";
+        return;
+      }
+      links = await res.json();
+      document.getElementById("signin").style.display = "none";
+      document.getElementById("editor").style.display = "block";
+      renderRows();
+    }
+
+    init();
+  </script>
 </body>
 </html>

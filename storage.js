@@ -1,34 +1,30 @@
 // lib/storage.js
-// Reads/writes social-links.json to Vercel Blob. Requires BLOB_READ_WRITE_TOKEN
-// (Vercel sets this automatically once Blob is attached to the project).
+import { put, list } from "@vercel/blob";
 
-const { put, list } = require('@vercel/blob');
+const BLOB_PATH = "admin/social-links.json";
 
-const BLOB_PATH = 'admin/social-links.json';
+const DEFAULT_LINKS = [
+  { label: "twitch", url: "https://twitch.tv/mattothemoon" },
+  { label: "x", url: "https://x.com/mattothemoon" },
+  { label: "github", url: "https://github.com/mattothemoon" },
+  { label: "discord", url: "/discord" },
+  { label: "discord profile", url: "https://discord.com/users/436300903927119873" },
+  { label: "email", url: "mailto:mattothemoon06@gmail.com" },
+];
 
-async function getLinks() {
-  try {
-    const { blobs } = await list({ prefix: BLOB_PATH });
-    const match = blobs.find((b) => b.pathname === BLOB_PATH);
-    if (!match) return [];
-    const res = await fetch(match.url);
-    if (!res.ok) return [];
-    return await res.json();
-  } catch (err) {
-    console.error('getLinks failed:', err);
-    return [];
-  }
+export async function getLinks() {
+  const { blobs } = await list({ prefix: BLOB_PATH });
+  const existing = blobs.find((b) => b.pathname === BLOB_PATH);
+  if (!existing) return DEFAULT_LINKS;
+
+  const res = await fetch(existing.url);
+  return res.json();
 }
 
-async function saveLinks(links) {
-  const body = JSON.stringify(links, null, 2);
-  await put(BLOB_PATH, body, {
-    access: 'public',
-    contentType: 'application/json',
-    addRandomSuffix: false,
+export async function saveLinks(links) {
+  await put(BLOB_PATH, JSON.stringify(links, null, 2), {
+    access: "public",
+    contentType: "application/json",
     allowOverwrite: true,
   });
-  return links;
 }
-
-module.exports = { getLinks, saveLinks };
