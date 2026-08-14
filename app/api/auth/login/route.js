@@ -1,24 +1,25 @@
-import { createState, envTrimmed, missingAuthConfig } from "@/lib/auth";
+import { authConfigProblems, createState, envTrimmed } from "@/lib/auth";
 
 // Matches the callback route: a failed sign-in explains itself rather than
-// returning a bare status code.
-function configError(missing) {
+// returning a bare status code. The problems are built from env var *names*, so
+// there is no external input here to escape.
+function configError(problems) {
   return new Response(
     `<!DOCTYPE html><meta charset="utf-8">` +
       `<title>admin — sign in unavailable</title>` +
       `<body style="background:#000;color:#e8e8e8;font-family:ui-monospace,monospace;padding:40px;line-height:1.6">` +
-      `<p>Discord login is not configured on this deployment.</p>` +
-      `<p>Missing environment ${missing.length === 1 ? "variable" : "variables"}: ` +
-      `<strong>${missing.join(", ")}</strong></p>` +
-      `<p>Set ${missing.length === 1 ? "it" : "them"} in Vercel → Settings → Environment Variables, then redeploy.</p>`,
+      `<p>Discord login is not configured correctly on this deployment.</p>` +
+      `<ul>${problems.map((p) => `<li>${p}</li>`).join("")}</ul>` +
+      `<p>Fix in Vercel → Settings → Environment Variables, then redeploy.</p>`,
     { status: 500, headers: { "Content-Type": "text/html; charset=utf-8" } }
   );
 }
 
 export async function GET(request) {
-  // Checked before createState, which throws on a missing SESSION_SECRET.
-  const missing = missingAuthConfig();
-  if (missing.length) return configError(missing);
+  // Before createState, which throws on a missing SESSION_SECRET, and before
+  // client_id reaches a redirect URL the browser gets to see.
+  const problems = authConfigProblems();
+  if (problems.length) return configError(problems);
 
   const { host, protocol } = originOf(request);
   const { nonce, cookie } = createState(request);

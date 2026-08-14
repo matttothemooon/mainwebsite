@@ -1,9 +1,9 @@
 import {
+  authConfigProblems,
   clearStateCookie,
   consumeState,
   envTrimmed,
   isAllowed,
-  missingAuthConfig,
   sessionCookie,
 } from "@/lib/auth";
 
@@ -35,14 +35,14 @@ function fail(request, status, message) {
 }
 
 export async function GET(request) {
-  const missing = missingAuthConfig();
-  if (missing.length) {
+  const problems = authConfigProblems();
+  if (problems.length) {
     return fail(
       request,
       500,
-      `Not configured on this deployment — missing ${missing.join(", ")}. ` +
-        `Set ${missing.length === 1 ? "it" : "them"} in Vercel → Settings → Environment ` +
-        `Variables, then redeploy (env changes only reach a new deployment).`
+      `Not configured correctly on this deployment: ${problems.join("; ")}. ` +
+        `Fix in Vercel → Settings → Environment Variables, then redeploy ` +
+        `(env changes only reach a new deployment).`
     );
   }
 
