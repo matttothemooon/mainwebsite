@@ -54,8 +54,8 @@ No Discord app, Vercel account, or Blob token is needed. Locally:
 - **Auth is bypassed** — the admin panel opens straight into the editor, with a
   banner saying so.
 - **Edits save to `.dev-profile.json`** and uploaded icons to `public/uploads/`
-  (both gitignored) instead of Vercel Blob, because `BLOB_READ_WRITE_TOKEN` only
-  exists in the deployed environment. Delete them to reset.
+  (both gitignored) instead of Vercel Blob, because Blob credentials only exist
+  in the deployed environment. Delete them to reset.
 
 To exercise the real Discord login flow locally, run `npm run dev:auth` with
 `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `DISCORD_ALLOWED_IDS`, and
@@ -84,7 +84,13 @@ live admin panel, and neither can spoofing a `Host` header at the real domain.
      unset and it falls back to `OWNER_ID` in `lib/auth.js`, so a fresh deploy
      is never locked out. Setting it replaces that list entirely.
    - `SESSION_SECRET` — any long random string, used to sign the session cookie
-   - Enable Vercel Blob (Storage tab) — this sets `BLOB_READ_WRITE_TOKEN` automatically
+   - Enable Vercel Blob (Storage tab) — this wires the store up automatically,
+     via either `BLOB_READ_WRITE_TOKEN` or `BLOB_STORE_ID` depending on how
+     Vercel provisions it. Nothing to paste by hand either way.
+     **Create the store with public access.** Link icons are rendered as
+     `<img>` on the public homepage and the profile JSON is read with a plain
+     `fetch`, so both need publicly readable URLs. A private store rejects the
+     upload outright with "Cannot use public access on a private store".
 
    Optional, enables the "fetch" button on streamer entries:
    - `TWITCH_CLIENT_ID` / `TWITCH_CLIENT_SECRET` — from <https://dev.twitch.tv/console/apps>
