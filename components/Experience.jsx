@@ -14,9 +14,20 @@ export function formatFollowers(count) {
   return `${count} follower${count === 1 ? "" : "s"}`;
 }
 
-// A name only gets a hover card if there's something to put in it.
-export function hasCard(entry) {
-  return Boolean(entry.twitch || entry.avatar || Number.isFinite(entry.followers));
+// Every name gets a card — hovering one and getting nothing reads as broken,
+// even when the entry genuinely has no Twitch data behind it.
+//
+// What sits under the name: the follower count when there is one, otherwise the
+// entry's own role and date, so a card without Twitch data still says something
+// instead of echoing the name back.
+export function cardMeta(entry) {
+  if (Number.isFinite(entry.followers)) return formatFollowers(entry.followers);
+  return [entry.role, entry.date].filter(Boolean).join(" · ");
+}
+
+// The card's heading: the Twitch handle when known, else the entry name.
+export function cardTitle(entry) {
+  return entry.twitch ? `@${entry.twitch}` : entry.name;
 }
 
 export default function Experience({ experience }) {
@@ -74,29 +85,21 @@ export default function Experience({ experience }) {
               <div className="exp-label">{label}</div>
 
               {entries.map((entry, i) => {
-                const carded = hasCard(entry);
                 const Tag = entry.url ? "a" : "span";
-
-                const handlers = carded
-                  ? {
-                      onMouseEnter: show(entry),
-                      onMouseLeave: hide,
-                      onFocus: show(entry),
-                      onBlur: hide,
-                    }
-                  : {};
 
                 return (
                   <div className="exp-row" key={`${entry.name}-${i}`}>
                     <div className="exp-main">
                       <span className="exp-role">{entry.role}</span>
                       <Tag
-                        className={`exp-place${carded ? " exp-place--has-card" : ""}`}
+                        className="exp-place exp-place--has-card"
                         {...(entry.url
                           ? { href: entry.url, target: "_blank", rel: "noopener noreferrer" }
-                          : {})}
-                        {...(carded && !entry.url ? { tabIndex: 0 } : {})}
-                        {...handlers}
+                          : { tabIndex: 0 })}
+                        onMouseEnter={show(entry)}
+                        onMouseLeave={hide}
+                        onFocus={show(entry)}
+                        onBlur={hide}
                       >
                         {entry.name}
                       </Tag>
@@ -128,13 +131,9 @@ export default function Experience({ experience }) {
             />
           )}
           <div className="streamer-card__body">
-            <span className="streamer-card__name">
-              {active.entry.twitch ? `@${active.entry.twitch}` : active.entry.name}
-            </span>
-            {Number.isFinite(active.entry.followers) && (
-              <span className="streamer-card__meta">
-                {formatFollowers(active.entry.followers)}
-              </span>
+            <span className="streamer-card__name">{cardTitle(active.entry)}</span>
+            {cardMeta(active.entry) && (
+              <span className="streamer-card__meta">{cardMeta(active.entry)}</span>
             )}
           </div>
         </div>
