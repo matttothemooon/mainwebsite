@@ -240,7 +240,10 @@ a.exp-place--has-card {
 /* ---------- streamer hover card ---------- */
 .streamer-card {
   position: fixed;
-  z-index: 10;
+  /* Rendered at the end of <body> via a portal, so this only has to beat the
+     page itself — but it costs nothing to sit above anything a browser or
+     extension injects alongside it. */
+  z-index: 2147483000;
   display: flex;
   align-items: center;
   gap: var(--gap-sm);

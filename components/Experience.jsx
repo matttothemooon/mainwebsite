@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 const GROUPS = [
   ["active", "active"],
@@ -129,31 +130,40 @@ export default function Experience({ experience }) {
         })}
       </div>
 
-      {active && (
-        <div
-          ref={cardRef}
-          role="tooltip"
-          className={`streamer-card${pos ? " streamer-card--visible" : ""}`}
-          style={{ top: pos?.top ?? 0, left: pos?.left ?? 0 }}
-        >
-          {active.entry.avatar && (
-            // eslint-disable-next-line @next/next/no-img-element -- arbitrary
-            // admin-supplied URL; next/image would need a remote allowlist.
-            <img
-              className="streamer-card__avatar"
-              src={active.entry.avatar}
-              alt=""
-              aria-hidden="true"
-            />
-          )}
-          <div className="streamer-card__body">
-            <span className="streamer-card__name">{cardTitle(active.entry)}</span>
-            {cardMeta(active.entry) && (
-              <span className="streamer-card__meta">{cardMeta(active.entry)}</span>
+      {/* Rendered into <body> rather than here. The card is position:fixed to
+          escape .terminal's overflow:hidden, but fixed positioning stops
+          escaping as soon as any ancestor gains a transform, filter or
+          containment — at which point the card is clipped away and hovering
+          looks dead. A portal puts it beyond anything the page, an extension
+          or the browser's own UI layer might wrap this subtree in. */}
+      {active &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            ref={cardRef}
+            role="tooltip"
+            className={`streamer-card${pos ? " streamer-card--visible" : ""}`}
+            style={{ top: pos?.top ?? 0, left: pos?.left ?? 0 }}
+          >
+            {active.entry.avatar && (
+              // eslint-disable-next-line @next/next/no-img-element -- arbitrary
+              // admin-supplied URL; next/image would need a remote allowlist.
+              <img
+                className="streamer-card__avatar"
+                src={active.entry.avatar}
+                alt=""
+                aria-hidden="true"
+              />
             )}
-          </div>
-        </div>
-      )}
+            <div className="streamer-card__body">
+              <span className="streamer-card__name">{cardTitle(active.entry)}</span>
+              {cardMeta(active.entry) && (
+                <span className="streamer-card__meta">{cardMeta(active.entry)}</span>
+              )}
+            </div>
+          </div>,
+          document.body
+        )}
     </>
   );
 }
