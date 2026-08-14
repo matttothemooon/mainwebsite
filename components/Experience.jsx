@@ -30,48 +30,64 @@ export function cardTitle(entry) {
   return entry.twitch ? `@${entry.twitch}` : entry.name;
 }
 
+const MARGIN = 8;
+
 export default function Experience({ experience }) {
-  const [active, setActive] = useState(null); // { entry, rect }
+  const [active, setActive] = useState(null); // { entry, el }
   const [pos, setPos] = useState(null);
   const cardRef = useRef(null);
 
-  // Measured after the card renders with its content, so it can flip above the
-  // name when there isn't room below.
-  useLayoutEffect(() => {
-    if (!active || !cardRef.current) {
-      setPos(null);
-      return;
-    }
+  const hide = useCallback(() => setActive(null), []);
 
-    const size = cardRef.current.getBoundingClientRect();
-    const margin = 8;
+  // Positions the card under its name, flipping above when there is no room.
+  //
+  // Measured from the live element rather than a rect captured on hover, so it
+  // stays attached to the name while the page moves under it.
+  const place = useCallback(() => {
+    const el = active?.el;
+    if (!el) return;
 
-    let top = active.rect.bottom + margin;
-    if (top + size.height > window.innerHeight - margin) {
-      top = active.rect.top - size.height - margin;
+    const rect = el.getBoundingClientRect();
+    const size = cardRef.current?.getBoundingClientRect();
+    const width = size?.width ?? 0;
+    const height = size?.height ?? 0;
+
+    let top = rect.bottom + MARGIN;
+    if (height && top + height > window.innerHeight - MARGIN) {
+      top = rect.top - height - MARGIN;
     }
 
     setPos({
-      top: Math.max(margin, top),
-      left: Math.max(margin, Math.min(active.rect.left, window.innerWidth - size.width - margin)),
+      top: Math.max(MARGIN, top),
+      left: Math.max(MARGIN, Math.min(rect.left, window.innerWidth - width - MARGIN)),
     });
   }, [active]);
 
-  const hide = useCallback(() => setActive(null), []);
+  useLayoutEffect(place, [place]);
 
-  // A fixed-position card would drift away from its name on scroll.
+  // Follow the name rather than dismissing the card. Hiding here meant any
+  // stray scroll or resize — browser chrome settling, a scrollbar appearing —
+  // closed the card the moment it opened, which looks like hover not working
+  // at all rather than like a card that was dismissed.
   useEffect(() => {
     if (!active) return;
-    window.addEventListener("scroll", hide, { passive: true });
-    window.addEventListener("resize", hide);
+    window.addEventListener("scroll", place, { passive: true });
+    window.addEventListener("resize", place);
     return () => {
-      window.removeEventListener("scroll", hide);
-      window.removeEventListener("resize", hide);
+      window.removeEventListener("scroll", place);
+      window.removeEventListener("resize", place);
     };
-  }, [active, hide]);
+  }, [active, place]);
 
-  const show = (entry) => (e) =>
-    setActive({ entry, rect: e.currentTarget.getBoundingClientRect() });
+  // Position is seeded here, from the rect we already have, so the card is
+  // visible on its first paint. Waiting for the measuring pass to reveal it
+  // meant anything that interrupted that pass left it permanently invisible.
+  const show = (entry) => (e) => {
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
+    setActive({ entry, el });
+    setPos({ top: rect.bottom + MARGIN, left: rect.left });
+  };
 
   return (
     <>
