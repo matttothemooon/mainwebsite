@@ -79,8 +79,10 @@ live admin panel, and neither can spoofing a `Host` header at the real domain.
 2. In Vercel → project settings → Environment Variables, add:
    - `DISCORD_CLIENT_ID` — from the Discord app above
    - `DISCORD_CLIENT_SECRET` — from the Discord app above
-   - `DISCORD_ALLOWED_IDS` — comma-separated Discord **user IDs** allowed to edit
-     (e.g. `436300903927119873,111111111111111111`)
+   - `DISCORD_ALLOWED_IDS` — *optional.* Comma-separated Discord **user IDs**
+     allowed to edit (e.g. `436300903927119873,111111111111111111`). Leave it
+     unset and it falls back to `OWNER_ID` in `lib/auth.js`, so a fresh deploy
+     is never locked out. Setting it replaces that list entirely.
    - `SESSION_SECRET` — any long random string, used to sign the session cookie
    - Enable Vercel Blob (Storage tab) — this sets `BLOB_READ_WRITE_TOKEN` automatically
 
@@ -106,6 +108,11 @@ Saving revalidates the homepage, so changes appear immediately.
 
 Removing an ID from `DISCORD_ALLOWED_IDS` revokes access immediately — the
 allowlist is re-checked on every request, not just at login.
+
+Note the one asymmetry: *clearing the variable entirely* does not lock everyone
+out, it reverts to `OWNER_ID` in `lib/auth.js`. To revoke the owner account, set
+`DISCORD_ALLOWED_IDS` to a different ID rather than emptying it, or change that
+constant.
 
 ## Links are icons
 
