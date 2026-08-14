@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { hasKnownIcon } from "@/lib/icons";
+import { formatFollowers, hasCard } from "./Experience";
 import IconPreview from "./IconPreview";
 
 const BLANK_ENTRY = {
@@ -401,9 +402,12 @@ function EntryCard({ entry, twitchEnabled, onChange, onMove, onRemove, onStatus 
     onChange({ followers: Number.isFinite(n) && n >= 0 ? n : null });
   };
 
-  const bits = [];
-  if (entry.twitch) bits.push(`@${entry.twitch}`);
-  if (Number.isFinite(entry.followers)) bits.push(`${entry.followers.toLocaleString()} followers`);
+  // Mirrors the hover card exactly rather than re-deciding what it shows: an
+  // entry with only an avatar does get a card, and the card falls back to the
+  // entry name when there is no twitch handle.
+  const carded = hasCard(entry);
+  const bits = [entry.twitch ? `@${entry.twitch}` : entry.name].filter(Boolean);
+  if (Number.isFinite(entry.followers)) bits.push(formatFollowers(entry.followers));
 
   return (
     <div className="entry">
@@ -480,7 +484,7 @@ function EntryCard({ entry, twitchEnabled, onChange, onMove, onRemove, onStatus 
           <img className="preview__avatar" src={entry.avatar} alt="" />
         )}
         <span className="preview__text">
-          {bits.length
+          {carded
             ? `hover card: ${bits.join(" · ")}`
             : "no hover card — add a twitch name, avatar, or follower count"}
         </span>
