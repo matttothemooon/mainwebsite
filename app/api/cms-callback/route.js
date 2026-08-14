@@ -1,37 +1,39 @@
-module.exports = async (req, res) => {
-  const { code, error, error_description } = req.query;
+// Decap CMS (/cms) OAuth callback.
+const html = (body) =>
+  new Response(body, { headers: { "Content-Type": "text/html; charset=utf-8" } });
+
+export async function GET(request) {
+  const url = new URL(request.url);
+  const code = url.searchParams.get("code");
+  const error = url.searchParams.get("error");
 
   if (error) {
-    res.status(400).send(`GitHub OAuth error: ${error_description || error}`);
-    return;
+    return new Response(
+      `GitHub OAuth error: ${url.searchParams.get("error_description") || error}`,
+      { status: 400 }
+    );
   }
-
-  const clientId = process.env.OAUTH_CLIENT_ID;
-  const clientSecret = process.env.OAUTH_CLIENT_SECRET;
-  const redirectUri = `https://${req.headers.host}/api/callback`;
 
   try {
     const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({
-        client_id: clientId,
-        client_secret: clientSecret,
+        client_id: process.env.OAUTH_CLIENT_ID,
+        client_secret: process.env.OAUTH_CLIENT_SECRET,
         code,
-        redirect_uri: redirectUri,
+        redirect_uri: `https://${request.headers.get("host")}/api/cms-callback`,
       }),
     });
     const data = await tokenRes.json();
 
     if (data.error) {
-      res.status(400).send(`Error: ${data.error_description || data.error}`);
-      return;
+      return new Response(`Error: ${data.error_description || data.error}`, { status: 400 });
     }
 
     const payload = JSON.stringify({ token: data.access_token, provider: "github" });
 
-    res.setHeader("Content-Type", "text/html");
-    res.status(200).send(`
+    return html(`
       <script>
         (function() {
           function receiveMessage(e) {
@@ -47,6 +49,6 @@ module.exports = async (req, res) => {
       </script>
     `);
   } catch (err) {
-    res.status(500).send("OAuth error: " + err.message);
+    return new Response(`OAuth error: ${err.message}`, { status: 500 });
   }
-};
+}

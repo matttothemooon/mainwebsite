@@ -3,7 +3,7 @@ backend:
   repo: matttothemooon/mainwebsite
   branch: main
   base_url: https://mainwebsite-ruby-psi.vercel.app
-  auth_endpoint: api/auth
+  auth_endpoint: api/cms-auth
 
 media_folder: "content/uploads"
 public_folder: "/uploads"

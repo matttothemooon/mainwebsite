@@ -1,6 +1,19 @@
 .vercel
-.env*.local
-
 node_modules
 
-node_modules
+# env files — every variant is secret. .env.example is a committed template.
+.env
+.env*
+!.env.example
+
+# next.js
+.next
+next-env.d.ts
+
+# local dev storage — the deployed site uses Vercel Blob
+.dev-profile.json
+public/uploads
+
+# next.js auto-generates these on build
+AGENTS.md
+CLAUDE.md

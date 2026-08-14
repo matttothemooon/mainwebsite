@@ -83,23 +83,43 @@ h1 {
   color: var(--text-dim);
 }
 
-/* ---------- links ---------- */
+/* ---------- links (icons only) ---------- */
 .links {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--gap-sm);
+  align-items: center;
+  gap: 18px;
   margin-bottom: var(--gap-md);
 }
 
 .links a {
-  text-decoration: none;
-  color: var(--accent);
-  border-bottom: 1px dashed var(--accent-dim);
-  transition: border-color 0.15s ease;
+  display: inline-flex;
+  color: #ffffff;
+  opacity: 0.72;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
-.links a:hover {
-  border-color: var(--accent);
+.links a:hover,
+.links a:focus-visible {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.links svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+  fill: currentColor;
+}
+
+/* Custom uploads are forced to a white silhouette so a coloured logo still
+   matches the monochrome set. */
+.links img {
+  width: 20px;
+  height: 20px;
+  display: block;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 /* ---------- live status ---------- */
@@ -140,12 +160,6 @@ h1 {
 }
 
 /* ---------- mod experience ---------- */
-.prompt--section {
-  margin: 0 0 var(--gap-sm);
-  color: var(--text-dim);
-  font-size: 0.85rem;
-}
-
 .exp-block {
   display: flex;
   flex-direction: column;
@@ -197,6 +211,75 @@ a.exp-place:hover {
   color: var(--text-dim);
   white-space: nowrap;
   font-size: 0.8rem;
+}
+
+.exp-place--has-card {
+  cursor: help;
+}
+
+a.exp-place--has-card {
+  cursor: pointer;
+}
+
+/* ---------- streamer hover card ---------- */
+.streamer-card {
+  position: fixed;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: 10px var(--gap-sm);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.streamer-card--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.streamer-card__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.streamer-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.streamer-card__name {
+  font-size: 0.85rem;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.streamer-card__meta {
+  font-size: 0.75rem;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .streamer-card {
+    transition: none;
+    transform: none;
+  }
+  .links a:hover {
+    transform: none;
+  }
 }
 
 /* ---------- responsive ---------- */
