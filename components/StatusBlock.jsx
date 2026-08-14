@@ -38,10 +38,11 @@ export default function StatusBlock() {
     };
   }, []);
 
-  const online = data && data.discord_status !== "offline";
-  const discordText = data
-    ? `Discord: ${STATUS_LABELS[data.discord_status] || "offline"}`
-    : "checking Discord status…";
+  // Anything Lanyard reports that we have no label for degrades to offline, so
+  // the dot colour and the text can never disagree. Lanyard also reports
+  // invisible users as offline, which is what Discord itself shows.
+  const status = data && STATUS_LABELS[data.discord_status] ? data.discord_status : "offline";
+  const discordText = data ? `Discord: ${STATUS_LABELS[status]}` : "checking Discord status…";
 
   const spotify = data?.listening_to_spotify ? data.spotify : null;
   const spotifyText = data
@@ -58,7 +59,7 @@ export default function StatusBlock() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        <span className={`status-dot${online ? " online" : ""}`} />
+        <span className={`status-dot status-dot--${status}`} />
         <span>{discordText}</span>
       </a>
 

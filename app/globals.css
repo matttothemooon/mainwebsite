@@ -9,6 +9,13 @@
   --accent-dim: #2f6b45;
   --offline: #4a4a4a;
 
+  /* Discord's own status colours, so the dot matches what Discord shows.
+     Deliberately not --accent: the site green is a different green, and a
+     status indicator that disagrees with the client is worse than no colour. */
+  --status-online: #23a55a;
+  --status-idle: #f0b232;
+  --status-dnd: #f23f43;
+
   --font-mono: "SFMono-Regular", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
 
   --radius: 10px;
@@ -148,11 +155,20 @@ h1 {
   width: 8px;
   height: 8px;
   border-radius: 50%;
+  /* Offline is the default, so an unrecognised status degrades to grey. */
   background: var(--offline);
 }
 
-.status-dot.online {
-  background: var(--accent);
+.status-dot--online {
+  background: var(--status-online);
+}
+
+.status-dot--idle {
+  background: var(--status-idle);
+}
+
+.status-dot--dnd {
+  background: var(--status-dnd);
 }
 
 .spotify-icon {
