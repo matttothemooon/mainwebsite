@@ -1,4 +1,20 @@
-import { clearStateCookie, consumeState, isAllowed, sessionCookie } from "@/lib/auth";
+import {
+  clearStateCookie,
+  consumeState,
+  envTrimmed,
+  isAllowed,
+  missingAuthConfig,
+  sessionCookie,
+} from "@/lib/auth";
+
+// Messages embed values from Discord (error text, usernames), so escape rather
+// than interpolating them into the markup raw.
+function escapeHtml(value) {
+  return String(value).replace(
+    /[&<>"']/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]
+  );
+}
 
 // Rendered instead of a bare status code so a failed login explains itself.
 function fail(request, status, message) {
@@ -6,7 +22,7 @@ function fail(request, status, message) {
     `<!DOCTYPE html><meta charset="utf-8">` +
       `<title>admin — sign in failed</title>` +
       `<body style="background:#000;color:#e8e8e8;font-family:ui-monospace,monospace;padding:40px;line-height:1.6">` +
-      `<p>${message}</p><p><a href="/admin" style="color:#4ade80">back to admin</a></p>`,
+      `<p>${escapeHtml(message)}</p><p><a href="/admin" style="color:#4ade80">back to admin</a></p>`,
     {
       status,
       headers: {
@@ -19,6 +35,17 @@ function fail(request, status, message) {
 }
 
 export async function GET(request) {
+  const missing = missingAuthConfig();
+  if (missing.length) {
+    return fail(
+      request,
+      500,
+      `Not configured on this deployment — missing ${missing.join(", ")}. ` +
+        `Set ${missing.length === 1 ? "it" : "them"} in Vercel → Settings → Environment ` +
+        `Variables, then redeploy (env changes only reach a new deployment).`
+    );
+  }
+
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
@@ -40,16 +67,28 @@ export async function GET(request) {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
-      client_id: process.env.DISCORD_CLIENT_ID,
-      client_secret: process.env.DISCORD_CLIENT_SECRET,
+      client_id: envTrimmed("DISCORD_CLIENT_ID"),
+      client_secret: envTrimmed("DISCORD_CLIENT_SECRET"),
       grant_type: "authorization_code",
       code,
       redirect_uri: `${protocol}://${host}/api/auth/callback`,
     }),
   });
 
-  const tokenData = await tokenRes.json();
-  if (!tokenData.access_token) return fail(request, 401, "Discord authentication failed.");
+  const tokenData = await tokenRes.json().catch(() => ({}));
+  if (!tokenData.access_token) {
+    // Discord names the actual cause here; without it every failure looks the
+    // same. "invalid_client" means the client secret is wrong for this client
+    // id; "invalid_grant" means the code expired, was reused, or the
+    // redirect_uri differs from the one sent to /authorize.
+    const reason = tokenData.error_description || tokenData.error || `HTTP ${tokenRes.status}`;
+    return fail(
+      request,
+      401,
+      `Discord rejected the token exchange: ${reason}. ` +
+        `(client_id ${envTrimmed("DISCORD_CLIENT_ID")}, redirect_uri ${protocol}://${host}/api/auth/callback)`
+    );
+  }
 
   const userRes = await fetch("https://discord.com/api/users/@me", {
     headers: { Authorization: `Bearer ${tokenData.access_token}` },
