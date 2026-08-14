@@ -56,6 +56,6 @@ export async function POST(request) {
     return Response.json({ url }, { headers: { "Cache-Control": "no-store" } });
   } catch (err) {
     console.error("Icon upload failed:", err);
-    return Response.json({ error: "Upload failed" }, { status: 500 });
+    return Response.json({ error: `Upload failed — ${err.message}` }, { status: 500 });
   }
 }
