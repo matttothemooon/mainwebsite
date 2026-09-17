@@ -14,7 +14,7 @@ export async function GET(request) {
   try {
     return Response.json(
       {
-        profile: await getProfile(),
+        profile: await getProfile({ fresh: true }),
         twitchEnabled: isConfigured(),
         devAuthBypass: isDevAuthBypass(request),
       },

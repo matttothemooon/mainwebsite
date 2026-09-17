@@ -170,10 +170,27 @@ The whole page is one JSON blob (`admin/profile.json`) in Vercel Blob. The
 homepage is a **server component** that reads it directly, so the content is in
 the initial HTML — no client fetch, no flash, and it is indexable.
 
+The pre-Next.js site used `admin/social-links.json`. If the current profile blob
+is missing, the server makes a read-only recovery attempt against that legacy
+object and preserves its links while using the committed defaults for the other
+fields. It never deletes or rewrites the legacy object.
+
 Everything written through the admin panel is validated and normalised
 server-side in `lib/storage.js` before it is stored — unknown fields are dropped,
 lengths are capped, and URLs are restricted to `http(s):`, `mailto:`, and
 site-relative paths so a `javascript:` URL can never reach the page.
+
+### Blob recovery
+
+Profile data and uploaded icons are not in Git or in a Vercel deployment
+artifact. If the site shows the defaults, check Vercel **Storage** for the
+attached Blob store and its usage/limits, then check that the production
+deployment has the store's current environment variables (`BLOB_STORE_ID` or
+`BLOB_READ_WRITE_TOKEN`, plus the runtime OIDC token when applicable). In the
+store, preserve and inspect `admin/profile.json`, `admin/social-links.json`, and
+`admin/icons/` before deleting anything. If the store or objects are unavailable,
+use Vercel's Blob usage/history/support recovery options; this repository cannot
+reconstruct later admin edits.
 
 ## Auth notes
 
