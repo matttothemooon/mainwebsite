@@ -41,13 +41,13 @@
   "experience": {
     "active": [
       {
-        "role": "Mod",
+        "role": "Twitch Mod",
         "name": "Jasontheween",
         "url": "https://twitch.tv/jasontheween",
         "date": "present",
         "twitch": "jasontheween",
-        "avatar": "",
-        "followers": null
+        "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/a04be2b0-9cc1-403c-a4b0-47b32d1fe640-profile_image-300x300.png",
+        "followers": 2804875
       },
       {
         "role": "Admin",
@@ -59,16 +59,16 @@
         "followers": 11141
       },
       {
-        "role": "CM",
+        "role": "Twitch Mod",
         "name": "Sinnski",
         "url": "https://twitch.tv/sinnski",
         "date": "present",
         "twitch": "sinnski",
-        "avatar": "",
-        "followers": null
+        "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/bdac334c-1e61-40c8-8fa2-5bbb20bb82e7-profile_image-300x300.png",
+        "followers": 8033
       },
       {
-        "role": "Admin",
+        "role": "Discord Admin",
         "name": "TenacityTV",
         "url": "https://twitch.tv/tenacitytv",
         "date": "present",
@@ -77,13 +77,13 @@
         "followers": 549741
       },
       {
-        "role": "Mod",
+        "role": "Discord Mod",
         "name": "Cizzorz",
         "url": "https://twitch.tv/cizzorz",
         "date": "present",
         "twitch": "cizzorz",
-        "avatar": "",
-        "followers": null
+        "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/b59543d6-96ee-40a6-bf4a-11dbf1d67a18-profile_image-300x300.png",
+        "followers": 1951454
       }
     ],
     "past": [
@@ -98,12 +98,12 @@
       },
       {
         "role": "Community Manager",
-        "name": "The Reapers",
-        "url": "",
-        "date": "Jun 2019 – Jan 2025",
-        "twitch": "",
-        "avatar": "",
-        "followers": null
+        "name": "DannyyyTTV_",
+        "url": "https://twitch.tv/dannyyyttv_",
+        "date": "Jun 2016 – Jan 2025",
+        "twitch": "dannyyyttv_",
+        "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/f82c33f4-9b60-4447-a6a8-a33af9775cc6-profile_image-300x300.png",
+        "followers": 359
       }
     ]
   }
