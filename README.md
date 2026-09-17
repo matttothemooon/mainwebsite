@@ -5,7 +5,7 @@ Personal site for [mattothemoon.xyz](https://mattothemoon.xyz) — a terminal-st
 ## Stack
 
 - **Next.js 16 (App Router) + React 19**
-- Supabase for profile data and custom icon storage
+- GitHub Contents API for profile data and custom icon storage
 - **Discord OAuth** for admin login, restricted to an allowlist of Discord user IDs
 - `simple-icons` for social link glyphs
 - Twitch Helix API (optional) for autofilling streamer avatars
@@ -49,12 +49,12 @@ npm run dev
 
 Then open <http://localhost:3000> and <http://localhost:3000/admin>.
 
-No Discord app, Vercel account, or Supabase account is needed. Locally:
+No Discord app, Vercel account, or GitHub token is needed. Locally:
 
 - **Auth is bypassed** — the admin panel opens straight into the editor, with a
   banner saying so.
 - **Edits save to `.dev-profile.json`** and uploaded icons to `public/uploads/`
-  (both gitignored) instead of Supabase. Delete them to reset.
+  (both gitignored) instead of GitHub. Delete them to reset.
 
 To exercise the real Discord login flow locally, run `npm run dev:auth` with
 `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `DISCORD_ALLOWED_IDS`, and
@@ -83,10 +83,10 @@ live admin panel, and neither can spoofing a `Host` header at the real domain.
      unset and it falls back to `OWNER_ID` in `lib/auth.js`, so a fresh deploy
      is never locked out. Setting it replaces that list entirely.
    - `SESSION_SECRET` — any long random string, used to sign the session cookie
-   - Create the Supabase `site_profile` table and public `site-icons` bucket as
-     described in the Supabase setup section below.
-   - Add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`. Keep the service-role
-     key server-only; never expose it to browser code.
+   - Create a GitHub fine-grained personal access token with **Contents: Read
+     and write** access to `matttothemoon/mainwebsite`.
+   - Add `GITHUB_TOKEN` in Vercel. Keep it server-only; never expose it to
+     browser code.
 
    Optional, enables the "fetch" button on streamer entries:
    - `TWITCH_CLIENT_ID` / `TWITCH_CLIENT_SECRET` — from <https://dev.twitch.tv/console/apps>
@@ -142,7 +142,8 @@ link gets the generic glyph unless you upload one.
 
 Uploaded SVGs are served with a `sandbox` Content-Security-Policy (see
 `next.config.mjs`) so a script embedded in one cannot execute. In production
-uploads live in the public Supabase `site-icons` bucket, separate from the site.
+uploads are committed to `public/uploads/` and become available after Vercel
+redeploys the commit.
 
 ## Streamer hover cards
 
@@ -162,37 +163,28 @@ button still fills in the avatar and display name.
 
 ## How storage works
 
-The whole page is one JSON value in the `site_profile` Supabase table. Custom
-icons live in the public `site-icons` Supabase Storage bucket. The homepage is
-a **server component** that reads the profile directly, so the content is in
-the initial HTML — no client fetch, no flash, and it is indexable.
-
-Create the table in Supabase SQL editor:
-
-```sql
-create table site_profile (
-  id text primary key,
-  profile jsonb not null,
-  updated_at timestamptz not null default now()
-);
-```
-
-Create a public Storage bucket named `site-icons`. The server uses the
-Supabase service-role key, which must only be configured as a server-side
-environment variable in Vercel.
+The profile is stored as `data/profile.json` in the GitHub repository. Custom
+icons are committed under `public/uploads/`. The homepage reads the profile
+through the GitHub Contents API, while the admin panel updates it through the
+same API. Each save creates a GitHub commit and Vercel redeploys automatically.
+The homepage remains a **server component**, so the content is in the initial
+HTML — no client fetch, no flash, and it is indexable.
 
 Everything written through the admin panel is validated and normalised
 server-side in `lib/storage.js` before it is stored — unknown fields are dropped,
 lengths are capped, and URLs are restricted to `http(s):`, `mailto:`, and
 site-relative paths so a `javascript:` URL can never reach the page.
 
-### Supabase setup
+### GitHub storage setup
 
-Set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in Vercel, then redeploy.
-The admin panel saves the profile through Supabase and uploads custom icons to
-the `site-icons` bucket. Without those variables, local development uses the
-existing `.dev-profile.json` and `public/uploads/` fallbacks; production serves
-the committed defaults and reports a configuration error when saving.
+Create a GitHub fine-grained personal access token restricted to this repository
+with **Contents: Read and write** permission. Add it to Vercel as
+`GITHUB_TOKEN`, then redeploy. `GITHUB_REPOSITORY`, `GITHUB_BRANCH`, and
+`GITHUB_PROFILE_PATH` have useful defaults in `lib/storage.js` and only need to
+be added if your repository layout differs. Without `GITHUB_TOKEN`, local
+development uses the existing `.dev-profile.json` and `public/uploads/`
+fallbacks; production serves the committed defaults and reports a
+configuration error when saving.
 
 ## Auth notes
 
