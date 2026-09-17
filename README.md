@@ -5,7 +5,7 @@ Personal site for [mattothemoon.xyz](https://mattothemoon.xyz) — a terminal-st
 ## Stack
 
 - **Next.js 16 (App Router) + React 19**
-- Vercel Blob for storage (one JSON blob, no database)
+- Supabase for profile data and custom icon storage
 - **Discord OAuth** for admin login, restricted to an allowlist of Discord user IDs
 - `simple-icons` for social link glyphs
 - Twitch Helix API (optional) for autofilling streamer avatars
@@ -49,13 +49,12 @@ npm run dev
 
 Then open <http://localhost:3000> and <http://localhost:3000/admin>.
 
-No Discord app, Vercel account, or Blob token is needed. Locally:
+No Discord app, Vercel account, or Supabase account is needed. Locally:
 
 - **Auth is bypassed** — the admin panel opens straight into the editor, with a
   banner saying so.
 - **Edits save to `.dev-profile.json`** and uploaded icons to `public/uploads/`
-  (both gitignored) instead of Vercel Blob, because Blob credentials only exist
-  in the deployed environment. Delete them to reset.
+  (both gitignored) instead of Supabase. Delete them to reset.
 
 To exercise the real Discord login flow locally, run `npm run dev:auth` with
 `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `DISCORD_ALLOWED_IDS`, and
@@ -84,13 +83,10 @@ live admin panel, and neither can spoofing a `Host` header at the real domain.
      unset and it falls back to `OWNER_ID` in `lib/auth.js`, so a fresh deploy
      is never locked out. Setting it replaces that list entirely.
    - `SESSION_SECRET` — any long random string, used to sign the session cookie
-   - Enable Vercel Blob (Storage tab) — this wires the store up automatically,
-     via either `BLOB_READ_WRITE_TOKEN` or `BLOB_STORE_ID` depending on how
-     Vercel provisions it. Nothing to paste by hand either way.
-     **Create the store with public access.** Link icons are rendered as
-     `<img>` on the public homepage and the profile JSON is read with a plain
-     `fetch`, so both need publicly readable URLs. A private store rejects the
-     upload outright with "Cannot use public access on a private store".
+   - Create the Supabase `site_profile` table and public `site-icons` bucket as
+     described in the Supabase setup section below.
+   - Add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`. Keep the service-role
+     key server-only; never expose it to browser code.
 
    Optional, enables the "fetch" button on streamer entries:
    - `TWITCH_CLIENT_ID` / `TWITCH_CLIENT_SECRET` — from <https://dev.twitch.tv/console/apps>
@@ -146,7 +142,7 @@ link gets the generic glyph unless you upload one.
 
 Uploaded SVGs are served with a `sandbox` Content-Security-Policy (see
 `next.config.mjs`) so a script embedded in one cannot execute. In production
-uploads live on the Vercel Blob origin, separate from the site.
+uploads live in the public Supabase `site-icons` bucket, separate from the site.
 
 ## Streamer hover cards
 
@@ -166,31 +162,37 @@ button still fills in the avatar and display name.
 
 ## How storage works
 
-The whole page is one JSON blob (`admin/profile.json`) in Vercel Blob. The
-homepage is a **server component** that reads it directly, so the content is in
+The whole page is one JSON value in the `site_profile` Supabase table. Custom
+icons live in the public `site-icons` Supabase Storage bucket. The homepage is
+a **server component** that reads the profile directly, so the content is in
 the initial HTML — no client fetch, no flash, and it is indexable.
 
-The pre-Next.js site used `admin/social-links.json`. If the current profile blob
-is missing, the server makes a read-only recovery attempt against that legacy
-object and preserves its links while using the committed defaults for the other
-fields. It never deletes or rewrites the legacy object.
+Create the table in Supabase SQL editor:
+
+```sql
+create table site_profile (
+  id text primary key,
+  profile jsonb not null,
+  updated_at timestamptz not null default now()
+);
+```
+
+Create a public Storage bucket named `site-icons`. The server uses the
+Supabase service-role key, which must only be configured as a server-side
+environment variable in Vercel.
 
 Everything written through the admin panel is validated and normalised
 server-side in `lib/storage.js` before it is stored — unknown fields are dropped,
 lengths are capped, and URLs are restricted to `http(s):`, `mailto:`, and
 site-relative paths so a `javascript:` URL can never reach the page.
 
-### Blob recovery
+### Supabase setup
 
-Profile data and uploaded icons are not in Git or in a Vercel deployment
-artifact. If the site shows the defaults, check Vercel **Storage** for the
-attached Blob store and its usage/limits, then check that the production
-deployment has the store's current environment variables (`BLOB_STORE_ID` or
-`BLOB_READ_WRITE_TOKEN`, plus the runtime OIDC token when applicable). In the
-store, preserve and inspect `admin/profile.json`, `admin/social-links.json`, and
-`admin/icons/` before deleting anything. If the store or objects are unavailable,
-use Vercel's Blob usage/history/support recovery options; this repository cannot
-reconstruct later admin edits.
+Set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in Vercel, then redeploy.
+The admin panel saves the profile through Supabase and uploads custom icons to
+the `site-icons` bucket. Without those variables, local development uses the
+existing `.dev-profile.json` and `public/uploads/` fallbacks; production serves
+the committed defaults and reports a configuration error when saving.
 
 ## Auth notes
 

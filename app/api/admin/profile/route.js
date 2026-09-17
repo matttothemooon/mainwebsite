@@ -45,7 +45,8 @@ export async function PUT(request) {
   } catch (err) {
     console.error("Admin profile write failed:", err);
     // Behind requireAuth, so the reason is safe to show — and without it a
-    // missing Blob store is indistinguishable from a transient write failure.
+    // missing storage configuration is indistinguishable from a transient
+    // write failure to an authenticated admin, so include the server detail.
     return Response.json(
       { error: `Failed to save profile — ${err.message}` },
       { status: 500 }

@@ -7,7 +7,7 @@ const MAX_BYTES = 512 * 1024; // icons are tiny; this is already generous
 
 // SVG is allowed because it's the right format for an icon. Uploads are served
 // with a locked-down CSP (see next.config.mjs) so a script inside one cannot
-// run, and in production they live on a separate Blob origin anyway.
+// run, and in production they live in a separate public Supabase bucket.
 const TYPES = {
   "image/png": "png",
   "image/jpeg": "jpg",
