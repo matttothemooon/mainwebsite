@@ -1,0 +1,26 @@
+{
+  "name": "mattothemoon",
+  "bio": "community mod & streamer.",
+  "links": [
+    { "label": "twitter", "url": "https://x.com/matttttothemoon", "iconUrl": "" },
+    { "label": "discord", "url": "https://discord.gg/vtw6v6KG2v", "iconUrl": "" },
+    { "label": "twitch", "url": "https://www.twitch.tv/mattothemoon", "iconUrl": "" },
+    { "label": "youtube", "url": "https://www.youtube.com/@MatttToTheMoon", "iconUrl": "" },
+    { "label": "github", "url": "https://github.com/mattothemoon", "iconUrl": "" },
+    { "label": "discord profile", "url": "https://discord.com/users/436300903927119873", "iconUrl": "" },
+    { "label": "email", "url": "mailto:mattothemoon06@gmail.com", "iconUrl": "" }
+  ],
+  "experience": {
+    "active": [
+      { "role": "Mod", "name": "Jasontheween", "url": "https://twitch.tv/jasontheween", "date": "present", "twitch": "jasontheween", "avatar": "", "followers": null },
+      { "role": "Admin", "name": "ChubsC", "url": "https://twitch.tv/chubsc", "date": "present", "twitch": "chubsc", "avatar": "", "followers": null },
+      { "role": "CM", "name": "Sinnski", "url": "https://twitch.tv/sinnski", "date": "present", "twitch": "sinnski", "avatar": "", "followers": null },
+      { "role": "Admin", "name": "TenacityTV", "url": "https://twitch.tv/tenacitytv", "date": "present", "twitch": "tenacitytv", "avatar": "", "followers": null },
+      { "role": "Mod", "name": "Cizzorz", "url": "https://twitch.tv/cizzorz", "date": "present", "twitch": "cizzorz", "avatar": "", "followers": null }
+    ],
+    "past": [
+      { "role": "Head Mod", "name": "Flynn", "url": "", "date": "Oct 2021 – Jan 2025", "twitch": "", "avatar": "", "followers": null },
+      { "role": "Community Manager", "name": "The Reapers", "url": "", "date": "Jun 2019 – Jan 2025", "twitch": "", "avatar": "", "followers": null }
+    ]
+  }
+}
