@@ -84,7 +84,7 @@ live admin panel, and neither can spoofing a `Host` header at the real domain.
      is never locked out. Setting it replaces that list entirely.
    - `SESSION_SECRET` — any long random string, used to sign the session cookie
    - Create a GitHub fine-grained personal access token with **Contents: Read
-     and write** access to `matttothemoon/mainwebsite`.
+    and write** access to `matttothemooon/mainwebsite`.
    - Add `GITHUB_TOKEN` in Vercel. Keep it server-only; never expose it to
      browser code.
 
