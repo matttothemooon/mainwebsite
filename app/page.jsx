@@ -2,6 +2,7 @@ import { getProfile } from "@/lib/storage";
 import SocialLinks from "@/components/SocialLinks";
 import StatusBlock from "@/components/StatusBlock";
 import Experience from "@/components/Experience";
+import GearGuide from "@/components/GearGuide";
 
 // The old static page fetched its content client-side and needed an inline
 // bootstrap copy to avoid a flash. Rendering on the server removes both — and
@@ -37,6 +38,7 @@ export default async function Home() {
         <SocialLinks links={profile.links} />
         <StatusBlock />
         <Experience experience={profile.experience} />
+        <p className="guide-link"><a href="/what-i-use">what i use →</a></p>
       </main>
     </div>
   );

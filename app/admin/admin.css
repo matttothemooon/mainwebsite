@@ -236,6 +236,16 @@
   line-height: 1.5;
 }
 
+.gear-editor__item {
+  display: grid;
+  grid-template-columns: 0.8fr 1.5fr auto;
+  gap: var(--gap-xs);
+  align-items: end;
+  padding-top: var(--gap-xs);
+  margin-top: var(--gap-xs);
+  border-top: 1px solid var(--border);
+}
+
 /* ---------- save bar ---------- */
 .savebar {
   position: sticky;
