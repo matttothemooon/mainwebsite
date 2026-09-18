@@ -16,6 +16,8 @@ const BLANK_ENTRY = {
 };
 
 const BLANK_LINK = { label: "", url: "", iconUrl: "" };
+const BLANK_GEAR = { name: "", items: [] };
+const BLANK_GEAR_ITEM = { label: "", value: "" };
 
 function move(list, index, delta) {
   const target = index + delta;
@@ -88,6 +90,12 @@ export default function AdminPanel() {
       return p;
     });
 
+  const patchGear = (i, patch) =>
+    edit((p) => {
+      p.gear[i] = { ...p.gear[i], ...patch };
+      return p;
+    });
+
   /* ---------- save ---------- */
 
   async function save() {
@@ -102,6 +110,12 @@ export default function AdminPanel() {
         active: profile.experience.active.filter((e) => e.name.trim()),
         past: profile.experience.past.filter((e) => e.name.trim()),
       },
+      gear: profile.gear
+        .map((category) => ({
+          ...category,
+          items: category.items.filter((item) => item.label.trim() && item.value.trim()),
+        }))
+        .filter((category) => category.name.trim()),
     };
 
     try {
@@ -222,6 +236,24 @@ export default function AdminPanel() {
               onStatus={setStatus}
             />
           ))}
+
+          <section className="section">
+            <h2 className="section__title">what i use</h2>
+            <p className="hint">Add, reorder, or remove guide sections and products.</p>
+            {profile.gear.map((category, i) => (
+              <GearCategory
+                key={i}
+                category={category}
+                onChange={(patch) => patchGear(i, patch)}
+                onMove={(d) => edit((p) => ({ ...p, gear: move(p.gear, i, d) }))}
+                onRemove={() => edit((p) => ({ ...p, gear: p.gear.filter((_, j) => j !== i) }))}
+                onStatus={setStatus}
+              />
+            ))}
+            <button className="btn" onClick={() => edit((p) => ({ ...p, gear: [...p.gear, { ...BLANK_GEAR }] }))}>
+              + add section
+            </button>
+          </section>
 
           <button
             className="btn"
@@ -392,6 +424,34 @@ function EntryCard({ entry, twitchEnabled, onChange, onMove, onRemove, onStatus 
       onStatus({ text: err.message, kind: "err" });
     } finally {
       setFetching(false);
+    }
+
+    function GearCategory({ category, onChange, onMove, onRemove, onStatus }) {
+      const patchItem = (i, patch) => onChange({
+        items: category.items.map((item, j) => (j === i ? { ...item, ...patch } : item)),
+      });
+
+      return (
+        <div className="entry gear-editor">
+          <div className="entry__head">
+            <span className="entry__title">{category.name || "(new section)"}</span>
+            <div className="entry__actions">
+              <button className="btn btn--icon" title="move up" onClick={() => onMove(-1)}>↑</button>
+              <button className="btn btn--icon" title="move down" onClick={() => onMove(1)}>↓</button>
+              <button className="btn btn--icon btn--danger" title="remove section" onClick={onRemove}>×</button>
+            </div>
+          </div>
+          <Field label="section name" value={category.name} onChange={(e) => onChange({ name: e.target.value })} maxLength={80} placeholder="Gaming PC" />
+          {category.items.map((item, i) => (
+            <div className="gear-editor__item" key={i}>
+              <Field label="label" value={item.label} onChange={(e) => patchItem(i, { label: e.target.value })} maxLength={80} placeholder="GPU" />
+              <Field label="product" value={item.value} onChange={(e) => patchItem(i, { value: e.target.value })} maxLength={200} placeholder="Product name" />
+              <button className="btn btn--icon btn--danger" title="remove product" onClick={() => onChange({ items: category.items.filter((_, j) => j !== i) })}>×</button>
+            </div>
+          ))}
+          <button className="btn" onClick={() => onChange({ items: [...category.items, { ...BLANK_GEAR_ITEM }] })}>+ add product</button>
+        </div>
+      );
     }
   }
 
