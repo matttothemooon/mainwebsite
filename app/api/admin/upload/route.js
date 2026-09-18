@@ -7,7 +7,7 @@ const MAX_BYTES = 512 * 1024; // icons are tiny; this is already generous
 
 // SVG is allowed because it's the right format for an icon. Uploads are served
 // with a locked-down CSP (see next.config.mjs) so a script inside one cannot
-// run, and in production they live on a separate Blob origin anyway.
+// run, and in production they are committed to the repository's public folder.
 const TYPES = {
   "image/png": "png",
   "image/jpeg": "jpg",
@@ -56,6 +56,6 @@ export async function POST(request) {
     return Response.json({ url }, { headers: { "Cache-Control": "no-store" } });
   } catch (err) {
     console.error("Icon upload failed:", err);
-    return Response.json({ error: "Upload failed" }, { status: 500 });
+    return Response.json({ error: `Upload failed — ${err.message}` }, { status: 500 });
   }
 }

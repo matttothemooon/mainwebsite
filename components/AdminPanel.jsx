@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { hasKnownIcon } from "@/lib/icons";
+import { cardMeta, cardTitle } from "./Experience";
 import IconPreview from "./IconPreview";
 
 const BLANK_ENTRY = {
@@ -461,9 +462,8 @@ function EntryCard({ entry, twitchEnabled, onChange, onMove, onRemove, onStatus 
     onChange({ followers: Number.isFinite(n) && n >= 0 ? n : null });
   };
 
-  const bits = [];
-  if (entry.twitch) bits.push(`@${entry.twitch}`);
-  if (Number.isFinite(entry.followers)) bits.push(`${entry.followers.toLocaleString()} followers`);
+  // Built from the card's own helpers rather than re-deciding what it shows.
+  const bits = [cardTitle(entry), cardMeta(entry)].filter(Boolean);
 
   return (
     <div className="entry">
@@ -542,7 +542,7 @@ function EntryCard({ entry, twitchEnabled, onChange, onMove, onRemove, onStatus 
         <span className="preview__text">
           {bits.length
             ? `hover card: ${bits.join(" · ")}`
-            : "no hover card — add a twitch name, avatar, or follower count"}
+            : "hover card appears once this entry has a name"}
         </span>
       </div>
 

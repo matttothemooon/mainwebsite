@@ -5,7 +5,7 @@ Personal site for [mattothemoon.xyz](https://mattothemoon.xyz) — a terminal-st
 ## Stack
 
 - **Next.js 16 (App Router) + React 19**
-- Vercel Blob for storage (one JSON blob, no database)
+- GitHub Contents API for profile data and custom icon storage
 - **Discord OAuth** for admin login, restricted to an allowlist of Discord user IDs
 - `simple-icons` for social link glyphs
 - Twitch Helix API (optional) for autofilling streamer avatars
@@ -49,13 +49,12 @@ npm run dev
 
 Then open <http://localhost:3000> and <http://localhost:3000/admin>.
 
-No Discord app, Vercel account, or Blob token is needed. Locally:
+No Discord app, Vercel account, or GitHub token is needed. Locally:
 
 - **Auth is bypassed** — the admin panel opens straight into the editor, with a
   banner saying so.
 - **Edits save to `.dev-profile.json`** and uploaded icons to `public/uploads/`
-  (both gitignored) instead of Vercel Blob, because `BLOB_READ_WRITE_TOKEN` only
-  exists in the deployed environment. Delete them to reset.
+  (both gitignored) instead of GitHub. Delete them to reset.
 
 To exercise the real Discord login flow locally, run `npm run dev:auth` with
 `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `DISCORD_ALLOWED_IDS`, and
@@ -79,10 +78,15 @@ live admin panel, and neither can spoofing a `Host` header at the real domain.
 2. In Vercel → project settings → Environment Variables, add:
    - `DISCORD_CLIENT_ID` — from the Discord app above
    - `DISCORD_CLIENT_SECRET` — from the Discord app above
-   - `DISCORD_ALLOWED_IDS` — comma-separated Discord **user IDs** allowed to edit
-     (e.g. `436300903927119873,111111111111111111`)
+   - `DISCORD_ALLOWED_IDS` — *optional.* Comma-separated Discord **user IDs**
+     allowed to edit (e.g. `436300903927119873,111111111111111111`). Leave it
+     unset and it falls back to `OWNER_ID` in `lib/auth.js`, so a fresh deploy
+     is never locked out. Setting it replaces that list entirely.
    - `SESSION_SECRET` — any long random string, used to sign the session cookie
-   - Enable Vercel Blob (Storage tab) — this sets `BLOB_READ_WRITE_TOKEN` automatically
+   - Create a GitHub fine-grained personal access token with **Contents: Read
+    and write** access to `matttothemooon/mainwebsite`.
+   - Add `GITHUB_TOKEN` in Vercel. Keep it server-only; never expose it to
+     browser code.
 
    Optional, enables the "fetch" button on streamer entries:
    - `TWITCH_CLIENT_ID` / `TWITCH_CLIENT_SECRET` — from <https://dev.twitch.tv/console/apps>
@@ -106,6 +110,11 @@ Saving revalidates the homepage, so changes appear immediately.
 
 Removing an ID from `DISCORD_ALLOWED_IDS` revokes access immediately — the
 allowlist is re-checked on every request, not just at login.
+
+Note the one asymmetry: *clearing the variable entirely* does not lock everyone
+out, it reverts to `OWNER_ID` in `lib/auth.js`. To revoke the owner account, set
+`DISCORD_ALLOWED_IDS` to a different ID rather than emptying it, or change that
+constant.
 
 ## Links are icons
 
@@ -133,7 +142,8 @@ link gets the generic glyph unless you upload one.
 
 Uploaded SVGs are served with a `sandbox` Content-Security-Policy (see
 `next.config.mjs`) so a script embedded in one cannot execute. In production
-uploads live on the Vercel Blob origin, separate from the site.
+uploads are committed to `public/uploads/` and become available after Vercel
+redeploys the commit.
 
 ## Streamer hover cards
 
@@ -153,14 +163,28 @@ button still fills in the avatar and display name.
 
 ## How storage works
 
-The whole page is one JSON blob (`admin/profile.json`) in Vercel Blob. The
-homepage is a **server component** that reads it directly, so the content is in
-the initial HTML — no client fetch, no flash, and it is indexable.
+The profile is stored as `data/profile.json` in the GitHub repository. Custom
+icons are committed under `public/uploads/`. The homepage reads the profile
+through the GitHub Contents API, while the admin panel updates it through the
+same API. Each save creates a GitHub commit and Vercel redeploys automatically.
+The homepage remains a **server component**, so the content is in the initial
+HTML — no client fetch, no flash, and it is indexable.
 
 Everything written through the admin panel is validated and normalised
 server-side in `lib/storage.js` before it is stored — unknown fields are dropped,
 lengths are capped, and URLs are restricted to `http(s):`, `mailto:`, and
 site-relative paths so a `javascript:` URL can never reach the page.
+
+### GitHub storage setup
+
+Create a GitHub fine-grained personal access token restricted to this repository
+with **Contents: Read and write** permission. Add it to Vercel as
+`GITHUB_TOKEN`, then redeploy. `GITHUB_REPOSITORY`, `GITHUB_BRANCH`, and
+`GITHUB_PROFILE_PATH` have useful defaults in `lib/storage.js` and only need to
+be added if your repository layout differs. Without `GITHUB_TOKEN`, local
+development uses the existing `.dev-profile.json` and `public/uploads/`
+fallbacks; production serves the committed defaults and reports a
+configuration error when saving.
 
 ## Auth notes
 

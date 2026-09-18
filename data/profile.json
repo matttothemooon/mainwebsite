@@ -1,0 +1,110 @@
+{
+  "name": "mattothemoon",
+  "bio": "community mod & streamer.",
+  "links": [
+    {
+      "label": "twitter",
+      "url": "https://x.com/matttttothemoon",
+      "iconUrl": ""
+    },
+    {
+      "label": "discord",
+      "url": "https://discord.gg/vtw6v6KG2v",
+      "iconUrl": ""
+    },
+    {
+      "label": "twitch",
+      "url": "https://www.twitch.tv/mattothemoon",
+      "iconUrl": ""
+    },
+    {
+      "label": "youtube",
+      "url": "https://www.youtube.com/@MatttToTheMoon",
+      "iconUrl": ""
+    },
+    {
+      "label": "github",
+      "url": "https://github.com/mattothemoon",
+      "iconUrl": ""
+    },
+    {
+      "label": "discord profile",
+      "url": "https://discord.com/users/436300903927119873",
+      "iconUrl": ""
+    },
+    {
+      "label": "email",
+      "url": "mailto:mattothemoon06@gmail.com",
+      "iconUrl": ""
+    }
+  ],
+  "experience": {
+    "active": [
+      {
+        "role": "Twitch Mod",
+        "name": "Jasontheween",
+        "url": "https://twitch.tv/jasontheween",
+        "date": "present",
+        "twitch": "jasontheween",
+        "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/a04be2b0-9cc1-403c-a4b0-47b32d1fe640-profile_image-300x300.png",
+        "followers": 2805819
+      },
+      {
+        "role": "Admin",
+        "name": "ChubsC",
+        "url": "https://twitch.tv/chubsc",
+        "date": "present",
+        "twitch": "chubsc",
+        "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/7caf04be-7bcc-4097-acc1-da12051def4d-profile_image-300x300.png",
+        "followers": 11141
+      },
+      {
+        "role": "Twitch Mod",
+        "name": "Sinnski",
+        "url": "https://twitch.tv/sinnski",
+        "date": "present",
+        "twitch": "sinnski",
+        "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/bdac334c-1e61-40c8-8fa2-5bbb20bb82e7-profile_image-300x300.png",
+        "followers": 8033
+      },
+      {
+        "role": "Discord Admin",
+        "name": "TenacityTV",
+        "url": "https://twitch.tv/tenacitytv",
+        "date": "present",
+        "twitch": "tenacitytv",
+        "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/b337b31d-c1c1-4f00-8472-6ac0e6123d24-profile_image-300x300.png",
+        "followers": 549741
+      },
+      {
+        "role": "Discord Mod",
+        "name": "Cizzorz",
+        "url": "https://twitch.tv/cizzorz",
+        "date": "present",
+        "twitch": "cizzorz",
+        "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/b59543d6-96ee-40a6-bf4a-11dbf1d67a18-profile_image-300x300.png",
+        "followers": 1951454
+      }
+    ],
+    "past": [
+      {
+        "role": "Head Mod",
+        "name": "Flynn",
+        "url": "",
+        "date": "Oct 2021 – Jan 2025",
+        "twitch": "flynnislivee",
+        "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/e558a0bc-5d67-415d-976f-9cd24a435f8f-profile_image-300x300.png",
+        "followers": 7109
+      },
+      {
+        "role": "Community Manager",
+        "name": "DannyyyTTV_",
+        "url": "https://twitch.tv/dannyyyttv_",
+        "date": "Jun 2016 – Jan 2025",
+        "twitch": "dannyyyttv_",
+        "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/f82c33f4-9b60-4447-a6a8-a33af9775cc6-profile_image-300x300.png",
+        "followers": 359
+      }
+    ]
+  }
+}
