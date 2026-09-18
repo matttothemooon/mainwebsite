@@ -29,7 +29,6 @@ export async function GET(request) {
     redirect_uri: `${protocol}://${host}/api/auth/callback`,
     response_type: "code",
     scope: "identify",
-    prompt: "none",
     state: nonce,
   });
 
