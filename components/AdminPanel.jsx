@@ -237,24 +237,6 @@ export default function AdminPanel() {
             />
           ))}
 
-          <section className="section">
-            <h2 className="section__title">what i use</h2>
-            <p className="hint">Add, reorder, or remove guide sections and products.</p>
-            {profile.gear.map((category, i) => (
-              <GearCategory
-                key={i}
-                category={category}
-                onChange={(patch) => patchGear(i, patch)}
-                onMove={(d) => edit((p) => ({ ...p, gear: move(p.gear, i, d) }))}
-                onRemove={() => edit((p) => ({ ...p, gear: p.gear.filter((_, j) => j !== i) }))}
-                onStatus={setStatus}
-              />
-            ))}
-            <button className="btn" onClick={() => edit((p) => ({ ...p, gear: [...p.gear, { ...BLANK_GEAR }] }))}>
-              + add section
-            </button>
-          </section>
-
           <button
             className="btn"
             onClick={() =>
@@ -268,6 +250,24 @@ export default function AdminPanel() {
           </button>
         </section>
       ))}
+
+      <section className="section">
+        <h2 className="section__title">what i use</h2>
+        <p className="hint">Add, reorder, or remove guide sections and products.</p>
+        {profile.gear.map((category, i) => (
+          <GearCategory
+            key={i}
+            category={category}
+            onChange={(patch) => patchGear(i, patch)}
+            onMove={(d) => edit((p) => ({ ...p, gear: move(p.gear, i, d) }))}
+            onRemove={() => edit((p) => ({ ...p, gear: p.gear.filter((_, j) => j !== i) }))}
+            onStatus={setStatus}
+          />
+        ))}
+        <button className="btn" onClick={() => edit((p) => ({ ...p, gear: [...p.gear, { ...BLANK_GEAR }] }))}>
+          + add section
+        </button>
+      </section>
 
       <div className="savebar">
         <button className="btn" onClick={save} disabled={saving}>
