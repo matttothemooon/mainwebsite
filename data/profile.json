@@ -47,7 +47,7 @@
         "date": "present",
         "twitch": "jasontheween",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/a04be2b0-9cc1-403c-a4b0-47b32d1fe640-profile_image-300x300.png",
-        "followers": 2805819
+        "followers": 2805987
       },
       {
         "role": "Admin",
@@ -106,5 +106,36 @@
         "followers": 359
       }
     ]
-  }
+  },
+  "gear": [
+    {
+      "name": "Gaming PC",
+      "items": [
+        {
+          "label": "Example",
+          "value": "Add a product in the admin panel"
+        }
+      ]
+    },
+    {
+      "name": "Streaming PC",
+      "items": []
+    },
+    {
+      "name": "Peripherals",
+      "items": []
+    },
+    {
+      "name": "Video Equipment",
+      "items": []
+    },
+    {
+      "name": "Office Equipment",
+      "items": []
+    },
+    {
+      "name": "Audio Equipment",
+      "items": []
+    }
+  ]
 }
