@@ -17,7 +17,7 @@ const BLANK_ENTRY = {
 
 const BLANK_LINK = { label: "", url: "", iconUrl: "" };
 const BLANK_GEAR = { name: "", items: [] };
-const BLANK_GEAR_ITEM = { label: "", value: "" };
+const BLANK_GEAR_ITEM = { label: "", value: "", url: "" };
 
 function move(list, index, delta) {
   const target = index + delta;
@@ -446,6 +446,7 @@ function EntryCard({ entry, twitchEnabled, onChange, onMove, onRemove, onStatus 
             <div className="gear-editor__item" key={i}>
               <Field label="label" value={item.label} onChange={(e) => patchItem(i, { label: e.target.value })} maxLength={80} placeholder="GPU" />
               <Field label="product" value={item.value} onChange={(e) => patchItem(i, { value: e.target.value })} maxLength={200} placeholder="Product name" />
+              <Field label="product link" type="url" value={item.url || ""} onChange={(e) => patchItem(i, { url: e.target.value })} maxLength={500} placeholder="https://…" />
               <button className="btn btn--icon btn--danger" title="remove product" onClick={() => onChange({ items: category.items.filter((_, j) => j !== i) })}>×</button>
             </div>
           ))}
