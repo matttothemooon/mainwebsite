@@ -140,11 +140,68 @@
     },
     {
       "name": "Peripherals",
-      "items": []
+      "items": [
+        {
+          "label": "Keyboard",
+          "value": "Wooting 80HE",
+          "url": "https://wooting.io/wooting-80he"
+        },
+        {
+          "label": "Mouse",
+          "value": "Glorious Model O 3 Wireless",
+          "url": "https://www.gloriousgaming.com/products/model-o-3-wireless-mouse"
+        },
+        {
+          "label": "Mousepad",
+          "value": "Icy Cyan TOPO Mousepad",
+          "url": "https://gutzyaiden.com/products/icy-cyan-topo-mousepad"
+        },
+        {
+          "label": "Stream Deck",
+          "value": "Elgato Stream Deck",
+          "url": "https://www.elgato.com/stream-deck"
+        },
+        {
+          "label": "Stream Deck",
+          "value": "Elgato Stream Deck Neo",
+          "url": "https://www.elgato.com/us/en/p/stream-deck-neo"
+        },
+        {
+          "label": "Microphone",
+          "value": "Elgato Wave:3",
+          "url": "https://www.elgato.com/us/en/p/wave-3"
+        },
+        {
+          "label": "Mic Arm",
+          "value": "Elgato Wave Mic Arm LP",
+          "url": "https://www.elgato.com/us/en/p/wave-mic-arm-lp"
+        },
+        {
+          "label": "Headphones",
+          "value": "Apple AirPods Max",
+          "url": "https://www.apple.com/airpods-max/"
+        }
+      ]
     },
     {
       "name": "Office Equipment",
-      "items": []
+      "items": [
+        {
+          "label": "Monitor 1",
+          "value": "Samsung 32\" G65B 1440p 240Hz",
+          "url": "https://www.amazon.com/s?k=LS32BG652ENXGO"
+        },
+        {
+          "label": "Monitor 2",
+          "value": "AOC 24G1WG3",
+          "url": "https://www.amazon.com/s?k=AOC+24G1WG3"
+        },
+        {
+          "label": "Monitor 3",
+          "value": "ASUS VG27VQM",
+          "url": "https://www.amazon.com/s?k=ASUS+VG27VQM"
+        }
+      ]
     }
   ]
 }
