@@ -109,47 +109,33 @@
   },
   "gear": [
     {
-      "name": "PC Specs",
+      "name": "Gaming PC",
       "items": [
         {
-          "label": "CPU",
-          "value": "AMD Ryzen 7 8700F 8-Core Processor",
-          "url": ""
-        },
-        {
-          "label": "GPU",
-          "value": "NVIDIA GeForce RTX 5070",
-          "url": ""
-        },
-        {
-          "label": "RAM",
-          "value": "32GB DDR5",
-          "url": ""
-        },
-        {
-          "label": "Main SSD",
-          "value": "Samsung 4TB 990 Evo",
-          "url": ""
-        },
-        {
-          "label": "Windows SSD",
-          "value": "1TB SSD",
+          "label": "Example",
+          "value": "Add a product in the admin panel",
           "url": ""
         }
       ]
+    },
+    {
+      "name": "Streaming PC",
+      "items": []
     },
     {
       "name": "Peripherals",
-      "items": [
-        {
-          "label": "Keyboard",
-          "value": "Wooting",
-          "url": ""
-        }
-      ]
+      "items": []
+    },
+    {
+      "name": "Video Equipment",
+      "items": []
     },
     {
       "name": "Office Equipment",
+      "items": []
+    },
+    {
+      "name": "Audio Equipment",
       "items": []
     }
   ]
