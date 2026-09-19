@@ -109,33 +109,41 @@
   },
   "gear": [
     {
-      "name": "Gaming PC",
+      "name": "PC",
       "items": [
         {
-          "label": "Example",
-          "value": "Add a product in the admin panel",
-          "url": ""
+          "label": "CPU",
+          "value": "AMD Ryzen 7 8700F 8-Core Processor",
+          "url": "https://www.amd.com/en/products/processors/desktops/ryzen/8000-series/amd-ryzen-7-8700f"
+        },
+        {
+          "label": "GPU",
+          "value": "NVIDIA GeForce RTX 5070",
+          "url": "https://www.nvidia.com/geforce/graphics-cards/"
+        },
+        {
+          "label": "RAM",
+          "value": "32GB DDR5 RAM",
+          "url": "https://www.corsair.com/us/en/c/memory/ddr5-memory"
+        },
+        {
+          "label": "Storage",
+          "value": "1TB SSD",
+          "url": "https://www.samsung.com/semiconductor/minisite/ssd/product/consumer/"
+        },
+        {
+          "label": "Storage",
+          "value": "4TB SSD",
+          "url": "https://www.samsung.com/us/computing/memory-storage/solid-state-drives/"
         }
       ]
-    },
-    {
-      "name": "Streaming PC",
-      "items": []
     },
     {
       "name": "Peripherals",
       "items": []
     },
     {
-      "name": "Video Equipment",
-      "items": []
-    },
-    {
       "name": "Office Equipment",
-      "items": []
-    },
-    {
-      "name": "Audio Equipment",
       "items": []
     }
   ]
