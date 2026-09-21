@@ -114,27 +114,32 @@
         {
           "label": "CPU",
           "value": "AMD Ryzen 7 8700F 8-Core Processor",
-          "url": "https://www.amd.com/en/products/processors/desktops/ryzen/8000-series/amd-ryzen-7-8700f.html"
+          "url": "https://www.amd.com/en/products/processors/desktops/ryzen/8000-series/amd-ryzen-7-8700f.html",
+          "imageUrl": ""
         },
         {
           "label": "GPU",
           "value": "NVIDIA GeForce RTX 5070",
-          "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5070-family/"
+          "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5070-family/",
+          "imageUrl": ""
         },
         {
           "label": "RAM",
           "value": "32GB DDR5 RAM",
-          "url": "https://www.kingston.com/en/memory/gaming/kingston-fury-beast-ddr5-memory?speed=6000mt%2Fs&total%20(kit)%20capacity=32gb&kit=kit%20of%202&cas%20latency=30&dram%20density=16gbit&profile%20type=amd%20expo%20%2F%20intel%20xmp&color=black"
+          "url": "https://www.kingston.com/en/memory/gaming/kingston-fury-beast-ddr5-memory?speed=6000mt%2Fs&total%20(kit)%20capacity=32gb&kit=kit%20of%202&cas%20latency=30&dram%20density=16gbit&profile%20type=amd%20expo%20%2F%20intel%20xmp&color=black",
+          "imageUrl": ""
         },
         {
           "label": "Storage",
           "value": "1TB SSD (Internal)",
-          "url": "https://www.samsung.com/us/computing/memory-storage/solid-state-drives/990-pro-pcie-4-0-nvme-ssd-1tb-mz-v9p1t0b-am/"
+          "url": "https://www.samsung.com/us/computing/memory-storage/solid-state-drives/990-pro-pcie-4-0-nvme-ssd-1tb-mz-v9p1t0b-am/",
+          "imageUrl": ""
         },
         {
           "label": "Storage",
           "value": "4TB SSD (Internal)",
-          "url": "https://www.samsung.com/us/computing/memory-storage/solid-state-drives/990-pro-pcie-4-0-nvme-ssd-4tb-mz-v9p4t0b-am/"
+          "url": "https://www.samsung.com/us/computing/memory-storage/solid-state-drives/990-pro-pcie-4-0-nvme-ssd-4tb-mz-v9p4t0b-am/",
+          "imageUrl": ""
         }
       ]
     },
@@ -144,42 +149,50 @@
         {
           "label": "Keyboard",
           "value": "Wooting 80HE",
-          "url": "https://wooting.io/wooting-80he"
+          "url": "https://wooting.io/wooting-80he",
+          "imageUrl": ""
         },
         {
           "label": "Mouse",
           "value": "Glorious Model O 3 Wireless",
-          "url": "https://www.gloriousgaming.com/products/model-o-3-wireless-mouse"
+          "url": "https://www.gloriousgaming.com/products/model-o-3-wireless-mouse",
+          "imageUrl": ""
         },
         {
           "label": "Mousepad",
           "value": "Icy Cyan TOPO Mousepad",
-          "url": "https://gutzyaiden.com/products/icy-cyan-topo-mousepad"
+          "url": "https://gutzyaiden.com/products/icy-cyan-topo-mousepad",
+          "imageUrl": ""
         },
         {
           "label": "Stream Deck",
           "value": "Elgato Stream Deck",
-          "url": "https://www.elgato.com/stream-deck"
+          "url": "https://www.elgato.com/stream-deck",
+          "imageUrl": ""
         },
         {
           "label": "Stream Deck",
           "value": "Elgato Stream Deck Neo",
-          "url": "https://www.elgato.com/us/en/p/stream-deck-neo"
+          "url": "https://www.elgato.com/us/en/p/stream-deck-neo",
+          "imageUrl": ""
         },
         {
           "label": "Microphone",
           "value": "Elgato Wave:3",
-          "url": "https://www.elgato.com/us/en/p/wave-3"
+          "url": "https://www.elgato.com/us/en/p/wave-3",
+          "imageUrl": ""
         },
         {
           "label": "Mic Arm",
           "value": "Elgato Wave Mic Arm LP",
-          "url": "https://www.elgato.com/us/en/p/wave-mic-arm-lp"
+          "url": "https://www.elgato.com/us/en/p/wave-mic-arm-lp",
+          "imageUrl": ""
         },
         {
           "label": "Headphones",
           "value": "Apple AirPods Max",
-          "url": "https://www.apple.com/airpods-max/"
+          "url": "https://www.apple.com/airpods-max/",
+          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/230a9e0268c5c9dd.png"
         }
       ]
     },
@@ -189,24 +202,29 @@
         {
           "label": "Monitor 1",
           "value": "Samsung 32\" G65B 1440p 240Hz",
-          "url": "https://www.amazon.com/s?k=LS32BG652ENXGO"
+          "url": "https://www.amazon.com/s?k=LS32BG652ENXGO",
+          "imageUrl": ""
         },
         {
           "label": "Monitor 2",
           "value": "AOC 24G1WG3",
-          "url": "https://www.amazon.com/s?k=AOC+24G1WG3"
+          "url": "https://www.amazon.com/s?k=AOC+24G1WG3",
+          "imageUrl": ""
         },
         {
           "label": "Monitor 3",
           "value": "ASUS VG27VQM",
-          "url": "https://www.amazon.com/s?k=ASUS+VG27VQM"
+          "url": "https://www.amazon.com/s?k=ASUS+VG27VQM",
+          "imageUrl": ""
         },
         {
           "label": "Desk Chair",
           "value": "GABRYLLY Ergonomic Office Chair",
-          "url": "https://www.amazon.com/dp/B07Y8BXBX8?th=1"
+          "url": "https://www.amazon.com/dp/B07Y8BXBX8?th=1",
+          "imageUrl": ""
         }
       ]
     }
-  ]
+  ],
+  "changelog": []
 }
