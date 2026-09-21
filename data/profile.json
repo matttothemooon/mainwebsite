@@ -114,27 +114,27 @@
         {
           "label": "CPU",
           "value": "AMD Ryzen 7 8700F 8-Core Processor",
-          "url": "https://www.amd.com/en/products/processors/desktops/ryzen/8000-series/amd-ryzen-7-8700f"
+          "url": "https://www.amd.com/en/products/processors/desktops/ryzen/8000-series/amd-ryzen-7-8700f.html"
         },
         {
           "label": "GPU",
           "value": "NVIDIA GeForce RTX 5070",
-          "url": "https://www.nvidia.com/geforce/graphics-cards/"
+          "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5070-family/"
         },
         {
           "label": "RAM",
           "value": "32GB DDR5 RAM",
-          "url": "https://www.corsair.com/us/en/c/memory/ddr5-memory"
+          "url": "https://www.kingston.com/en/memory/gaming/kingston-fury-beast-ddr5-memory?speed=6000mt%2Fs&total%20(kit)%20capacity=32gb&kit=kit%20of%202&cas%20latency=30&dram%20density=16gbit&profile%20type=amd%20expo%20%2F%20intel%20xmp&color=black"
         },
         {
           "label": "Storage",
-          "value": "1TB SSD",
-          "url": "https://www.samsung.com/semiconductor/minisite/ssd/product/consumer/"
+          "value": "1TB SSD (Internal)",
+          "url": "https://www.samsung.com/us/computing/memory-storage/solid-state-drives/990-pro-pcie-4-0-nvme-ssd-1tb-mz-v9p1t0b-am/"
         },
         {
           "label": "Storage",
-          "value": "4TB SSD",
-          "url": "https://www.samsung.com/us/computing/memory-storage/solid-state-drives/"
+          "value": "4TB SSD (Internal)",
+          "url": "https://www.samsung.com/us/computing/memory-storage/solid-state-drives/990-pro-pcie-4-0-nvme-ssd-4tb-mz-v9p4t0b-am/"
         }
       ]
     },
