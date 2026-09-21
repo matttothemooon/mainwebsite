@@ -9,9 +9,10 @@
   --accent-dim: #666666;
   --offline: #4a4a4a;
 
-  --status-online: #b8b8b8;
-  --status-idle: #8a8a8a;
-  --status-dnd: #5a5a5a;
+  --status-online: #23a55a;
+  --status-idle: #f0b232;
+  --status-dnd: #f23f43;
+  --spotify: #4ade80;
 
   --font-mono: "SFMono-Regular", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
 
@@ -325,7 +326,7 @@ h1 {
 }
 
 .spotify-icon {
-  color: var(--accent);
+  color: var(--spotify);
 }
 
 /* ---------- mod experience ---------- */
