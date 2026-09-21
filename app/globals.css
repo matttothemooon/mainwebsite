@@ -5,16 +5,13 @@
   --border: #1f1f1f;
   --text: #e8e8e8;
   --text-dim: #8a8a8a;
-  --accent: #4ade80;
-  --accent-dim: #2f6b45;
+  --accent: #d0d0d0;
+  --accent-dim: #666666;
   --offline: #4a4a4a;
 
-  /* Discord's own status colours, so the dot matches what Discord shows.
-     Deliberately not --accent: the site green is a different green, and a
-     status indicator that disagrees with the client is worse than no colour. */
-  --status-online: #23a55a;
-  --status-idle: #f0b232;
-  --status-dnd: #f23f43;
+  --status-online: #b8b8b8;
+  --status-idle: #8a8a8a;
+  --status-dnd: #5a5a5a;
 
   --font-mono: "SFMono-Regular", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
 
@@ -130,6 +127,48 @@ a {
   text-underline-offset: 2px;
 }
 
+.gear-item__product-link {
+  position: relative;
+  display: inline-block;
+}
+
+.gear-item__product-link:hover,
+.gear-item__product-link:focus-visible {
+  color: var(--accent);
+  background: rgba(208, 208, 208, 0.12);
+  outline: none;
+}
+
+.gear-item__preview {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: calc(100% + 14px);
+  display: block;
+  width: 240px;
+  padding: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%) translateX(-4px);
+  border: 1px solid var(--accent-dim);
+  background: #0b0b0b;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.gear-item__preview img {
+  display: block;
+  width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+}
+
+.gear-item__product-link:hover .gear-item__preview,
+.gear-item__product-link:focus-visible .gear-item__preview {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
 .gear-item dd a {
   color: inherit;
   text-decoration: underline;
@@ -139,7 +178,7 @@ a {
 .gear-item dd a:hover,
 .gear-item dd a:focus-visible {
   color: var(--accent);
-  background: rgba(74, 222, 128, 0.12);
+  background: rgba(208, 208, 208, 0.12);
   outline: none;
 }
 

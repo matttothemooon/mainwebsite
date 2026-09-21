@@ -246,6 +246,19 @@
   border-top: 1px solid var(--border);
 }
 
+.gear-editor__upload {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.gear-editor__upload input {
+  max-width: 180px;
+  font-size: 0.7rem;
+}
+
 /* ---------- save bar ---------- */
 .savebar {
   position: sticky;

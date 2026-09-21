@@ -17,7 +17,7 @@ const BLANK_ENTRY = {
 
 const BLANK_LINK = { label: "", url: "", iconUrl: "" };
 const BLANK_GEAR = { name: "", items: [] };
-const BLANK_GEAR_ITEM = { label: "", value: "", url: "" };
+const BLANK_GEAR_ITEM = { label: "", value: "", url: "", imageUrl: "" };
 
 function move(list, index, delta) {
   const target = index + delta;
@@ -528,9 +528,28 @@ function EntryCard({ entry, twitchEnabled, onChange, onMove, onRemove, onStatus 
 }
 
 function GearCategory({ category, onChange, onMove, onRemove, onStatus }) {
+  const [uploading, setUploading] = useState(null);
   const patchItem = (i, patch) => onChange({
     items: category.items.map((item, j) => (j === i ? { ...item, ...patch } : item)),
   });
+  const uploadImage = async (i, file) => {
+    if (!file) return;
+    setUploading(i);
+    onStatus({ text: `uploading ${file.name}…`, kind: "" });
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      const res = await fetch("/api/admin/upload", { method: "POST", body });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "upload failed");
+      patchItem(i, { imageUrl: data.url });
+      onStatus({ text: "product image uploaded — remember to save", kind: "ok" });
+    } catch (err) {
+      onStatus({ text: err.message, kind: "err" });
+    } finally {
+      setUploading(null);
+    }
+  };
 
   return (
     <div className="entry gear-editor">
@@ -548,6 +567,11 @@ function GearCategory({ category, onChange, onMove, onRemove, onStatus }) {
           <Field label="label" value={item.label} onChange={(e) => patchItem(i, { label: e.target.value })} maxLength={80} placeholder="GPU" />
           <Field label="product" value={item.value} onChange={(e) => patchItem(i, { value: e.target.value })} maxLength={200} placeholder="Product name" />
           <Field label="product link" type="url" value={item.url || ""} onChange={(e) => patchItem(i, { url: e.target.value })} maxLength={500} placeholder="https://…" />
+          <label className="gear-editor__upload">
+            product image
+            <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={(e) => uploadImage(i, e.target.files?.[0])} />
+            <span>{uploading === i ? "uploading…" : item.imageUrl ? "replace image" : "upload image"}</span>
+          </label>
           <button className="btn btn--icon btn--danger" title="remove product" onClick={() => onChange({ items: category.items.filter((_, j) => j !== i) })}>×</button>
         </div>
       ))}
