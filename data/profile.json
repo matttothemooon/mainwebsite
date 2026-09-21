@@ -115,13 +115,13 @@
           "label": "CPU",
           "value": "AMD Ryzen 7 8700F 8-Core Processor",
           "url": "https://www.amd.com/en/products/processors/desktops/ryzen/8000-series/amd-ryzen-7-8700f.html",
-          "imageUrl": ""
+          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/3cb04411ff4472f3.jpg"
         },
         {
           "label": "GPU",
           "value": "NVIDIA GeForce RTX 5070",
           "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5070-family/",
-          "imageUrl": ""
+          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/1719a88cbe94ca0a.jpg"
         },
         {
           "label": "RAM",
@@ -139,7 +139,7 @@
           "label": "Storage",
           "value": "4TB SSD (Internal)",
           "url": "https://www.samsung.com/us/computing/memory-storage/solid-state-drives/990-pro-pcie-4-0-nvme-ssd-4tb-mz-v9p4t0b-am/",
-          "imageUrl": ""
+          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/170983a6cb2f2b68.jpg"
         }
       ]
     },
@@ -150,7 +150,7 @@
           "label": "Keyboard",
           "value": "Wooting 80HE",
           "url": "https://wooting.io/wooting-80he",
-          "imageUrl": ""
+          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/bf9ade5e5c4c744c.webp"
         },
         {
           "label": "Mouse",
@@ -186,7 +186,7 @@
           "label": "Mic Arm",
           "value": "Elgato Wave Mic Arm LP",
           "url": "https://www.elgato.com/us/en/p/wave-mic-arm-lp",
-          "imageUrl": ""
+          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/c1bebf5a68969a5d.jpg"
         },
         {
           "label": "Headphones",
