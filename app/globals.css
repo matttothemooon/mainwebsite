@@ -78,6 +78,32 @@ a {
   margin-top: var(--gap-lg);
 }
 
+.changelog {
+  display: grid;
+  gap: var(--gap-sm);
+}
+
+.changelog__entry {
+  padding: var(--gap-sm);
+  border: 1px solid var(--border);
+}
+
+.changelog__entry h2 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.changelog__entry p {
+  margin: 0;
+}
+
+.changelog__date {
+  margin-bottom: 6px !important;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+}
+
 .gear-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

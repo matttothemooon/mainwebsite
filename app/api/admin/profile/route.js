@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 import { requireAuth, isDevAuthBypass } from "@/lib/auth";
 import { getProfile, saveProfile, validateProfile } from "@/lib/storage";
 import { isConfigured } from "@/lib/twitch";
+import { postChangelogEntry } from "@/lib/discord";
 
 const NO_STORE = { "Cache-Control": "no-store" };
 
@@ -38,9 +39,14 @@ export async function PUT(request) {
   }
 
   try {
+    const current = await getProfile({ fresh: true });
+    const existingIds = new Set(current.changelog.map((entry) => entry.id));
+    const newEntries = profile.changelog.filter((entry) => !existingIds.has(entry.id));
+    for (const entry of newEntries) await postChangelogEntry(entry);
     await saveProfile(profile);
     // Drop the cached homepage so edits are live straight away.
     revalidatePath("/");
+    revalidatePath("/changelog");
     return Response.json({ profile }, { headers: NO_STORE });
   } catch (err) {
     console.error("Admin profile write failed:", err);
