@@ -609,6 +609,30 @@ function GearCategory({ category, onChange, onMove, onRemove, onStatus }) {
       setUploading(null);
     }
   };
+  const fetchImage = async (i) => {
+    const item = category.items[i];
+    if (!item.url) {
+      onStatus({ text: "add a product link first", kind: "err" });
+      return;
+    }
+    setUploading(i);
+    onStatus({ text: "finding product image…", kind: "" });
+    try {
+      const res = await fetch("/api/admin/product-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: item.url }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "could not find image");
+      patchItem(i, { imageUrl: data.url });
+      onStatus({ text: "product image found — remember to save", kind: "ok" });
+    } catch (err) {
+      onStatus({ text: err.message, kind: "err" });
+    } finally {
+      setUploading(null);
+    }
+  };
 
   return (
     <div className="entry gear-editor">
@@ -631,6 +655,9 @@ function GearCategory({ category, onChange, onMove, onRemove, onStatus }) {
             <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={(e) => uploadImage(i, e.target.files?.[0])} />
             <span>{uploading === i ? "uploading…" : item.imageUrl ? "replace image" : "upload image"}</span>
           </label>
+          <button className="btn" disabled={uploading === i} onClick={() => fetchImage(i)}>
+            {uploading === i ? "finding…" : "pull from link"}
+          </button>
           <button className="btn btn--icon btn--danger" title="remove product" onClick={() => onChange({ items: category.items.filter((_, j) => j !== i) })}>×</button>
         </div>
       ))}
