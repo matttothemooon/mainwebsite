@@ -25,7 +25,10 @@ function remoteUrl(value) {
 
 async function fetchRemote(url, accept) {
   const response = await fetch(url, {
-    headers: { Accept: accept },
+    headers: {
+      Accept: accept,
+      "User-Agent": "Mozilla/5.0 (compatible; mattothemoon product image importer)",
+    },
     redirect: "follow",
     signal: AbortSignal.timeout(10000),
   });
@@ -34,17 +37,47 @@ async function fetchRemote(url, accept) {
 }
 
 function imageFromHtml(html, pageUrl) {
-  const tags = html.match(/<meta\b[^>]*>/gi) || [];
+  const decode = (value) => value
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'");
+  const attribute = (tag, name) =>
+    tag.match(new RegExp(`\\b${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, "i"))?.slice(1).find(Boolean);
+  const resolve = (value) => {
+    try {
+      return new URL(decode(value), pageUrl).toString();
+    } catch {
+      return null;
+    }
+  };
+
+  const tags = html.match(/<(?:meta|link)\b[^>]*>/gi) || [];
   for (const tag of tags) {
-    const property = tag.match(/\b(?:property|name)\s*=\s*["']([^"']+)["']/i)?.[1].toLowerCase();
-    if (!["og:image", "twitter:image", "twitter:image:src"].includes(property)) continue;
-    const content = tag.match(/\bcontent\s*=\s*["']([^"']+)["']/i)?.[1];
-    if (content) {
-      try {
-        return new URL(content, pageUrl).toString();
-      } catch {
-        // Try the next image metadata tag.
+    const key = (attribute(tag, "property") || attribute(tag, "name") || "").toLowerCase();
+    const rel = (attribute(tag, "rel") || "").toLowerCase();
+    if (["og:image", "twitter:image", "twitter:image:src"].includes(key)) {
+      const image = resolve(attribute(tag, "content"));
+      if (image) return image;
+    }
+    if (rel.split(/\s+/).includes("image_src")) {
+      const image = resolve(attribute(tag, "href"));
+      if (image) return image;
+    }
+  }
+
+  const scripts = html.match(/<script\b[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi) || [];
+  for (const script of scripts) {
+    const json = script.replace(/^.*?>|<\/script>$/gi, "").trim();
+    try {
+      const data = JSON.parse(json);
+      const candidates = Array.isArray(data) ? data : [data, ...(data["@graph"] || [])];
+      for (const candidate of candidates) {
+        const image = Array.isArray(candidate?.image) ? candidate.image[0] : candidate?.image;
+        const resolved = resolve(typeof image === "string" ? image : image?.url);
+        if (resolved) return resolved;
       }
+    } catch {
+      // Ignore malformed JSON-LD and continue with other metadata.
     }
   }
   return null;
