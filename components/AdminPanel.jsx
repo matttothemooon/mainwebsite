@@ -18,6 +18,7 @@ const BLANK_ENTRY = {
 const BLANK_LINK = { label: "", url: "", iconUrl: "" };
 const BLANK_GEAR = { name: "", items: [] };
 const BLANK_GEAR_ITEM = { label: "", value: "", url: "", imageUrl: "" };
+const BLANK_CHANGELOG = { id: "", title: "", body: "", date: "" };
 
 function move(list, index, delta) {
   const target = index + delta;
@@ -116,6 +117,13 @@ export default function AdminPanel() {
           items: category.items.filter((item) => item.label.trim() && item.value.trim()),
         }))
         .filter((category) => category.name.trim()),
+      changelog: profile.changelog
+        .filter((entry) => entry.title.trim() && entry.body.trim())
+        .map((entry) => ({
+          ...entry,
+          id: entry.id || `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          date: entry.date || new Date().toISOString(),
+        })),
     };
 
     try {
@@ -266,6 +274,57 @@ export default function AdminPanel() {
         ))}
         <button className="btn" onClick={() => edit((p) => ({ ...p, gear: [...p.gear, { ...BLANK_GEAR }] }))}>
           + add section
+        </button>
+      </section>
+
+      <section className="section">
+        <h2 className="section__title">changelog</h2>
+        <p className="hint">New entries are posted to Discord automatically when saved.</p>
+        {profile.changelog.map((entry, i) => (
+          <div className="entry" key={entry.id || i}>
+            <div className="field">
+              <label>title</label>
+              <input
+                maxLength={120}
+                value={entry.title}
+                onChange={(e) => edit((p) => {
+                  p.changelog[i].title = e.target.value;
+                  return p;
+                })}
+                placeholder="Added product image previews"
+              />
+            </div>
+            <div className="field">
+              <label>details</label>
+              <textarea
+                maxLength={1000}
+                value={entry.body}
+                onChange={(e) => edit((p) => {
+                  p.changelog[i].body = e.target.value;
+                  return p;
+                })}
+                placeholder="Describe what changed…"
+              />
+            </div>
+            <button
+              className="btn btn--danger"
+              onClick={() => edit((p) => ({
+                ...p,
+                changelog: p.changelog.filter((_, j) => j !== i),
+              }))}
+            >
+              remove entry
+            </button>
+          </div>
+        ))}
+        <button
+          className="btn"
+          onClick={() => edit((p) => ({
+            ...p,
+            changelog: [...p.changelog, { ...BLANK_CHANGELOG }],
+          }))}
+        >
+          + add changelog entry
         </button>
       </section>
 
