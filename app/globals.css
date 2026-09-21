@@ -127,8 +127,20 @@ a {
 .gear-item dd {
   margin: 0;
   color: var(--text);
-  text-decoration: underline;
   text-underline-offset: 2px;
+}
+
+.gear-item dd a {
+  color: inherit;
+  text-decoration: underline;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.gear-item dd a:hover,
+.gear-item dd a:focus-visible {
+  color: var(--accent);
+  background: rgba(74, 222, 128, 0.12);
+  outline: none;
 }
 
 @media (max-width: 640px) {
