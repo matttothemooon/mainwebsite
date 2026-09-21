@@ -22,7 +22,7 @@ function fail(request, status, message) {
     `<!DOCTYPE html><meta charset="utf-8">` +
       `<title>admin — sign in failed</title>` +
       `<body style="background:#000;color:#e8e8e8;font-family:ui-monospace,monospace;padding:40px;line-height:1.6">` +
-      `<p>${escapeHtml(message)}</p><p><a href="/admin" style="color:#4ade80">back to admin</a></p>`,
+      `<p>${escapeHtml(message)}</p><p><a href="/admin" style="color:#d0d0d0">back to admin</a></p>`,
     {
       status,
       headers: {

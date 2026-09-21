@@ -1,9 +1,9 @@
-// Custom link-icon upload, used when a URL matches no known platform.
+// Admin image upload for custom link icons and product images.
 import crypto from "crypto";
 import { requireAuth } from "@/lib/auth";
 import { saveIcon } from "@/lib/storage";
 
-const MAX_BYTES = 512 * 1024; // icons are tiny; this is already generous
+const MAX_BYTES = 2 * 1024 * 1024;
 
 // SVG is allowed because it's the right format for an icon. Uploads are served
 // with a locked-down CSP (see next.config.mjs) so a script inside one cannot
