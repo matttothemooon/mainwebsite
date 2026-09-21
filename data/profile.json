@@ -3,8 +3,8 @@
   "bio": "community mod & streamer.",
   "links": [
     {
-      "label": "twitter",
-      "url": "https://x.com/matttttothemoon",
+      "label": "twitch",
+      "url": "https://www.twitch.tv/mattothemoon",
       "iconUrl": ""
     },
     {
@@ -13,8 +13,13 @@
       "iconUrl": ""
     },
     {
-      "label": "twitch",
-      "url": "https://www.twitch.tv/mattothemoon",
+      "label": "discord profile",
+      "url": "https://discord.com/users/436300903927119873",
+      "iconUrl": ""
+    },
+    {
+      "label": "twitter",
+      "url": "https://x.com/matttttothemoon",
       "iconUrl": ""
     },
     {
@@ -25,11 +30,6 @@
     {
       "label": "github",
       "url": "https://github.com/mattothemoon",
-      "iconUrl": ""
-    },
-    {
-      "label": "discord profile",
-      "url": "https://discord.com/users/436300903927119873",
       "iconUrl": ""
     },
     {
@@ -109,33 +109,104 @@
   },
   "gear": [
     {
-      "name": "Gaming PC",
+      "name": "PC",
       "items": [
         {
-          "label": "Example",
-          "value": "Add a product in the admin panel"
+          "label": "CPU",
+          "value": "AMD Ryzen 7 8700F 8-Core Processor",
+          "url": "https://www.amd.com/en/products/processors/desktops/ryzen/8000-series/amd-ryzen-7-8700f.html"
+        },
+        {
+          "label": "GPU",
+          "value": "NVIDIA GeForce RTX 5070",
+          "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5070-family/"
+        },
+        {
+          "label": "RAM",
+          "value": "32GB DDR5 RAM",
+          "url": "https://www.kingston.com/en/memory/gaming/kingston-fury-beast-ddr5-memory?speed=6000mt%2Fs&total%20(kit)%20capacity=32gb&kit=kit%20of%202&cas%20latency=30&dram%20density=16gbit&profile%20type=amd%20expo%20%2F%20intel%20xmp&color=black"
+        },
+        {
+          "label": "Storage",
+          "value": "1TB SSD (Internal)",
+          "url": "https://www.samsung.com/us/computing/memory-storage/solid-state-drives/990-pro-pcie-4-0-nvme-ssd-1tb-mz-v9p1t0b-am/"
+        },
+        {
+          "label": "Storage",
+          "value": "4TB SSD (Internal)",
+          "url": "https://www.samsung.com/us/computing/memory-storage/solid-state-drives/990-pro-pcie-4-0-nvme-ssd-4tb-mz-v9p4t0b-am/"
         }
       ]
     },
     {
-      "name": "Streaming PC",
-      "items": []
-    },
-    {
       "name": "Peripherals",
-      "items": []
-    },
-    {
-      "name": "Video Equipment",
-      "items": []
+      "items": [
+        {
+          "label": "Keyboard",
+          "value": "Wooting 80HE",
+          "url": "https://wooting.io/wooting-80he"
+        },
+        {
+          "label": "Mouse",
+          "value": "Glorious Model O 3 Wireless",
+          "url": "https://www.gloriousgaming.com/products/model-o-3-wireless-mouse"
+        },
+        {
+          "label": "Mousepad",
+          "value": "Icy Cyan TOPO Mousepad",
+          "url": "https://gutzyaiden.com/products/icy-cyan-topo-mousepad"
+        },
+        {
+          "label": "Stream Deck",
+          "value": "Elgato Stream Deck",
+          "url": "https://www.elgato.com/stream-deck"
+        },
+        {
+          "label": "Stream Deck",
+          "value": "Elgato Stream Deck Neo",
+          "url": "https://www.elgato.com/us/en/p/stream-deck-neo"
+        },
+        {
+          "label": "Microphone",
+          "value": "Elgato Wave:3",
+          "url": "https://www.elgato.com/us/en/p/wave-3"
+        },
+        {
+          "label": "Mic Arm",
+          "value": "Elgato Wave Mic Arm LP",
+          "url": "https://www.elgato.com/us/en/p/wave-mic-arm-lp"
+        },
+        {
+          "label": "Headphones",
+          "value": "Apple AirPods Max",
+          "url": "https://www.apple.com/airpods-max/"
+        }
+      ]
     },
     {
       "name": "Office Equipment",
-      "items": []
-    },
-    {
-      "name": "Audio Equipment",
-      "items": []
+      "items": [
+        {
+          "label": "Monitor 1",
+          "value": "Samsung 32\" G65B 1440p 240Hz",
+          "url": "https://www.amazon.com/s?k=LS32BG652ENXGO"
+        },
+        {
+          "label": "Monitor 2",
+          "value": "AOC 24G1WG3",
+          "url": "https://www.amazon.com/s?k=AOC+24G1WG3"
+        },
+        {
+          "label": "Monitor 3",
+          "value": "ASUS VG27VQM",
+          "url": "https://www.amazon.com/s?k=ASUS+VG27VQM"
+        },
+        {
+          "label": "Desk Chair",
+          "value": "GABRYLLY Ergonomic Office Chair",
+          "url": "https://www.amazon.com/dp/B07Y8BXBX8?th=1"
+        }
+      ]
     }
   ]
 }
