@@ -139,7 +139,7 @@ export default function AdminPanel() {
       // rejected or normalised is visible straight away.
       setProfile(data.profile);
       setDirty(false);
-      setStatus({ text: "saved.", kind: "ok" });
+      setStatus({ text: data.warning || "saved.", kind: data.warning ? "err" : "ok" });
     } catch (err) {
       setStatus({ text: err.message, kind: "err" });
     } finally {
