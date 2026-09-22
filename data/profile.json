@@ -226,5 +226,12 @@
       ]
     }
   ],
-  "changelog": []
+  "changelog": [
+    {
+      "id": "1790041561400-qm305l97md",
+      "title": "Changelog",
+      "body": "- **Created the website and terminal theme**\n\n- **Added Discord and Spotify status**\n\n- **Added live experience hover cards**\n\n- **Migrated to Next.js with Discord admin login**\n\n- **Moved profile storage to GitHub**\n\n- **Added custom social icons**\n\n- **Added the editable What I Use guide**\n\n- **Added product links and image uploads**\n\n- **Added product image hover previews**\n\n- **Added automatic product image importing**\n\n- **Added the public changelog**\n\n- **Added automatic Discord changelog posts**\n\n- **Updated the site color palette**\n\n- **Restored Discord and Spotify colors**",
+      "date": "2026-09-22T01:46:01.400Z"
+    }
+  ]
 }
