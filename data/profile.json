@@ -239,7 +239,7 @@
     {
       "id": "1790041561400-qm305l97md",
       "title": "Changelog",
-      "body": "Created the website and terminal theme\nAdded Discord and Spotify status\nAdded live experience hover cards\nMigrated to Next.js with Discord admin login\nMoved profile storage to GitHub\nAdded custom social icons\nAdded the editable What I Use guide\nAdded product links and image uploads\nAdded product image hover previews\nAdded automatic product image importing\nAdded the public changelog\nAdded automatic Discord changelog posts\nUpdated the site color palette\nRestored Discord and Spotify colors",
+      "body": "- Created the website and terminal theme\n- Added Discord and Spotify status\n- Added live experience hover cards\n- Migrated to Next.js with Discord admin login\n- Moved profile storage to GitHub\n- Added custom social icons\n- Added the editable What I Use guide\n- Added product links and image uploads\n- Added product image hover previews\n- Added automatic product image importing\n- Added the public changelog\n- Added automatic Discord changelog posts\n- Updated the site color palette\n- Restored Discord and Spotify colors",
       "date": "2026-09-22T01:46:01.400Z"
     }
   ]
