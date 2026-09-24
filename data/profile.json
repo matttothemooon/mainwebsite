@@ -104,6 +104,15 @@
         "twitch": "dannyyyttv_",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/f82c33f4-9b60-4447-a6a8-a33af9775cc6-profile_image-300x300.png",
         "followers": 359
+      },
+      {
+        "role": "CM",
+        "name": "Sinnski",
+        "url": "https://www.twitch.tv/sinnski",
+        "date": "June 2021-Sepember 2026",
+        "twitch": "sinnski",
+        "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/bdac334c-1e61-40c8-8fa2-5bbb20bb82e7-profile_image-300x300.png",
+        "followers": 8032
       }
     ]
   },
