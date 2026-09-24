@@ -239,7 +239,7 @@
     {
       "id": "1790041561400-qm305l97md",
       "title": "Changelog",
-      "body": "AI Mode Conversation: make this format easier - **Created the website and terminal theme** - **Added Discord and Spotify status** - **Added live experience hover cards** - **Migrated to Next.js with Discord admin login** - **Moved profile storage to GitHub** - **Added custom social icons** - **Added the editable What I Use guide** - **Added product links and image uploads** - **Added product image hover previews** - **Added automatic product image importing** - **Added the public changelog** - **Added automatic Discord changelog posts** - **Updated the site color palette** - **Restored Discord and Spotify colors**You said: make this format easier - **Created the website and terminal theme** - **Added Discord and Spotify status** - **Added live experience hover cards** - **Migrated to Next.js with Discord admin login** - **Moved profile storage to GitHub** - **Added custom social icons** - **Added the editable What I Use guide** - **Added product links and image uploads** - **Added prod",
+      "body": "Created the website and terminal theme\nAdded Discord and Spotify status\nAdded live experience hover cards\nMigrated to Next.js with Discord admin login\nMoved profile storage to GitHub\nAdded custom social icons\nAdded the editable What I Use guide\nAdded product links and image uploads\nAdded product image hover previews\nAdded automatic product image importing\nAdded the public changelog\nAdded automatic Discord changelog posts\nUpdated the site color palette\nRestored Discord and Spotify colors",
       "date": "2026-09-22T01:46:01.400Z"
     }
   ]
