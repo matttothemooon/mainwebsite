@@ -2,7 +2,6 @@ import { revalidatePath } from "next/cache";
 import { requireAuth, isDevAuthBypass } from "@/lib/auth";
 import { getProfile, saveProfile, validateProfile } from "@/lib/storage";
 import { isConfigured } from "@/lib/twitch";
-import { postChangelogEntry } from "@/lib/discord";
 
 const NO_STORE = { "Cache-Control": "no-store" };
 
@@ -39,31 +38,9 @@ export async function PUT(request) {
   }
 
   try {
-    const current = await getProfile({ fresh: true });
-    const existingIds = new Set(current.changelog.map((entry) => entry.id));
-    const newEntries = profile.changelog.filter((entry) => !existingIds.has(entry.id));
     await saveProfile(profile);
-    const webhookErrors = [];
-    for (const entry of newEntries) {
-      try {
-        await postChangelogEntry(entry);
-      } catch (err) {
-        console.error("Changelog Discord post failed:", err);
-        webhookErrors.push(err.message);
-      }
-    }
-    // Drop the cached homepage so edits are live straight away.
     revalidatePath("/");
-    revalidatePath("/changelog");
-    return Response.json(
-      {
-        profile,
-        warning: webhookErrors.length
-          ? `Saved, but Discord posting failed: ${webhookErrors.join("; ")}`
-          : undefined,
-      },
-      { headers: NO_STORE }
-    );
+    return Response.json({ profile }, { headers: NO_STORE });
   } catch (err) {
     console.error("Admin profile write failed:", err);
     // Behind requireAuth, so the reason is safe to show — and without it a

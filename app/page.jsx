@@ -39,7 +39,6 @@ export default async function Home() {
         <StatusBlock />
         <Experience experience={profile.experience} />
         <p className="guide-link"><a href="/what-i-use">what i use →</a></p>
-        <p className="guide-link"><a href="/changelog">changelog →</a></p>
       </main>
     </div>
   );
