@@ -53,8 +53,11 @@ No Discord app, Vercel account, or GitHub token is needed. Locally:
 
 - **Auth is bypassed** — the admin panel opens straight into the editor, with a
   banner saying so.
-- **Edits save to `.dev-profile.json`** and uploaded icons to `public/uploads/`
-  (both gitignored) instead of GitHub. Delete them to reset.
+- **The initial profile comes from `data/profile.json`**, so the local site
+  matches the profile checked into the current checkout. Admin edits save to
+  `.dev-profile.json` and uploaded icons to `public/uploads/` (both gitignored)
+  instead of GitHub. Delete `.dev-profile.json` to reset to the checked-in
+  profile.
 
 To exercise the real Discord login flow locally, run `npm run dev:auth` with
 `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `DISCORD_ALLOWED_IDS`, and
@@ -182,9 +185,10 @@ with **Contents: Read and write** permission. Add it to Vercel as
 `GITHUB_TOKEN`, then redeploy. `GITHUB_REPOSITORY`, `GITHUB_BRANCH`, and
 `GITHUB_PROFILE_PATH` have useful defaults in `lib/storage.js` and only need to
 be added if your repository layout differs. Without `GITHUB_TOKEN`, local
-development uses the existing `.dev-profile.json` and `public/uploads/`
-fallbacks; production serves the committed defaults and reports a
-configuration error when saving.
+development uses `.dev-profile.json` and `public/uploads/` fallbacks, seeding
+the local profile from `data/profile.json` until the first local edit;
+production reads the profile from GitHub and reports a configuration error
+when saving if the token is missing.
 
 ## Auth notes
 
