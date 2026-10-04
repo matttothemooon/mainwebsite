@@ -316,6 +316,33 @@
   }
 
   .link-row__top input:first-of-type {
+    flex: 1 1 calc(100% - 48px);
+  }
+
+  .link-row__top input:nth-of-type(2) {
     flex: 1 1 100%;
+  }
+
+  .gear-editor__item {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    padding-bottom: var(--gap-sm);
+  }
+
+  .gear-editor__upload input {
+    max-width: 100%;
+  }
+
+  .savebar {
+    flex-wrap: wrap;
+  }
+
+  .savebar > a {
+    margin-left: 0 !important;
+  }
+
+  .status-msg {
+    flex: 1 1 calc(100% - 140px);
+    overflow-wrap: anywhere;
   }
 }
