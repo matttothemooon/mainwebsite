@@ -36,6 +36,11 @@
       "label": "email",
       "url": "mailto:mattothemoon06@gmail.com",
       "iconUrl": ""
+    },
+    {
+      "label": "LastFM",
+      "url": "https://www.last.fm/user/matttothemoon",
+      "iconUrl": ""
     }
   ],
   "experience": {
@@ -47,7 +52,7 @@
         "date": "present",
         "twitch": "jasontheween",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/a04be2b0-9cc1-403c-a4b0-47b32d1fe640-profile_image-300x300.png",
-        "followers": 2809442
+        "followers": 2827286
       },
       {
         "role": "Admin",
@@ -82,7 +87,7 @@
         "role": "Head Mod",
         "name": "Flynn",
         "url": "",
-        "date": "Oct 2021 \u2013 Jan 2025",
+        "date": "Oct 2021 – Jan 2025",
         "twitch": "flynnislivee",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/e558a0bc-5d67-415d-976f-9cd24a435f8f-profile_image-300x300.png",
         "followers": 7109
@@ -91,7 +96,7 @@
         "role": "Community Manager",
         "name": "DannyyyTTV_",
         "url": "https://twitch.tv/dannyyyttv_",
-        "date": "Jun 2016 \u2013 Jan 2025",
+        "date": "Jun 2016 – Jan 2025",
         "twitch": "dannyyyttv_",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/f82c33f4-9b60-4447-a6a8-a33af9775cc6-profile_image-300x300.png",
         "followers": 359
