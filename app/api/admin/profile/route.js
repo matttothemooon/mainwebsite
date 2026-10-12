@@ -40,6 +40,8 @@ export async function PUT(request) {
   try {
     await saveProfile(profile);
     revalidatePath("/");
+    revalidatePath("/pages");
+    revalidatePath("/pages/[slug]", "page");
     return Response.json({ profile }, { headers: NO_STORE });
   } catch (err) {
     console.error("Admin profile write failed:", err);

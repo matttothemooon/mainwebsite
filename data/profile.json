@@ -1,6 +1,29 @@
 {
   "name": "mattothemoon",
   "bio": "community mod & streamer.",
+  "pages": [
+    {
+      "title": "Overlays & resources",
+      "slug": "overlays-resources",
+      "description": "Stream setup notes, graphics, and the tools I use.",
+      "content": "## Stream resources\n\nI’m collecting the graphics, panels, and tools I use for streaming here. I’ll add downloadable assets as they’re ready.\n\n## My setup\n\nFor the current gear list, take a look at [What I Use](/what-i-use). It includes the Stream Deck and other equipment in my setup.\n\n## More coming soon\n\nI’ll update this page as I put together resources worth sharing.",
+      "published": true
+    },
+    {
+      "title": "Modding",
+      "slug": "modding",
+      "description": "A little about my work supporting streamer and Discord communities.",
+      "content": "## Community work\n\nI’m a community mod and streamer. I’ve helped out across Twitch and Discord communities in moderator, admin, and community manager roles.\n\n## Current experience\n\nMy current roles are listed on the [homepage](/), where I keep the names and links up to date.\n\n## Past experience\n\nI’ve also worked as Head Mod for Flynn and as a Community Manager for The Reapers. You can find the full experience list on the homepage.\n\n## Get in touch\n\nFor moderation or community-related inquiries, [email me](mailto:mattothemoon06@gmail.com) with a little context about the community and what kind of help you’re looking for.",
+      "published": true
+    },
+    {
+      "title": "About & FAQ",
+      "slug": "about-faq",
+      "description": "A quick introduction and answers to a few common questions.",
+      "content": "## About\n\nI’m mattothemoon — a community mod and streamer. This site is where I share what I’m doing, the communities I’ve worked with, and the gear I use.\n\n## FAQ\n\n### What gear do you use?\n\nI keep my current setup on the [What I Use page](/what-i-use).\n\n### Where can I find your links?\n\nThe social icons on the [homepage](/) link to my profiles and community.\n\n### How can I contact you?\n\nYou can [email me](mailto:mattothemoon06@gmail.com). Include what you’re reaching out about so I can get back to you with the right context.",
+      "published": true
+    }
+  ],
   "links": [
     {
       "label": "twitch",

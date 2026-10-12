@@ -18,6 +18,18 @@ const BLANK_ENTRY = {
 const BLANK_LINK = { label: "", url: "", iconUrl: "" };
 const BLANK_GEAR = { name: "", items: [] };
 const BLANK_GEAR_ITEM = { label: "", value: "", url: "", imageUrl: "" };
+const BLANK_PAGE = { title: "", slug: "", description: "", content: "", published: false };
+
+function pageSlug(value) {
+  return value
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 80)
+    .replace(/-+$/g, "");
+}
 
 function move(list, index, delta) {
   const target = index + delta;
@@ -96,6 +108,12 @@ export default function AdminPanel() {
       return p;
     });
 
+  const patchPage = (i, patch) =>
+    edit((p) => {
+      p.pages[i] = { ...p.pages[i], ...patch };
+      return p;
+    });
+
   /* ---------- save ---------- */
 
   async function save() {
@@ -116,6 +134,12 @@ export default function AdminPanel() {
           items: category.items.filter((item) => item.label.trim() && item.value.trim()),
         }))
         .filter((category) => category.name.trim()),
+      pages: profile.pages
+        .filter((page) => page.title.trim())
+        .map((page) => ({
+          ...page,
+          slug: page.slug.trim() || pageSlug(page.title),
+        })),
     };
 
     try {
@@ -266,6 +290,86 @@ export default function AdminPanel() {
         ))}
         <button className="btn" onClick={() => edit((p) => ({ ...p, gear: [...p.gear, { ...BLANK_GEAR }] }))}>
           + add section
+        </button>
+      </section>
+
+      <section className="section">
+        <h2 className="section__title">pages</h2>
+        <p className="hint" style={{ marginBottom: "var(--gap-sm)" }}>
+          Create standalone pages with their own URL. Drafts stay private; publish a page to make it public.
+        </p>
+        {profile.pages.map((page, i) => (
+          <div className="entry page-editor" key={`${page.slug}-${i}`}>
+            <div className="entry__head">
+              <span className="entry__title">{page.title || "(new page)"}</span>
+              <div className="entry__actions">
+                <button className="btn btn--icon" title="move up" onClick={() => edit((p) => ({ ...p, pages: move(p.pages, i, -1) }))}>↑</button>
+                <button className="btn btn--icon" title="move down" onClick={() => edit((p) => ({ ...p, pages: move(p.pages, i, 1) }))}>↓</button>
+                <button className="btn btn--icon btn--danger" title="remove page" onClick={() => edit((p) => ({ ...p, pages: p.pages.filter((_, j) => j !== i) }))}>×</button>
+              </div>
+            </div>
+            <div className="grid">
+              <Field
+                label="page title"
+                value={page.title}
+                onChange={(e) => {
+                  const title = e.target.value;
+                  patchPage(i, { title, ...(!page.slug ? { slug: pageSlug(title) } : {}) });
+                }}
+                maxLength={100}
+                placeholder="Overlays"
+              />
+              <Field
+                label="URL slug"
+                value={page.slug}
+                onChange={(e) => patchPage(i, { slug: pageSlug(e.target.value) })}
+                maxLength={80}
+                placeholder="overlays"
+              />
+              <Field
+                label="short description"
+                value={page.description}
+                onChange={(e) => patchPage(i, { description: e.target.value })}
+                maxLength={300}
+                full
+                placeholder="A quick introduction to this page"
+              />
+              <div className="field grid--full">
+                <label htmlFor={`page-content-${i}`}>page content</label>
+                <textarea
+                  id={`page-content-${i}`}
+                  className="page-editor__content"
+                  maxLength={20000}
+                  value={page.content}
+                  onChange={(e) => patchPage(i, { content: e.target.value })}
+                  placeholder={"## What this page is about\n\nWrite your content here. You can use headings, **bold text**, links, and bullet lists."}
+                />
+                <p className="hint">
+                  Supports Markdown headings, bold/italic text, links, images, quotes, and bullet lists.
+                </p>
+              </div>
+              <label className="page-editor__published grid--full">
+                <input
+                  type="checkbox"
+                  checked={page.published}
+                  onChange={(e) => patchPage(i, { published: e.target.checked })}
+                />
+                publish this page
+              </label>
+            </div>
+            {page.slug && (
+              <p className="hint page-editor__url">
+                URL: <a href={`/pages/${page.slug}`} target="_blank" rel="noreferrer">/pages/{page.slug}</a>
+                {page.published ? " · published" : " · draft"}
+              </p>
+            )}
+          </div>
+        ))}
+        <button
+          className="btn"
+          onClick={() => edit((p) => ({ ...p, pages: [...p.pages, { ...BLANK_PAGE }] }))}
+        >
+          + add page
         </button>
       </section>
 

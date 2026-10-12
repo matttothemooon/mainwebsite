@@ -15,6 +15,8 @@ Personal site for [mattothemoon.xyz](https://mattothemoon.xyz) — a terminal-st
 ```
 app/layout.jsx                  html shell + global styles
 app/page.jsx                    homepage — server-rendered from the profile
+app/pages/page.jsx              index of published custom pages
+app/pages/[slug]/page.jsx       server-rendered custom page
 app/globals.css                 the black terminal theme
 app/admin/page.jsx              /admin route
 app/admin/admin.css             admin-only styles
@@ -108,8 +110,13 @@ Go to `mattothemoon.xyz/admin` and sign in with Discord. Accounts not in
 - **links** — see below
 - **mod experience** — active and past groups, each entry with role, name, date,
   link URL, and the hover-card fields
+- **pages** — standalone pages with a title, URL slug, description, and Markdown
+  content. Draft pages are only visible in the admin; publishing them adds them
+  to `/pages` and the homepage. Unpublishing or deleting a page makes its URL
+  return 404. Content supports headings, lists, quotes, code blocks, formatting,
+  links, and HTTPS images.
 
-Saving revalidates the homepage, so changes appear immediately.
+Saving revalidates the homepage and page routes, so changes appear immediately.
 
 Removing an ID from `DISCORD_ALLOWED_IDS` revokes access immediately — the
 allowlist is re-checked on every request, not just at login.

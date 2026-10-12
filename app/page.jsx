@@ -39,6 +39,9 @@ export default async function Home() {
         <StatusBlock />
         <Experience experience={profile.experience} />
         <p className="guide-link"><a href="/what-i-use">what i use →</a></p>
+        {profile.pages.some((page) => page.published) && (
+          <p className="guide-link"><a href="/pages">pages →</a></p>
+        )}
       </main>
     </div>
   );
