@@ -259,6 +259,36 @@
   font-size: 0.7rem;
 }
 
+.page-editor__content {
+  min-height: 220px !important;
+  line-height: 1.6;
+}
+
+.page-editor__published {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin: 0 0 var(--gap-sm) !important;
+  color: var(--text) !important;
+  cursor: pointer;
+}
+
+.page-editor__published input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #aaa;
+}
+
+.page-editor__url {
+  overflow-wrap: anywhere;
+}
+
+.page-editor__url a {
+  color: var(--accent);
+}
+
 /* ---------- save bar ---------- */
 .savebar {
   position: sticky;
