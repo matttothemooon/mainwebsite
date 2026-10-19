@@ -22,7 +22,7 @@ export default function SocialLinks({ links = [] }) {
             {icon.type === "image" ? (
               // eslint-disable-next-line @next/next/no-img-element -- arbitrary
               // admin-supplied URL; next/image would need a remote allowlist.
-              <img src={icon.src} alt="" aria-hidden="true" />
+              <img src={icon.src} alt="" aria-hidden="true" loading="lazy" decoding="async" />
             ) : (
               <svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
                 <path d={icon.path} />

@@ -12,11 +12,11 @@ export default function GearGuide({ gear }) {
                 <dt>{item.label}</dt>
                 <dd>
                   {item.url ? (
-                    <a className="gear-item__product-link" href={item.url} target="_blank" rel="noreferrer">
+                    <a className="gear-item__product-link" href={item.url} target="_blank" rel="noopener noreferrer">
                       {item.value}
                       {item.imageUrl && (
                         <span className="gear-item__preview">
-                          <img src={item.imageUrl} alt="" loading="lazy" />
+                          <img src={item.imageUrl} alt="" loading="lazy" decoding="async" />
                         </span>
                       )}
                     </a>
@@ -24,7 +24,7 @@ export default function GearGuide({ gear }) {
                     <>
                       {item.value}
                       {item.imageUrl && (
-                        <img className="gear-item__image" src={item.imageUrl} alt="" loading="lazy" />
+                        <img className="gear-item__image" src={item.imageUrl} alt="" loading="lazy" decoding="async" />
                       )}
                     </>
                   )}

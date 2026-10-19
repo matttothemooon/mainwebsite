@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const viewport = {
-  themeColor: "#000000",
+  themeColor: "#08080d",
 };
 
 export const metadata = {

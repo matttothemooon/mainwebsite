@@ -1,26 +1,46 @@
 {
   "name": "mattothemoon",
   "bio": "community mod & streamer.",
+  "about": "I spend a lot of time around live communities—as a mod, admin, community manager, and streamer. I care about making chat welcoming, helping communities run smoothly, and sharing useful notes from what I learn.",
   "pages": [
     {
-      "title": "Overlays & resources",
+      "title": "My stream setup",
       "slug": "overlays-resources",
-      "description": "Stream setup notes, graphics, and the tools I use.",
-      "content": "## Stream resources\n\nI’m collecting the graphics, panels, and tools I use for streaming here. I’ll add downloadable assets as they’re ready.\n\n## My setup\n\nFor the current gear list, take a look at [What I Use](/what-i-use). It includes the Stream Deck and other equipment in my setup.\n\n## More coming soon\n\nI’ll update this page as I put together resources worth sharing.",
+      "category": "Stream setup",
+      "description": "The gear and small setup choices behind my streams.",
+      "content": "## My current setup\n\nI keep the current gear list on the [What I Use page](/what-i-use). It includes my PC, Wooting keyboard, Stream Decks, Wave:3 microphone, and other desk equipment.\n\n## What this guide covers\n\nI’m building this into a practical reference for my setup: what each piece is for, what I like about it, and the resources I actually use. I’ll add details as I have useful, firsthand notes to share.\n\nFor now, the gear list is the most up-to-date reference.",
       "published": true
     },
     {
-      "title": "Modding",
+      "title": "Overlay resources",
+      "slug": "overlay-resources",
+      "category": "Overlay resources",
+      "description": "Useful links for creating and running stream overlays.",
+      "content": "- [OBS Studio](https://obsproject.com/)\n- [StreamElements](https://streamelements.com/)\n- [Streamlabs](https://streamlabs.com/)\n- [Twitch Developer Documentation](https://dev.twitch.tv/docs/)",
+      "published": true
+    },
+    {
+      "title": "How I approach moderation",
       "slug": "modding",
-      "description": "A little about my work supporting streamer and Discord communities.",
-      "content": "## Community work\n\nI’m a community mod and streamer. I’ve helped out across Twitch and Discord communities in moderator, admin, and community manager roles.\n\n## Current experience\n\nMy current roles are listed on the [homepage](/), where I keep the names and links up to date.\n\n## Past experience\n\nI’ve also worked as Head Mod for Flynn and as a Community Manager for The Reapers. You can find the full experience list on the homepage.\n\n## Get in touch\n\nFor moderation or community-related inquiries, [email me](mailto:mattothemoon06@gmail.com) with a little context about the community and what kind of help you’re looking for.",
+      "category": "Moderation",
+      "description": "A few things I try to keep in mind while helping out in chat.",
+      "content": "## Where I'm coming from\n\nI've helped out in Twitch and Discord communities as a mod, admin, and community manager. Here's what I've found useful along the way.\n\n## The basics I come back to\n\n- Know the rules before chat gets busy, and make sure people can find them.\n- Be consistent. If you're not sure what to do, check with the team instead of guessing.\n- Keep replies short when someone is trying to start an argument. Chat usually moves on faster that way.\n- Don't share private info or bring internal mod conversations into public chat.\n\nEvery channel handles things a little differently, so follow the streamer and team's rules first.",
       "published": true
     },
     {
-      "title": "About & FAQ",
+      "title": "Mod resources",
+      "slug": "mod-resources",
+      "category": "Mod resources",
+      "description": "Useful links for stream and community moderation.",
+      "content": "- [Twitch Moderator View](https://help.twitch.tv/s/article/moderator-view?language=en_US)\n- [Twitch AutoMod](https://help.twitch.tv/s/article/automod?language=en_US)\n- [Twitch Safety Center](https://safety.twitch.tv/)\n- [Discord Moderator Academy](https://discord.com/moderation)\n- [Discord Safety Center](https://discord.com/safety)",
+      "published": true
+    },
+    {
+      "title": "Common questions",
       "slug": "about-faq",
-      "description": "A quick introduction and answers to a few common questions.",
-      "content": "## About\n\nI’m mattothemoon — a community mod and streamer. This site is where I share what I’m doing, the communities I’ve worked with, and the gear I use.\n\n## FAQ\n\n### What gear do you use?\n\nI keep my current setup on the [What I Use page](/what-i-use).\n\n### Where can I find your links?\n\nThe social icons on the [homepage](/) link to my profiles and community.\n\n### How can I contact you?\n\nYou can [email me](mailto:mattothemoon06@gmail.com). Include what you’re reaching out about so I can get back to you with the right context.",
+      "category": "FAQ",
+      "description": "Quick answers about my community work, setup, and links.",
+      "content": "## What do you do?\n\nI’m a community mod and streamer. My current and past roles are listed on the [homepage](/).\n\n## What gear do you use?\n\nMy current PC and desk setup are on the [What I Use page](/what-i-use).\n\n## Where can I find your guides?\n\nThe [Streamer & Mod Guide](/pages) has my notes on moderation and stream setup. I’ll add more as I have useful things to share.\n\n## How can I contact you?\n\nUse the [email link](mailto:mattothemoon06@gmail.com) or one of the social links on the homepage.",
       "published": true
     }
   ],
@@ -59,6 +79,11 @@
       "label": "email",
       "url": "mailto:mattothemoon06@gmail.com",
       "iconUrl": ""
+    },
+    {
+      "label": "LastFM",
+      "url": "https://www.last.fm/user/matttothemoon",
+      "iconUrl": ""
     }
   ],
   "experience": {
@@ -66,15 +91,17 @@
       {
         "role": "Twitch Mod",
         "name": "Jasontheween",
+        "description": "Help moderate Twitch chat and support a welcoming community.",
         "url": "https://twitch.tv/jasontheween",
         "date": "present",
         "twitch": "jasontheween",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/a04be2b0-9cc1-403c-a4b0-47b32d1fe640-profile_image-300x300.png",
-        "followers": 2809442
+        "followers": 2827286
       },
       {
         "role": "Admin",
         "name": "ChubsC",
+        "description": "Help with community administration and day-to-day support.",
         "url": "https://twitch.tv/chubsc",
         "date": "present",
         "twitch": "chubsc",
@@ -84,6 +111,7 @@
       {
         "role": "Discord Admin",
         "name": "TenacityTV",
+        "description": "Help manage and support the Discord community.",
         "url": "https://twitch.tv/tenacitytv",
         "date": "present",
         "twitch": "tenacitytv",
@@ -93,6 +121,7 @@
       {
         "role": "Discord Mod",
         "name": "Cizzorz",
+        "description": "Help moderate the community and keep chat welcoming.",
         "url": "https://twitch.tv/cizzorz",
         "date": "present",
         "twitch": "cizzorz",
@@ -104,6 +133,7 @@
       {
         "role": "Head Mod",
         "name": "Flynn",
+        "description": "Helped guide moderation and support the community.",
         "url": "",
         "date": "Oct 2021 \u2013 Jan 2025",
         "twitch": "flynnislivee",
@@ -113,6 +143,7 @@
       {
         "role": "Community Manager",
         "name": "DannyyyTTV_",
+        "description": "Supported community management and member engagement.",
         "url": "https://twitch.tv/dannyyyttv_",
         "date": "Jun 2016 \u2013 Jan 2025",
         "twitch": "dannyyyttv_",
@@ -122,6 +153,7 @@
       {
         "role": "CM",
         "name": "Sinnski",
+        "description": "Supported community management and day-to-day community needs.",
         "url": "https://www.twitch.tv/sinnski",
         "date": "June 2021-Sepember 2026",
         "twitch": "sinnski",

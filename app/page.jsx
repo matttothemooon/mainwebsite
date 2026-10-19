@@ -2,7 +2,7 @@ import { getProfile } from "@/lib/storage";
 import SocialLinks from "@/components/SocialLinks";
 import StatusBlock from "@/components/StatusBlock";
 import Experience from "@/components/Experience";
-import GearGuide from "@/components/GearGuide";
+import SiteNavigation from "@/components/SiteNavigation";
 
 // The old static page fetched its content client-side and needed an inline
 // bootstrap copy to avoid a flash. Rendering on the server removes both — and
@@ -32,16 +32,19 @@ export default async function Home() {
       </div>
 
       <main className="terminal__content">
+        <SiteNavigation current="home" />
         <h1>{profile.name}</h1>
         <p className="bio">{profile.bio}</p>
 
         <SocialLinks links={profile.links} />
+        {profile.about && (
+          <section className="about-section" aria-labelledby="about-heading">
+            <h2 id="about-heading">A little about me</h2>
+            <p>{profile.about}</p>
+          </section>
+        )}
         <StatusBlock />
         <Experience experience={profile.experience} />
-        <p className="guide-link"><a href="/what-i-use">what i use →</a></p>
-        {profile.pages.some((page) => page.published) && (
-          <p className="guide-link"><a href="/pages">pages →</a></p>
-        )}
       </main>
     </div>
   );

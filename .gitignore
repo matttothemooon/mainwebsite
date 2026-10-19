@@ -12,6 +12,8 @@ next-env.d.ts
 
 # local dev storage — the deployed site uses Vercel Blob
 .dev-profile.json
+.dev-subgoal.json
+.dev-subgoal-*
 public/uploads
 
 # next.js auto-generates these on build
