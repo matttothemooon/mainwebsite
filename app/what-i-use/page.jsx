@@ -8,7 +8,7 @@ export const metadata = {
 };
 
 export default async function WhatIUsePage() {
-  const profile = await getProfile();
+  const profile = await getProfile({ fresh: true });
   return (
     <div className="terminal terminal--wide">
       <div className="terminal__bar"><span /><span /><span /></div>

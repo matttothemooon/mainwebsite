@@ -9,7 +9,7 @@ export const metadata = {
 };
 
 export default async function PagesIndex() {
-  const { pages } = await getProfile();
+  const { pages } = await getProfile({ fresh: true });
   const publishedPages = pages.filter((page) => page.published);
   const categoryOrder = ["Moderation", "Mod resources", "Stream setup", "Overlay resources", "FAQ", "More"];
   const categories = [...new Set(
