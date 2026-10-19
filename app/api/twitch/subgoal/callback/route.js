@@ -6,6 +6,8 @@ import {
   fetchActiveSubscribers,
   readSubgoalStateById,
   registerSubgoalSubscriptions,
+  subgoalClientId,
+  subgoalClientSecret,
   subgoalPublicUrl,
   twitchSubgoalConfigProblems,
   validateTwitchAccessToken,
@@ -67,8 +69,8 @@ export async function GET(request) {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
-        client_id: process.env.TWITCH_CLIENT_ID.trim(),
-        client_secret: process.env.TWITCH_CLIENT_SECRET.trim(),
+        client_id: subgoalClientId(),
+        client_secret: subgoalClientSecret(),
         grant_type: "authorization_code",
         code,
         redirect_uri: redirectUri,
@@ -88,7 +90,7 @@ export async function GET(request) {
     const validation = await validateTwitchAccessToken(token.access_token);
     const userResponse = await fetch("https://api.twitch.tv/helix/users", {
       headers: {
-        "Client-Id": process.env.TWITCH_CLIENT_ID.trim(),
+        "Client-Id": subgoalClientId(),
         Authorization: `Bearer ${token.access_token}`,
       },
       cache: "no-store",
