@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 export const revalidate = 60;
 
 async function getPublishedPage(slug) {
-  const { pages } = await getProfile();
+  const { pages } = await getProfile({ fresh: true });
   return pages.find((page) => page.slug === slug && page.published);
 }
 
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }) {
 
 export default async function CustomPage({ params }) {
   const { slug } = await params;
-  const profile = await getProfile();
+  const profile = await getProfile({ fresh: true });
   const page = profile.pages.find((entry) => entry.slug === slug && entry.published);
   if (!page) notFound();
   const relatedPages = ["Mod resources", "Overlay resources"].includes(page.category)

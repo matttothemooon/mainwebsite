@@ -4,8 +4,8 @@ import { getProfile, DEFAULT_PROFILE } from "@/lib/storage";
 
 export async function GET() {
   try {
-    return Response.json(await getProfile(), {
-      headers: { "Cache-Control": "s-maxage=60, stale-while-revalidate=300" },
+    return Response.json(await getProfile({ fresh: true }), {
+      headers: { "Cache-Control": "no-store" },
     });
   } catch (err) {
     console.error("Profile fetch failed:", err);

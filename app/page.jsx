@@ -11,7 +11,7 @@ import SiteNavigation from "@/components/SiteNavigation";
 export const revalidate = 60;
 
 export async function generateMetadata() {
-  const { name, bio } = await getProfile();
+  const { name, bio } = await getProfile({ fresh: true });
   return {
     title: name,
     description: bio,
@@ -21,7 +21,7 @@ export async function generateMetadata() {
 }
 
 export default async function Home() {
-  const profile = await getProfile();
+  const profile = await getProfile({ fresh: true });
 
   return (
     <div className="terminal">
