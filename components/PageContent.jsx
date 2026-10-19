@@ -116,7 +116,7 @@ export default function PageContent({ content = "" }) {
       if (src) {
         blocks.push(
           // eslint-disable-next-line @next/next/no-img-element -- page content uses admin-authored image URLs.
-          <img className="page-content__image" key={`img-${blocks.length}`} src={src} alt={image[1]} loading="lazy" />
+          <img className="page-content__image" key={`img-${blocks.length}`} src={src} alt={image[1]} loading="lazy" decoding="async" />
         );
       }
       return;

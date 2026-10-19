@@ -98,30 +98,35 @@ export default function Experience({ experience }) {
           if (!entries.length) return null;
 
           return (
-            <div className="exp-group" key={key}>
+            <div className={`exp-group exp-group--${key}`} key={key}>
               <div className="exp-label">{label}</div>
 
               {entries.map((entry, i) => {
                 const Tag = entry.url ? "a" : "span";
 
                 return (
-                  <div className="exp-row" key={`${entry.name}-${i}`}>
-                    <div className="exp-main">
-                      <span className="exp-role">{entry.role}</span>
-                      <Tag
-                        className="exp-place exp-place--has-card"
-                        {...(entry.url
-                          ? { href: entry.url, target: "_blank", rel: "noopener noreferrer" }
-                          : { tabIndex: 0 })}
-                        onMouseEnter={show(entry)}
-                        onMouseLeave={hide}
-                        onFocus={show(entry)}
-                        onBlur={hide}
-                      >
-                        {entry.name}
-                      </Tag>
+                  <div className="exp-item" key={`${entry.name}-${i}`}>
+                    <div className="exp-row">
+                      <div className="exp-main">
+                        <span className="exp-role">{entry.role}</span>
+                        <Tag
+                          className="exp-place exp-place--has-card"
+                          {...(entry.url
+                            ? { href: entry.url, target: "_blank", rel: "noopener noreferrer" }
+                            : { tabIndex: 0 })}
+                          onMouseEnter={show(entry)}
+                          onMouseLeave={hide}
+                          onFocus={show(entry)}
+                          onBlur={hide}
+                        >
+                          {entry.name}
+                        </Tag>
+                      </div>
+                      <span className="exp-date">{entry.date}</span>
                     </div>
-                    <span className="exp-date">{entry.date}</span>
+                    {entry.description && (
+                      <p className="exp-description">{entry.description}</p>
+                    )}
                   </div>
                 );
               })}
@@ -153,6 +158,8 @@ export default function Experience({ experience }) {
                 src={active.entry.avatar}
                 alt=""
                 aria-hidden="true"
+                loading="lazy"
+                decoding="async"
               />
             )}
             <div className="streamer-card__body">

@@ -6,6 +6,7 @@
     "dev": "ADMIN_DEV_NO_AUTH=1 next dev",
     "dev:auth": "next dev",
     "build": "next build",
+    "test": "node --test",
     "start": "next start"
   },
   "dependencies": {

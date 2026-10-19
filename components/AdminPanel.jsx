@@ -8,6 +8,7 @@ import IconPreview from "./IconPreview";
 const BLANK_ENTRY = {
   role: "",
   name: "",
+  description: "",
   url: "",
   date: "",
   twitch: "",
@@ -18,7 +19,7 @@ const BLANK_ENTRY = {
 const BLANK_LINK = { label: "", url: "", iconUrl: "" };
 const BLANK_GEAR = { name: "", items: [] };
 const BLANK_GEAR_ITEM = { label: "", value: "", url: "", imageUrl: "" };
-const BLANK_PAGE = { title: "", slug: "", description: "", content: "", published: false };
+const BLANK_PAGE = { title: "", slug: "", category: "", description: "", content: "", published: false };
 
 function pageSlug(value) {
   return value
@@ -191,7 +192,7 @@ export default function AdminPanel() {
 
   return (
     <Shell>
-      <p className="bio">edit everything on the homepage</p>
+      <p className="bio">edit homepage content, experience, gear, and guide pages</p>
 
       {devBypass && (
         <div className="dev-banner">
@@ -208,6 +209,16 @@ export default function AdminPanel() {
         <div className="field">
           <label htmlFor="f-bio">bio</label>
           <textarea id="f-bio" maxLength={280} value={profile.bio} onChange={setField("bio")} />
+        </div>
+        <div className="field">
+          <label htmlFor="f-about">about me</label>
+          <textarea
+            id="f-about"
+            maxLength={600}
+            value={profile.about || ""}
+            onChange={setField("about")}
+            placeholder="A little more about what you do, care about, and share here"
+          />
         </div>
       </section>
 
@@ -296,7 +307,7 @@ export default function AdminPanel() {
       <section className="section">
         <h2 className="section__title">pages</h2>
         <p className="hint" style={{ marginBottom: "var(--gap-sm)" }}>
-          Create standalone pages with their own URL. Drafts stay private; publish a page to make it public.
+          Add guide pages or a simple resource list using Markdown links. Categories group published pages; drafts stay private until published.
         </p>
         {profile.pages.map((page, i) => (
           <div className="entry page-editor" key={`${page.slug}-${i}`}>
@@ -317,7 +328,7 @@ export default function AdminPanel() {
                   patchPage(i, { title, ...(!page.slug ? { slug: pageSlug(title) } : {}) });
                 }}
                 maxLength={100}
-                placeholder="Overlays"
+                placeholder="Moderation"
               />
               <Field
                 label="URL slug"
@@ -325,6 +336,13 @@ export default function AdminPanel() {
                 onChange={(e) => patchPage(i, { slug: pageSlug(e.target.value) })}
                 maxLength={80}
                 placeholder="overlays"
+              />
+              <Field
+                label="guide category"
+                value={page.category || ""}
+                onChange={(e) => patchPage(i, { category: e.target.value })}
+                maxLength={60}
+                placeholder="Moderation"
               />
               <Field
                 label="short description"
@@ -371,6 +389,16 @@ export default function AdminPanel() {
         >
           + add page
         </button>
+      </section>
+
+      <section className="section">
+        <h2>streamer overlay setup</h2>
+        <p className="hint">
+          The overlay setup is public so each streamer can connect their own
+          Twitch account and keep their settings separate. This admin panel
+          remains for editing this website.
+        </p>
+        <a className="btn" href="/stream-overlays">open streamer setup</a>
       </section>
 
       <div className="savebar">
@@ -562,6 +590,14 @@ function EntryCard({ entry, twitchEnabled, onChange, onMove, onRemove, onStatus 
         <Field label="name" value={entry.name} onChange={text("name")} maxLength={60} placeholder="ChubsC" />
         <Field label="role" value={entry.role} onChange={text("role")} maxLength={60} placeholder="Admin" />
         <Field label="date" value={entry.date} onChange={text("date")} maxLength={60} placeholder="present" />
+        <Field
+          label="role summary"
+          value={entry.description || ""}
+          onChange={text("description")}
+          maxLength={280}
+          placeholder="A short note about what you did in this role"
+          full
+        />
         <Field
           label="follower count"
           type="number"

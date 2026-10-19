@@ -77,7 +77,10 @@ export default function StatusBlock() {
             className="discord-profile-avatar"
             src={avatarUrl}
             alt=""
-            loading="lazy"
+            width="58"
+            height="58"
+            loading="eager"
+            fetchPriority="high"
           />
           {data?.active_on_discord_mobile && (
             <span className="discord-profile-mobile" aria-label="Active on mobile">📱</span>
@@ -148,7 +151,7 @@ export default function StatusBlock() {
           </button>
         </div>
       )}
-      <div className="status-row">
+      <div className={`status-row${data && !game ? " status-row--empty" : ""}`}>
         <span className="status-icon status-icon--playing" aria-hidden="true">
           <span />
         </span>
@@ -157,7 +160,7 @@ export default function StatusBlock() {
           {data ? playingText : "checking…"}
         </span>
       </div>
-      <div className="status-row">
+      <div className={`status-row${data && !spotify ? " status-row--empty" : ""}`}>
         <BrandIcon icon={siSpotify} className="status-icon status-icon--spotify" />
         <span className="status-label">listening to</span>
         {spotify ? (
