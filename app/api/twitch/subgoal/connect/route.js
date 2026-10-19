@@ -1,5 +1,6 @@
 import { createState } from "@/lib/auth";
 import {
+  subgoalClientId,
   subgoalPublicUrl,
   twitchSubgoalConfigProblems,
 } from "@/lib/twitch-subgoal";
@@ -16,7 +17,7 @@ export async function GET(request) {
   const { nonce, cookie } = createState(request, "twitch_subgoal_state");
   const redirectUri = subgoalPublicUrl("/api/twitch/subgoal/callback", request.url);
   const params = new URLSearchParams({
-    client_id: process.env.TWITCH_CLIENT_ID.trim(),
+    client_id: subgoalClientId(),
     redirect_uri: redirectUri,
     response_type: "code",
     scope: "channel:read:subscriptions user:read:chat",

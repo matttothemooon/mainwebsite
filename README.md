@@ -188,7 +188,9 @@ To enable automatic updates:
 2. In Vercel, connect a **private** Blob store to this project. Add its
    `BLOB_READ_WRITE_TOKEN` to the Production environment if Vercel does not
    provide Blob credentials automatically.
-3. Add `TWITCH_CLIENT_ID` and `TWITCH_CLIENT_SECRET` from the Twitch app, and
+3. Add `TWITCH_CLIENT_ID` and `TWITCH_CLIENT_SECRET` from the Twitch app. If
+   those unsuffixed variables are used by another feature, the sub-goal overlay
+   can instead use `TWITCH_CLIENT_ID2` and `TWITCH_CLIENT_SECRET2`. Add
    `SUBGOAL_ENCRYPTION_KEY` as a new 32-byte key. Generate one with
    `openssl rand -hex 32`. Do not reuse `SESSION_SECRET` or expose this key to
    client code. Set `SITE_URL` to the canonical HTTPS origin used by the app
