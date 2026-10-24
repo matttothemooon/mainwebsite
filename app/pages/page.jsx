@@ -11,7 +11,7 @@ export const metadata = {
 export default async function PagesIndex() {
   const { pages } = await getProfile({ fresh: true });
   const publishedPages = pages.filter((page) => page.published);
-  const categoryOrder = ["Moderation", "Mod resources", "Stream setup", "Overlay resources", "FAQ", "More"];
+  const categoryOrder = ["Moderation", "Mod resources", "Stream setup", "FAQ", "More"];
   const categories = [...new Set(
     publishedPages.map((page) => page.category || "More")
   )].sort((a, b) => {
@@ -41,7 +41,6 @@ export default async function PagesIndex() {
               ))}
             </nav>
           )}
-          <a className="guide-index__related" href="/stream-overlays">See my stream overlay ↗</a>
         </header>
         {publishedPages.length ? (
           categories.map((category) => (

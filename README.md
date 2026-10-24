@@ -111,8 +111,7 @@ Go to `mattothemoon.xyz/admin` and sign in with Discord. Accounts not in
 - **mod experience** — active and past groups, each entry with role, name, date,
   link URL, and the hover-card fields
 - **pages** — guide pages and resource lists with a title, URL slug, category,
-  description, and Markdown content. The Mod resources and Overlay resources
-  pages are plain lists of links; edit them here like any other page. Published
+  description, and Markdown content. Published
   pages are grouped by category on `/pages` and linked from the homepage. Draft
   pages stay private; unpublishing or deleting a page makes its URL return 404.
   Content supports headings, lists, quotes, code blocks, formatting, links, and
@@ -172,64 +171,6 @@ follower counts behind a *user* access token carrying the
 is all a server can hold — cannot read another channel's count, so the API
 returns nothing and the panel falls back to the number you enter. The fetch
 button still fills in the avatar and display name.
-
-## Twitch sub-goal overlay
-
-The public `/stream-overlays` page is a self-service setup dashboard. Every
-streamer connects their own Twitch account once; the website's private `/admin`
-panel is not needed. Twitch authorization is required for automatic subscription
-events and chat commands.
-
-To enable automatic updates:
-
-1. In the Twitch Developer Console, create or select an app and set its OAuth
-   redirect URL to `https://www.mattothemoon.xyz/api/twitch/subgoal/callback`.
-   The app uses `SITE_URL` as the canonical host for Twitch callbacks.
-2. In Vercel, connect a **private** Blob store to this project. Add its
-   `BLOB_READ_WRITE_TOKEN` to the Production environment if Vercel does not
-   provide Blob credentials automatically.
-3. Add `TWITCH_CLIENT_ID2` and `TWITCH_CLIENT_SECRET2` from the Twitch app for
-   the sub-goal overlay. The overlay prefers these; other Twitch integrations
-   continue using the unsuffixed variables. If the suffixed variables are
-   absent, the overlay falls back to `TWITCH_CLIENT_ID` and
-   `TWITCH_CLIENT_SECRET`. Add `SUBGOAL_ENCRYPTION_KEY` as a new 32-byte key.
-   Generate one with
-   `openssl rand -hex 32`. Do not reuse `SESSION_SECRET` or expose this key to
-   client code. Set `SITE_URL` to the canonical HTTPS origin used by the app
-   (`https://www.mattothemoon.xyz`).
-4. Redeploy. Each streamer opens `/stream-overlays` and chooses **connect my
-   Twitch**. Approve the
-   `channel:read:subscriptions` and `user:read:chat` permissions.
-5. Copy the channel URL from the setup page into OBS as a Browser Source at
-   exactly **600 × 80**. Leave **Shutdown source when not visible** disabled.
-
-The initial count is seeded from the connected channel's active subscribers.
-New subscriptions, resubs, and gift subscriptions increment the saved count;
-it does not reset automatically. The broadcaster and moderators can use:
-
-- `!subgoal <number>` — set the goal
-- `!setsubs <number>` — set the current count
-- `!ic <number>` — set the goal
-- `!remove` — subtract one from the count
-- `!increment <number>` — add that many to the count
-- `!hidegoal` / `!showgoal` — hide or show the goal
-- `!painturl <url>` / `!clearpaint` — apply or clear a 7TV paint across all
-  overlay text (label, count, and goal)
-
-The existing `!subs +`, `!subs -`, and `!resetsubs` commands are also supported.
-Paint URLs must be valid 7TV paint links.
-
-Twitch sends chat commands and subscription events to the EventSub webhook at
-`/api/twitch/subgoal/eventsub`. The webhook verifies Twitch's request signature,
-and only the broadcaster or moderators can change the count or goal. Each
-channel's encrypted OAuth credentials and overlay state are stored separately
-in private Blob storage. The overlay URL's `channel` parameter selects that
-channel's saved state. Use `/overlay/subgoal?demo=1&channel=feelssunnyman` to
-preview the visual, or add `&test=1` and size the test source to 600 × 180 to
-use the on-screen test controls.
-
-For local development, encrypted per-channel state is stored in ignored
-`.dev-subgoal-*.json` files.
 
 ## How storage works
 

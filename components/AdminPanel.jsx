@@ -391,16 +391,6 @@ export default function AdminPanel() {
         </button>
       </section>
 
-      <section className="section">
-        <h2>streamer overlay setup</h2>
-        <p className="hint">
-          The overlay setup is public so each streamer can connect their own
-          Twitch account and keep their settings separate. This admin panel
-          remains for editing this website.
-        </p>
-        <a className="btn" href="/stream-overlays">open streamer setup</a>
-      </section>
-
       <div className="savebar">
         <button className="btn" onClick={save} disabled={saving}>
           save changes
