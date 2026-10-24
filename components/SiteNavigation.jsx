@@ -1,8 +1,6 @@
 const links = [
   { href: "/", label: "Home", section: "home" },
-  { href: "/what-i-use", label: "What I use", section: "gear" },
-  { href: "/stream-overlays", label: "Stream overlays", section: "overlays" },
-  { href: "/pages", label: "Mod guide", section: "guide" },
+  { href: "/what-i-use", label: "Tools", section: "gear" },
 ];
 
 export default function SiteNavigation({ current }) {
