@@ -1,7 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /admin
-Disallow: /cms
 Disallow: /api/
 
 Sitemap: https://mattothemoon.xyz/sitemap.xml
