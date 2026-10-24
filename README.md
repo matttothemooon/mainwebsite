@@ -32,13 +32,14 @@ app/api/admin/profile/route.js  protected read/write of the whole profile
 app/api/admin/twitch/route.js   protected Twitch channel lookup
 app/api/admin/upload/route.js   protected custom link-icon upload
 app/api/auth/{login,callback,logout}/route.js   Discord OAuth
+app/api/cms-{auth,callback}/route.js            Decap CMS GitHub OAuth
 
 lib/auth.js                     session cookie, allowlist, OAuth state
 lib/storage.js                  profile + icon storage, validation
 lib/icons.js                    URL/label -> brand icon resolution
 lib/twitch.js                   Twitch app token + channel lookup
 
-public/                         robots.txt, uploads/
+public/                         robots.txt, sitemap.xml, cms/, uploads/
 ```
 
 ## Running locally
@@ -204,3 +205,26 @@ when saving if the token is missing.
 - The OAuth flow uses a signed, single-use `state` cookie to block CSRF.
 - Cookie signatures are compared in constant time.
 - Sessions last 12 hours.
+
+## Decap CMS (`/cms`)
+
+A separate Decap CMS for long-form Markdown pages under `content/pages`, at
+`/cms`, using **GitHub** OAuth. Independent of the Discord admin panel and
+unrelated to the homepage content. Needs `OAUTH_CLIENT_ID` / `OAUTH_CLIENT_SECRET`
+(a GitHub OAuth App whose callback URL is `https://<host>/api/cms-callback`).
+
+Note that nothing currently renders `content/pages/*.md` into pages — the old
+`build.js` that did this was removed during the Next.js migration, since it
+deleted and rebuilt `public/`, which is now Next's static asset directory. To
+publish those pages, add a route that reads the Markdown (for example an
+`app/[slug]/page.jsx` using `gray-matter` + `marked`).
+
+`templates/page-template.html` is likewise orphaned — it still links to the
+pre-migration `/styles.css` and `/site.js`, which no longer exist. Treat it as a
+reference for the old markup, not something to reuse as-is.
+
+`content/pages/mod-experiance.md` duplicates the mod experience that now lives in
+the admin panel. The homepage reads the admin panel's data, not that file.
+
+If you don't want the CMS, deleting `public/cms/`, `app/api/cms-*`, `content/`,
+and `templates/` removes it cleanly.

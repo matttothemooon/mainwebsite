@@ -5,6 +5,15 @@ const nextConfig = {
   // next/image's remote allowlist.
   images: { unoptimized: true },
 
+  // The Decap CMS is plain static files in public/. Next serves those by exact
+  // path only, so /cms needs pointing at its index.
+  async rewrites() {
+    return [
+      { source: "/cms", destination: "/cms/index.html" },
+      { source: "/cms/", destination: "/cms/index.html" },
+    ];
+  },
+
   async headers() {
     return [
       {

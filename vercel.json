@@ -1,12 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "nextjs",
-  "redirects": [
-    {
-      "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.mattothemoon.xyz" }],
-      "destination": "https://mattothemoon.xyz/:path*",
-      "permanent": true
-    }
-  ]
+  "framework": "nextjs"
 }
