@@ -24,27 +24,30 @@ export default async function Home() {
   const profile = await getProfile({ fresh: true });
 
   return (
-    <div className="terminal">
-      <div className="terminal__bar">
-        <span />
-        <span />
-        <span />
-      </div>
-
-      <main className="terminal__content">
+    <div className="terminal terminal--home">
+      <main className="terminal__content home-page">
         <SiteNavigation current="home" />
-        <h1>{profile.name}</h1>
-        <p className="bio">{profile.bio}</p>
 
-        <SocialLinks links={profile.links} />
+        <header className="home-hero">
+          <div className="home-hero__content">
+            <h1>{profile.name}</h1>
+            <p className="bio">{profile.bio}</p>
+            <SocialLinks links={profile.links} />
+          </div>
+        </header>
+
         {profile.about && (
           <section className="about-section" aria-labelledby="about-heading">
             <h2 id="about-heading">A little about me</h2>
             <p>{profile.about}</p>
           </section>
         )}
+
         <StatusBlock />
-        <Experience experience={profile.experience} />
+        <section className="experience-section" aria-labelledby="experience-heading">
+          <h2 id="experience-heading">Mod list</h2>
+          <Experience experience={profile.experience} />
+        </section>
       </main>
     </div>
   );
