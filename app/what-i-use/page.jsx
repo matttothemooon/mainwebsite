@@ -35,7 +35,7 @@ export default async function WhatIUsePage() {
           </section>
         )}
         {gearCount > 0 && (
-          <details className="tools-setup">
+          <details className="tools-setup" open>
             <summary>
               My setup
             </summary>
