@@ -12,35 +12,11 @@
       "published": true
     },
     {
-      "title": "Overlay resources",
-      "slug": "overlay-resources",
-      "category": "Overlay resources",
-      "description": "Useful links for creating and running stream overlays.",
-      "content": "- [OBS Studio](https://obsproject.com/)\n- [StreamElements](https://streamelements.com/)\n- [Streamlabs](https://streamlabs.com/)\n- [Twitch Developer Documentation](https://dev.twitch.tv/docs/)",
-      "published": true
-    },
-    {
-      "title": "How I approach moderation",
-      "slug": "modding",
-      "category": "Moderation",
-      "description": "A few things I try to keep in mind while helping out in chat.",
-      "content": "## Where I'm coming from\n\nI've helped out in Twitch and Discord communities as a mod, admin, and community manager. Here's what I've found useful along the way.\n\n## The basics I come back to\n\n- Know the rules before chat gets busy, and make sure people can find them.\n- Be consistent. If you're not sure what to do, check with the team instead of guessing.\n- Keep replies short when someone is trying to start an argument. Chat usually moves on faster that way.\n- Don't share private info or bring internal mod conversations into public chat.\n\nEvery channel handles things a little differently, so follow the streamer and team's rules first.",
-      "published": true
-    },
-    {
       "title": "Mod resources",
       "slug": "mod-resources",
       "category": "Mod resources",
       "description": "Useful links for stream and community moderation.",
       "content": "- [Twitch Moderator View](https://help.twitch.tv/s/article/moderator-view?language=en_US)\n- [Twitch AutoMod](https://help.twitch.tv/s/article/automod?language=en_US)\n- [Twitch Safety Center](https://safety.twitch.tv/)\n- [Discord Moderator Academy](https://discord.com/moderation)\n- [Discord Safety Center](https://discord.com/safety)",
-      "published": true
-    },
-    {
-      "title": "Common questions",
-      "slug": "about-faq",
-      "category": "FAQ",
-      "description": "Quick answers about my community work, setup, and links.",
-      "content": "## What do you do?\n\nI’m a community mod and streamer. My current and past roles are listed on the [homepage](/).\n\n## What tools and gear do you use?\n\nMy current PC and desk setup are on the [Tools page](/what-i-use).\n\n## Where can I find your guides?\n\nThe [Streamer & Mod Guide](/pages) has my notes on moderation and stream setup. I’ll add more as I have useful things to share.\n\n## How can I contact you?\n\nUse the [email link](mailto:mattothemoon06@gmail.com) or one of the social links on the homepage.",
       "published": true
     }
   ],
@@ -96,7 +72,7 @@
         "date": "present",
         "twitch": "jasontheween",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/a04be2b0-9cc1-403c-a4b0-47b32d1fe640-profile_image-300x300.png",
-        "followers": 2827286
+        "followers": 2838284
       },
       {
         "role": "Admin",
@@ -135,7 +111,7 @@
         "name": "Flynn",
         "description": "Helped guide moderation and support the community.",
         "url": "",
-        "date": "Oct 2021 \u2013 Jan 2025",
+        "date": "Oct 2021 – Jan 2025",
         "twitch": "flynnislivee",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/e558a0bc-5d67-415d-976f-9cd24a435f8f-profile_image-300x300.png",
         "followers": 7109
@@ -145,7 +121,7 @@
         "name": "DannyyyTTV_",
         "description": "Supported community management and member engagement.",
         "url": "https://twitch.tv/dannyyyttv_",
-        "date": "Jun 2016 \u2013 Jan 2025",
+        "date": "Jun 2016 – Jan 2025",
         "twitch": "dannyyyttv_",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/f82c33f4-9b60-4447-a6a8-a33af9775cc6-profile_image-300x300.png",
         "followers": 359
