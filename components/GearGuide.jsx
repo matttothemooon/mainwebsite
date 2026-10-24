@@ -1,9 +1,20 @@
 export default function GearGuide({ gear }) {
-  if (!gear?.length) return null;
+  const categories = gear
+    ?.map((category) => ({
+      ...category,
+      items: category.items.filter((item) => {
+        const label = item.label.trim().toLowerCase();
+        const value = item.value.trim().toLowerCase();
+        return !(label === "example" && value === "add a product in the admin panel");
+      }),
+    }))
+    .filter((category) => category.name.trim() && category.items.length);
+
+  if (!categories?.length) return null;
 
   return (
     <div className="gear-grid">
-      {gear.map((category) => (
+      {categories.map((category) => (
         <section className="gear-category" key={category.name}>
           <h2>{category.name}</h2>
           <dl>
