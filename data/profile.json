@@ -72,7 +72,7 @@
         "date": "present",
         "twitch": "jasontheween",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/a04be2b0-9cc1-403c-a4b0-47b32d1fe640-profile_image-300x300.png",
-        "followers": 2838284
+        "followers": 2843775
       },
       {
         "role": "Admin",
@@ -82,7 +82,7 @@
         "date": "present",
         "twitch": "chubsc",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/7caf04be-7bcc-4097-acc1-da12051def4d-profile_image-300x300.png",
-        "followers": 11141
+        "followers": 11123
       },
       {
         "role": "Discord Admin",
@@ -92,7 +92,7 @@
         "date": "present",
         "twitch": "tenacitytv",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/b337b31d-c1c1-4f00-8472-6ac0e6123d24-profile_image-300x300.png",
-        "followers": 549741
+        "followers": 554735
       },
       {
         "role": "Discord Mod",
@@ -102,7 +102,7 @@
         "date": "present",
         "twitch": "cizzorz",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/b59543d6-96ee-40a6-bf4a-11dbf1d67a18-profile_image-300x300.png",
-        "followers": 1951454
+        "followers": 1950387
       }
     ],
     "past": [
@@ -114,7 +114,7 @@
         "date": "Oct 2021 – Jan 2025",
         "twitch": "flynnislivee",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/e558a0bc-5d67-415d-976f-9cd24a435f8f-profile_image-300x300.png",
-        "followers": 7109
+        "followers": 7102
       },
       {
         "role": "Community Manager",
@@ -181,7 +181,7 @@
           "label": "Keyboard",
           "value": "Wooting 80HE",
           "url": "https://wooting.io/wooting-80he",
-          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/bf9ade5e5c4c744c.webp"
+          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/9ef9ab8e3792d3f9.webp"
         },
         {
           "label": "Mouse",
@@ -193,7 +193,7 @@
           "label": "Mousepad",
           "value": "Icy Cyan TOPO Mousepad",
           "url": "https://gutzyaiden.com/products/icy-cyan-topo-mousepad",
-          "imageUrl": ""
+          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/355cbcab90c5491d.jpg"
         },
         {
           "label": "Stream Deck",
@@ -205,25 +205,25 @@
           "label": "Stream Deck",
           "value": "Elgato Stream Deck Neo",
           "url": "https://www.elgato.com/us/en/p/stream-deck-neo",
-          "imageUrl": ""
+          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/701740e4b1b6b5a1.jpg"
         },
         {
           "label": "Microphone",
           "value": "Elgato Wave:3",
           "url": "https://www.elgato.com/us/en/p/wave-3",
-          "imageUrl": ""
+          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/0a5c198f3441f6f4.png"
         },
         {
           "label": "Mic Arm",
           "value": "Elgato Wave Mic Arm LP",
           "url": "https://www.elgato.com/us/en/p/wave-mic-arm-lp",
-          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/c1bebf5a68969a5d.jpg"
+          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/dad125d334b80b9e.jpg"
         },
         {
           "label": "Headphones",
           "value": "Apple AirPods Max",
           "url": "https://www.apple.com/airpods-max/",
-          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/230a9e0268c5c9dd.png"
+          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/769fdfe5cf3c2028.png"
         }
       ]
     },
