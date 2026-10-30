@@ -2,6 +2,7 @@ import {
   authConfigProblems,
   clearStateCookie,
   consumeState,
+  identityCookie,
   envTrimmed,
   isAllowed,
   sessionCookie,
@@ -106,6 +107,7 @@ export async function GET(request) {
 
   const headers = new Headers({ Location: "/admin" });
   headers.append("Set-Cookie", sessionCookie(request, user));
+  headers.append("Set-Cookie", identityCookie(request, user));
   headers.append("Set-Cookie", clearStateCookie(request));
 
   return new Response(null, { status: 302, headers });

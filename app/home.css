@@ -1,0 +1,93 @@
+/* Homepage only. Everything is scoped under .tw-home so the other pages keep
+   the terminal theme from globals.css. */
+body:has(.tw-home) {
+  display: block;
+  padding: 0;
+  font-family: "Segoe UI", Inter, system-ui, -apple-system, Roboto, sans-serif;
+  background: #080a13;
+}
+
+.tw-home {
+  --tw-bg: #080a13;
+  --tw-panel: #10141f;
+  --tw-line: #252b3d;
+  --tw-text: #e8ecf5;
+  --tw-muted: #9aa5bd;
+  --tw-accent: #9db4ff;   /* moonlight blue */
+  --tw-glow: #f1e6b8;     /* pale moon yellow, used once */
+  --tw-mod: #3ecf8e;
+  color: var(--tw-text);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100svh;
+  /* faint fixed stars */
+  background:
+    radial-gradient(1px 1px at 12% 18%, #ffffffaa 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 9%, #ffffff88 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 91% 42%, #ffffff77 50%, transparent 51%),
+    radial-gradient(1px 1px at 33% 61%, #ffffff66 50%, transparent 51%),
+    radial-gradient(1px 1px at 6% 83%, #ffffff77 50%, transparent 51%),
+    radial-gradient(1px 1px at 62% 92%, #ffffff66 50%, transparent 51%),
+    var(--tw-bg);
+}
+.tw-home a { color: inherit; }
+.tw-home :focus-visible { outline: 2px solid var(--tw-accent); outline-offset: 2px; border-radius: 4px; }
+
+.tw-top, .tw-main, .tw-foot { max-width: 860px; margin: 0 auto; padding-left: 20px; padding-right: 20px; }
+.tw-top { display: flex; justify-content: space-between; align-items: center; min-height: 56px; }
+.tw-logo { font: 600 .95rem ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace; text-decoration: none; color: var(--tw-accent) !important; }
+.tw-home .site-navigation { margin: 0; padding: 0; border: 0; gap: 18px; }
+.tw-home .site-navigation__link { color: var(--tw-muted); text-decoration: none; font-size: .95rem; border: 0; padding: 0; background: none; }
+.tw-home .site-navigation__link:hover,
+.tw-home .site-navigation__link--current { color: var(--tw-text); }
+
+/* hero: name on the left, tonight's moon on the right */
+.tw-hero { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; padding: 48px 0 28px; }
+.tw-hero h1 { margin: 0 0 12px; font: 700 clamp(2rem, 6.5vw, 3.4rem)/1.1 ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace; letter-spacing: -1px; }
+.tw-bio { margin: 0 0 10px; font-size: 1.15rem; }
+.tw-about { margin: 0 0 18px; color: var(--tw-muted); max-width: 60ch; }
+.tw-hero .links { margin: 0; gap: 16px; }
+.tw-hero__moon { margin: 0; text-align: center; }
+.tw-hero__moon figcaption { margin-top: 10px; color: var(--tw-muted); font-size: .85rem; }
+.tw-moon { width: 170px; height: 170px; display: block; filter: drop-shadow(0 0 22px #f1e6b844); }
+.tw-moon__dark { fill: #161b2c; }
+.tw-moon__lit { fill: var(--tw-glow); }
+.tw-moon__crater { fill: #b9ab76; opacity: .45; }
+@media (max-width: 640px) {
+  .tw-hero { grid-template-columns: 1fr; }
+  .tw-hero__moon { order: -1; text-align: left; }
+  .tw-moon { width: 110px; height: 110px; }
+}
+
+/* jump links, styled as chat commands */
+.tw-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; }
+.tw-chips a { text-decoration: none; font: 600 .85rem ui-monospace, Menlo, Consolas, monospace; color: var(--tw-accent); background: var(--tw-panel); border: 1px solid var(--tw-line); border-radius: 999px; padding: 4px 14px; }
+.tw-chips a:hover { border-color: var(--tw-accent); }
+
+/* example chat; lines appear one after another on load */
+.tw-chat { background: var(--tw-panel); border: 1px solid var(--tw-line); border-radius: 8px; overflow: hidden; }
+.tw-chat__head { display: flex; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--tw-line); color: var(--tw-muted); font-size: .85rem; }
+.tw-chat ol { list-style: none; margin: 0; padding: 10px 0; min-height: 330px; }
+.tw-chat li { padding: 3px 16px; font-size: .95rem; word-break: break-word; opacity: 0; animation: tw-line .01s forwards; animation-delay: calc(500ms + var(--i) * 600ms); }
+.tw-chat li.tw-sys { color: var(--tw-muted); }
+.tw-chat li em { color: var(--tw-muted); }
+.tw-user--me { color: var(--tw-accent); }
+.tw-badge { display: inline-block; width: 16px; height: 16px; margin-right: 6px; border-radius: 3px; vertical-align: -3px; font-size: 10px; line-height: 16px; text-align: center; color: #07110c; background: var(--tw-mod); font-weight: 700; }
+@keyframes tw-line { to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .tw-chat li { opacity: 1; animation: none; } }
+
+/* sections that reuse existing components */
+.tw-section { margin-top: 40px; scroll-margin-top: 16px; }
+.tw-section > h2 { font-size: 1.35rem; margin: 0 0 14px; }
+.tw-home .status-block { margin: 0; padding: 18px 20px; border: 1px solid var(--tw-line); border-radius: 8px; background: var(--tw-panel); }
+.tw-home .status-heading { font-size: 1.35rem; text-transform: none; letter-spacing: 0; color: var(--tw-text); }
+.tw-home .exp-block { gap: 22px; }
+.tw-home .exp-item { padding: 12px 16px; background: var(--tw-panel); border: 1px solid var(--tw-line); border-radius: 8px; }
+.tw-home .exp-item + .exp-item { margin-top: 8px; border-top: 1px solid var(--tw-line); }
+.tw-home .exp-label { text-transform: none; letter-spacing: 0; font-size: .95rem; color: var(--tw-muted); font-weight: 600; }
+.tw-home .exp-row { font-size: 1rem; }
+.tw-home .exp-role { color: var(--tw-muted); }
+.tw-home .exp-place { border-bottom: 1px dashed var(--tw-accent); }
+.tw-home .exp-description { color: var(--tw-muted); }
+
+.tw-foot { margin-top: 56px; padding-top: 22px; padding-bottom: 28px; border-top: 1px solid var(--tw-line); color: var(--tw-muted); font-size: .9rem; }

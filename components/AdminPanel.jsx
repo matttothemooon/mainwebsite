@@ -49,6 +49,7 @@ export default function AdminPanel() {
   const [status, setStatus] = useState({ text: "", kind: "" });
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [me, setMe] = useState(null);
 
   /* ---------- load ---------- */
 
@@ -67,6 +68,12 @@ export default function AdminPanel() {
         setTwitchEnabled(Boolean(data.twitchEnabled));
         setDevBypass(Boolean(data.devAuthBypass));
         setState("ready");
+
+        // Who is signed in. Cosmetic, so a failure here is ignored.
+        fetch("/api/admin/me")
+          .then((r) => (r.ok ? r.json() : null))
+          .then((d) => d?.me && setMe(d.me))
+          .catch(() => {});
       } catch (err) {
         setMessage(err.message);
         setState("error");
@@ -164,6 +171,21 @@ export default function AdminPanel() {
     }
   }
 
+  // Ctrl/Cmd+S saves. Held in a ref so the listener always calls the latest
+  // save() without being re-attached on every keystroke.
+  const saveRef = useRef(save);
+  saveRef.current = save;
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        if (profile) saveRef.current();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [profile]);
+
   /* ---------- render ---------- */
 
   if (state === "loading" || state === "error") {
@@ -200,7 +222,37 @@ export default function AdminPanel() {
         </div>
       )}
 
-      <section className="section">
+      <div className="admin-bar">
+        <div className="admin-bar__who">
+          {me?.avatar ? (
+            // eslint-disable-next-line @next/next/no-img-element -- Discord CDN avatar
+            <img src={`https://cdn.discordapp.com/avatars/${me.id}/${me.avatar}.webp?size=64`} alt="" width="28" height="28" />
+          ) : (
+            <span className="admin-bar__dot" aria-hidden="true" />
+          )}
+          <span>{me?.name || "signed in"}</span>
+        </div>
+        <nav className="admin-bar__nav" aria-label="Sections">
+          <a href="#profile">profile</a>
+          <a href="#links">links</a>
+          <a href="#mods-active">mods</a>
+          <a href="#gear">gear</a>
+          <a href="#pages">pages</a>
+        </nav>
+        <div className="admin-bar__actions">
+          <a href="/" target="_blank" rel="noreferrer">view site</a>
+          {dirty && (
+            <button className="btn" type="button" onClick={() => window.location.reload()} disabled={saving}>
+              discard
+            </button>
+          )}
+          <button className="btn btn--primary" type="button" onClick={save} disabled={saving || !dirty}>
+            {saving ? "saving…" : "save"}
+          </button>
+        </div>
+      </div>
+
+      <section className="section" id="profile">
         <h2 className="section__title">profile</h2>
         <div className="field">
           <label htmlFor="f-name">display name</label>
@@ -222,7 +274,7 @@ export default function AdminPanel() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section" id="links">
         <h2 className="section__title">links</h2>
         <p className="hint" style={{ marginBottom: "var(--gap-sm)" }}>
           Links show as icons only. The label is not displayed — it names the link
@@ -247,7 +299,7 @@ export default function AdminPanel() {
       </section>
 
       {["active", "past"].map((group) => (
-        <section className="section" key={group}>
+        <section className="section" id={`mods-${group}`} key={group}>
           <h2 className="section__title">mod experience — {group}</h2>
 
           {profile.experience[group].map((entry, i) => (
@@ -286,7 +338,7 @@ export default function AdminPanel() {
         </section>
       ))}
 
-      <section className="section">
+      <section className="section" id="gear">
         <h2 className="section__title">what i use</h2>
         <p className="hint">Add, reorder, or remove guide sections and products.</p>
         {profile.gear.map((category, i) => (
@@ -304,7 +356,7 @@ export default function AdminPanel() {
         </button>
       </section>
 
-      <section className="section">
+      <section className="section" id="pages">
         <h2 className="section__title">pages</h2>
         <p className="hint" style={{ marginBottom: "var(--gap-sm)" }}>
           Add guide pages or a simple resource list using Markdown links. Categories group published pages; drafts stay private until published.
