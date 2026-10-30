@@ -387,7 +387,7 @@ export default function AdminPanel() {
                 value={page.slug}
                 onChange={(e) => patchPage(i, { slug: pageSlug(e.target.value) })}
                 maxLength={80}
-                placeholder="overlays"
+                placeholder="my-guide"
               />
               <Field
                 label="guide category"
@@ -441,16 +441,6 @@ export default function AdminPanel() {
         >
           + add page
         </button>
-      </section>
-
-      <section className="section">
-        <h2>streamer overlay setup</h2>
-        <p className="hint">
-          The overlay setup is public so each streamer can connect their own
-          Twitch account and keep their settings separate. This admin panel
-          remains for editing this website.
-        </p>
-        <a className="btn" href="/stream-overlays">open streamer setup</a>
       </section>
 
       <div className="savebar">

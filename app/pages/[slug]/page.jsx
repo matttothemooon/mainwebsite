@@ -25,7 +25,7 @@ export default async function CustomPage({ params }) {
   const profile = await getProfile({ fresh: true });
   const page = profile.pages.find((entry) => entry.slug === slug && entry.published);
   if (!page) notFound();
-  const relatedPages = ["Mod resources", "Overlay resources"].includes(page.category)
+  const relatedPages = ["Mod resources"].includes(page.category)
     ? []
     : profile.pages
         .filter((entry) => entry.published && entry.slug !== page.slug)
