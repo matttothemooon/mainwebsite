@@ -14,9 +14,15 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const page = await getPublishedPage(slug);
   if (!page) return { title: "Page not found · mattothemoon" };
+  const description = page.description || undefined;
   return {
     title: `${page.title} · mattothemoon`,
-    description: page.description || undefined,
+    description,
+    openGraph: {
+      title: `${page.title} · mattothemoon`,
+      description,
+      url: `/pages/${page.slug}`,
+    },
   };
 }
 
@@ -34,7 +40,6 @@ export default async function CustomPage({ params }) {
 
   return (
     <div className="terminal terminal--wide">
-      <div className="terminal__bar"><span /><span /><span /></div>
       <main className="terminal__content">
         <SiteNavigation current="guide" />
         <p className="page-back"><a href="/pages">← streamer &amp; mod guide</a></p>

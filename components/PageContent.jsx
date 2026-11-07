@@ -62,6 +62,7 @@ export default function PageContent({ content = "" }) {
   const blocks = [];
   let paragraph = [];
   let list = [];
+  let listType = "ul";
   let quote = [];
   let code = null;
 
@@ -72,12 +73,14 @@ export default function PageContent({ content = "" }) {
   };
   const flushList = () => {
     if (!list.length) return;
+    const List = listType;
     blocks.push(
-      <ul key={`ul-${blocks.length}`}>
+      <List key={`${listType}-${blocks.length}`}>
         {list.map((item, index) => <li key={index}>{inline(item)}</li>)}
-      </ul>
+      </List>
     );
     list = [];
+    listType = "ul";
   };
   const flushQuote = () => {
     if (!quote.length) return;
@@ -136,6 +139,9 @@ export default function PageContent({ content = "" }) {
     } else if (bullet || numbered) {
       flushParagraph();
       flushQuote();
+      const nextListType = numbered ? "ol" : "ul";
+      if (list.length && listType !== nextListType) flushList();
+      listType = nextListType;
       list.push((bullet || numbered)[1]);
     } else if (quoted) {
       flushParagraph();

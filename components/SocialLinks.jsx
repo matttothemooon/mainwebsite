@@ -1,14 +1,11 @@
-import { resolveIcon } from "@/lib/icons";
+import LinkIcon from "./LinkIcon";
 
-// Icons only — no labels. The label still carries the accessible name, since an
-// icon-only link is otherwise unreadable to a screen reader.
 export default function SocialLinks({ links = [] }) {
   if (!links.length) return null;
 
   return (
     <nav className="links" aria-label="social links">
       {links.map((link, i) => {
-        const icon = resolveIcon(link);
         const external = !link.url.startsWith("/");
 
         return (
@@ -19,15 +16,10 @@ export default function SocialLinks({ links = [] }) {
             aria-label={link.label}
             {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
           >
-            {icon.type === "image" ? (
-              // eslint-disable-next-line @next/next/no-img-element -- arbitrary
-              // admin-supplied URL; next/image would need a remote allowlist.
-              <img src={icon.src} alt="" aria-hidden="true" loading="lazy" decoding="async" />
-            ) : (
-              <svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
-                <path d={icon.path} />
-              </svg>
-            )}
+            <span className="links__icon">
+              <LinkIcon link={link} />
+            </span>
+            <span className="links__label">{link.label}</span>
           </a>
         );
       })}

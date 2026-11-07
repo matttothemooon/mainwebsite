@@ -6,6 +6,11 @@ import SiteNavigation from "@/components/SiteNavigation";
 export const metadata = {
   title: "Tools · mattothemoon",
   description: "The gear and tools I use for streaming, moderation, and work.",
+  openGraph: {
+    title: "Tools · mattothemoon",
+    description: "The gear and tools I use for streaming, moderation, and work.",
+    url: "/what-i-use",
+  },
 };
 
 export default async function WhatIUsePage() {
@@ -20,7 +25,6 @@ export default async function WhatIUsePage() {
 
   return (
     <div className="terminal terminal--wide tools-page">
-      <div className="terminal__bar"><span /><span /><span /></div>
       <main className="terminal__content tools-page__content">
         <SiteNavigation current="gear" />
         <header className="tools-page__header">

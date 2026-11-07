@@ -6,6 +6,11 @@ export const revalidate = 60;
 export const metadata = {
   title: "Streamer & Mod Guide · mattothemoon",
   description: "Field notes on moderation, stream setup, and community life.",
+  openGraph: {
+    title: "Streamer & Mod Guide · mattothemoon",
+    description: "Field notes on moderation, stream setup, and community life.",
+    url: "/pages",
+  },
 };
 
 export default async function PagesIndex() {
@@ -25,7 +30,6 @@ export default async function PagesIndex() {
 
   return (
     <div className="terminal terminal--wide">
-      <div className="terminal__bar"><span /><span /><span /></div>
       <main className="terminal__content guide-index">
         <SiteNavigation current="guide" />
         <p className="page-back"><a href="/">← back</a></p>

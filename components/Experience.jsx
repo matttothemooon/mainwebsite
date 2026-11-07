@@ -121,6 +121,17 @@ export default function Experience({ experience }) {
                         >
                           {entry.name}
                         </Tag>
+                        {entry.discordUrl && (
+                          <a
+                            className="exp-platform-link"
+                            href={entry.discordUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Discord server for ${entry.name}`}
+                          >
+                            Discord ↗
+                          </a>
+                        )}
                       </div>
                       <span className="exp-date">{entry.date}</span>
                     </div>

@@ -1,6 +1,6 @@
 # mainwebsite
 
-Personal site for [mattothemoon.xyz](https://mattothemoon.xyz) — a terminal-styled presence page with live Discord/Spotify status, streamer hover cards, and a Discord-locked admin panel that edits every piece of content on the homepage.
+Personal site for [mattothemoon.xyz](https://mattothemoon.xyz) — a minimal profile, mod list with streamer hover cards, guides, gear, contact form, and Discord-locked admin panel.
 
 ## Stack
 
@@ -17,15 +17,18 @@ app/layout.jsx                  html shell + global styles
 app/page.jsx                    homepage — server-rendered from the profile
 app/pages/page.jsx              index of published custom pages
 app/pages/[slug]/page.jsx       server-rendered custom page
-app/globals.css                 the black terminal theme
+app/globals.css                 shared minimal dark theme
 app/admin/page.jsx              /admin route
 app/admin/admin.css             admin-only styles
 
-components/SocialLinks.jsx      icon-only social links (server component)
-components/StatusBlock.jsx      Lanyard Discord/Spotify polling (client)
+components/SocialLinks.jsx      social links with automatic icons
 components/Experience.jsx       mod experience + streamer hover cards (client)
 components/AdminPanel.jsx       the whole editor (client)
 components/IconPreview.jsx      shared link-icon preview
+components/LinkIcon.jsx         icon rendering with image fallback
+components/ContactForm.jsx      contact form
+components/PresenceProvider.jsx shared Discord presence data
+components/DiscordAvatar.jsx    profile avatar and minimal presence
 
 app/api/profile/route.js        public read endpoint
 app/api/admin/profile/route.js  protected read/write of the whole profile
@@ -39,7 +42,8 @@ lib/storage.js                  profile + icon storage, validation
 lib/icons.js                    URL/label -> brand icon resolution
 lib/twitch.js                   Twitch app token + channel lookup
 
-public/                         robots.txt, sitemap.xml, cms/, uploads/
+public/                         robots.txt, cms/, uploads/
+app/sitemap.js                  generated sitemap
 ```
 
 ## Running locally
@@ -50,6 +54,11 @@ npm run dev
 ```
 
 Then open <http://localhost:3000> and <http://localhost:3000/admin>.
+
+The homepage contact form delivers messages through Resend. Configure
+`RESEND_API_KEY` and `RESEND_FROM_EMAIL` in `.env.local` for local testing; the
+sender address must belong to a domain verified in Resend. Messages are sent to
+the email address in the profile's `mailto:` link.
 
 No Discord app, Vercel account, or GitHub token is needed. Locally:
 
@@ -98,6 +107,11 @@ live admin panel, and neither can spoofing a `Host` header at the real domain.
 
 3. Push to `main`. Vercel detects Next.js automatically.
 
+To enable the contact form in production, verify a sender domain in Resend, then
+add `RESEND_API_KEY` and `RESEND_FROM_EMAIL` to Vercel's environment variables
+and redeploy. The form sends to the email address configured in the profile's
+`mailto:` link; visitor addresses are used only as the reply-to address.
+
 To find your Discord user ID: Discord → Settings → Advanced → enable Developer
 Mode, then right-click your name → Copy User ID.
 
@@ -109,7 +123,7 @@ Go to `mattothemoon.xyz/admin` and sign in with Discord. Accounts not in
 - **display name** and **bio**
 - **links** — see below
 - **mod experience** — active and past groups, each entry with role, name, date,
-  link URL, and the hover-card fields
+  Twitch channel URL, optional Discord server URL, and hover-card fields
 - **pages** — guide pages and resource lists with a title, URL slug, category,
   description, and Markdown content. The Mod resources
   page is a plain list of links; edit them here like any other page. Published
@@ -128,29 +142,29 @@ out, it reverts to `OWNER_ID` in `lib/auth.js`. To revoke the owner account, set
 `DISCORD_ALLOWED_IDS` to a different ID rather than emptying it, or change that
 constant.
 
-## Links are icons
+## Social links
 
-Links render as **white icons with no text**. Each row in the admin panel shows a
-live preview of exactly what the homepage will render. The icon is chosen in this
-order:
+Links render with their labels and an automatically selected icon. Each row in
+the admin panel shows a live preview of what the homepage will render. The icon
+is chosen in this order:
 
 1. **A custom upload**, if you've added one.
 2. **The URL's domain** — `twitch.tv`, `github.com`, `youtube.com`, and ~30 other
    platforms, using the real brand artwork from `simple-icons`.
 3. **The label**, for URLs with no domain to read. This is how the seeded
    `/discord` link gets the Discord icon.
-4. **A generic link glyph**, so a link always renders something.
+4. **The linked site's favicon** for other web domains.
+5. **A generic link glyph** if no icon or usable web domain is available.
 
-The **label is never displayed.** It is the link's accessible name — an icon-only
-link is otherwise unreadable to a screen reader — and the fallback icon hint.
+The label also serves as the link's accessible name and as a fallback icon hint.
 
-When a link falls through to the generic glyph, the admin panel says so and
-offers an **upload icon** button (PNG, JPEG, WebP, GIF or SVG, up to 512KB).
+The admin panel previews the selected icon and offers an **upload icon** button
+(PNG, JPEG, WebP, GIF or SVG, up to 512KB) to override automatic detection.
 Uploaded icons are recoloured to a white silhouette so they match the rest of the
 set; press **use auto icon** to drop the upload and go back to detection.
 
-LinkedIn has no icon: `simple-icons` removed it at LinkedIn's request. A LinkedIn
-link gets the generic glyph unless you upload one.
+LinkedIn has no `simple-icons` icon, so the link uses LinkedIn's favicon when
+available.
 
 Uploaded SVGs are served with a `sandbox` Content-Security-Policy (see
 `next.config.mjs`) so a script embedded in one cannot execute. In production
@@ -160,8 +174,8 @@ redeploys the commit.
 ## Streamer hover cards
 
 Hovering (or keyboard-focusing) a streamer's name shows their profile picture,
-Twitch handle, and follower count. A name only gets a card if at least one of
-those fields is filled in.
+Twitch handle, and follower count when available, or their role and dates as
+fallback details.
 
 With `TWITCH_CLIENT_ID`/`TWITCH_CLIENT_SECRET` set, the **fetch** button next to
 a Twitch name pulls the avatar and display name automatically.

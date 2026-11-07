@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { hasKnownIcon } from "@/lib/icons";
+import { resolveIcon } from "@/lib/icons";
 import { cardMeta, cardTitle } from "./Experience";
 import IconPreview from "./IconPreview";
 
@@ -10,6 +10,7 @@ const BLANK_ENTRY = {
   name: "",
   description: "",
   url: "",
+  discordUrl: "",
   date: "",
   twitch: "",
   avatar: "",
@@ -50,6 +51,7 @@ export default function AdminPanel() {
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [me, setMe] = useState(null);
+  const [activeSection, setActiveSection] = useState("profile");
 
   /* ---------- load ---------- */
 
@@ -87,6 +89,28 @@ export default function AdminPanel() {
     window.addEventListener("beforeunload", warn);
     return () => window.removeEventListener("beforeunload", warn);
   }, [dirty]);
+
+  useEffect(() => {
+    if (state !== "ready") return;
+    const sections = ["profile", "links", "mods-active", "mods-past", "pages", "gear"]
+      .map((id) => document.getElementById(id))
+      .filter(Boolean);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) {
+          setActiveSection(
+            visible[0].target.id === "mods-past" ? "mods-active" : visible[0].target.id,
+          );
+        }
+      },
+      { rootMargin: "-15% 0px -70% 0px" },
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [state]);
 
   /* ---------- mutation helpers ---------- */
 
@@ -214,43 +238,95 @@ export default function AdminPanel() {
 
   return (
     <Shell>
-      <p className="bio">edit homepage content, experience, gear, and guide pages</p>
+      <div className="admin-layout">
+        <aside className="admin-sidebar">
+          <a className="admin-sidebar__brand" href="/" aria-label="Mattothemoon home">
+            <span className="admin-sidebar__brand-mark">M</span>
+            <span>mattothemoon</span>
+          </a>
+          <nav className="admin-sidebar__nav" aria-label="Admin sections">
+            <AdminNavLink
+              href="#profile"
+              icon="dashboard"
+              active={activeSection === "profile"}
+              onClick={() => setActiveSection("profile")}
+            >
+              Dashboard
+            </AdminNavLink>
+            <AdminNavLink
+              href="#links"
+              icon="socials"
+              active={activeSection === "links"}
+              onClick={() => setActiveSection("links")}
+            >
+              Socials &amp; icons
+            </AdminNavLink>
+            <AdminNavLink
+              href="#mods-active"
+              icon="mods"
+              active={activeSection.startsWith("mods-")}
+              onClick={() => setActiveSection("mods-active")}
+            >
+              Mod list
+            </AdminNavLink>
+            <AdminNavLink
+              href="#pages"
+              icon="guides"
+              active={activeSection === "pages"}
+              onClick={() => setActiveSection("pages")}
+            >
+              Guides
+            </AdminNavLink>
+            <AdminNavLink
+              href="#gear"
+              icon="gear"
+              active={activeSection === "gear"}
+              onClick={() => setActiveSection("gear")}
+            >
+              Gear
+            </AdminNavLink>
+          </nav>
+          <div className="admin-sidebar__account">
+            {me?.avatar ? (
+              // eslint-disable-next-line @next/next/no-img-element -- Discord CDN avatar
+              <img src={`https://cdn.discordapp.com/avatars/${me.id}/${me.avatar}.webp?size=64`} alt="" />
+            ) : (
+              <span className="admin-sidebar__avatar" aria-hidden="true" />
+            )}
+            <span className="admin-sidebar__account-name">{me?.name || "signed in"}</span>
+            <a href="/api/auth/logout" aria-label="Sign out" title="Sign out">
+              <AdminIcon name="signout" />
+            </a>
+          </div>
+        </aside>
 
-      {devBypass && (
-        <div className="dev-banner">
-          local dev — auth bypassed, saving to <code>.dev-profile.json</code>
-        </div>
-      )}
+        <main className="admin-main">
+          <header className="admin-header">
+            <div>
+              <p className="admin-eyebrow">SITE MANAGEMENT</p>
+              <h1>Dashboard</h1>
+              <p className="admin-header__description">
+                Manage your profile, mod list, socials, and guides.
+              </p>
+            </div>
+            <div className="admin-header__actions">
+              <a className="btn" href="/" target="_blank" rel="noreferrer">view site</a>
+              {dirty && (
+                <button className="btn" type="button" onClick={() => window.location.reload()} disabled={saving}>
+                  discard
+                </button>
+              )}
+              <button className="btn btn--primary" type="button" onClick={save} disabled={saving || !dirty}>
+                {saving ? "saving…" : "save changes"}
+              </button>
+            </div>
+          </header>
 
-      <div className="admin-bar">
-        <div className="admin-bar__who">
-          {me?.avatar ? (
-            // eslint-disable-next-line @next/next/no-img-element -- Discord CDN avatar
-            <img src={`https://cdn.discordapp.com/avatars/${me.id}/${me.avatar}.webp?size=64`} alt="" width="28" height="28" />
-          ) : (
-            <span className="admin-bar__dot" aria-hidden="true" />
+          {devBypass && (
+            <div className="dev-banner">
+              local dev — auth bypassed, saving to <code>.dev-profile.json</code>
+            </div>
           )}
-          <span>{me?.name || "signed in"}</span>
-        </div>
-        <nav className="admin-bar__nav" aria-label="Sections">
-          <a href="#profile">profile</a>
-          <a href="#links">links</a>
-          <a href="#mods-active">mods</a>
-          <a href="#gear">gear</a>
-          <a href="#pages">pages</a>
-        </nav>
-        <div className="admin-bar__actions">
-          <a href="/" target="_blank" rel="noreferrer">view site</a>
-          {dirty && (
-            <button className="btn" type="button" onClick={() => window.location.reload()} disabled={saving}>
-              discard
-            </button>
-          )}
-          <button className="btn btn--primary" type="button" onClick={save} disabled={saving || !dirty}>
-            {saving ? "saving…" : "save"}
-          </button>
-        </div>
-      </div>
 
       <section className="section" id="profile">
         <h2 className="section__title">profile</h2>
@@ -277,9 +353,9 @@ export default function AdminPanel() {
       <section className="section" id="links">
         <h2 className="section__title">links</h2>
         <p className="hint" style={{ marginBottom: "var(--gap-sm)" }}>
-          Links show as icons only. The label is not displayed — it names the link
-          for screen readers and picks the icon when the URL has no domain to read
-          (like <code>/discord</code>).
+          Links show an icon and label. The label also names the link for screen
+          readers and picks the icon when the URL has no domain to read (like
+          <code> /discord</code>).
         </p>
 
         {profile.links.map((link, i) => (
@@ -450,12 +526,8 @@ export default function AdminPanel() {
         <span className={`status-msg${status.kind ? ` status-msg--${status.kind}` : ""}`}>
           {status.text}
         </span>
-        <a
-          href="/api/auth/logout"
-          style={{ marginLeft: "auto", color: "var(--text-dim)", fontSize: "0.8rem" }}
-        >
-          sign out
-        </a>
+      </div>
+        </main>
       </div>
     </Shell>
   );
@@ -463,17 +535,37 @@ export default function AdminPanel() {
 
 function Shell({ children }) {
   return (
-    <div className="terminal admin-wrap">
-      <div className="terminal__bar">
-        <span />
-        <span />
-        <span />
-      </div>
-      <main className="terminal__content">
-        <h1>admin</h1>
-        {children}
-      </main>
-    </div>
+    <div className="admin-wrap">{children}</div>
+  );
+}
+
+function AdminNavLink({ href, icon, active, onClick, children }) {
+  return (
+    <a
+      className={`admin-sidebar__link${active ? " is-active" : ""}`}
+      href={href}
+      onClick={onClick}
+      aria-current={active ? "location" : undefined}
+    >
+      <AdminIcon name={icon} />
+      <span>{children}</span>
+    </a>
+  );
+}
+
+function AdminIcon({ name }) {
+  const paths = {
+    dashboard: <><path d="m3 10 9-7 9 7" /><path d="M5 9v12h14V9M9 21v-7h6v7" /></>,
+    socials: <><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.7 10.7 6.6-4.4m-6.6 7 6.6 4.4" /></>,
+    mods: <><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="10" cy="7" r="4" /><path d="M20 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8" /></>,
+    guides: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></>,
+    gear: <><circle cx="12" cy="12" r="3" /><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.7 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.7-1l-1.7.7-1.4-2.4L7.3 15a8 8 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.7-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.7 1l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1-.1 2Z" /></>,
+    signout: <><path d="M10 17l5-5-5-5M15 12H3" /><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7" /></>,
+  };
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      {paths[name]}
+    </svg>
   );
 }
 
@@ -482,7 +574,7 @@ function Shell({ children }) {
 function LinkRow({ link, onChange, onMove, onRemove, onStatus }) {
   const fileRef = useRef(null);
   const [uploading, setUploading] = useState(false);
-  const known = hasKnownIcon(link);
+  const icon = resolveIcon(link);
 
   async function upload(file) {
     if (!file) return;
@@ -557,9 +649,9 @@ function LinkRow({ link, onChange, onMove, onRemove, onStatus }) {
         <p className="hint">
           {link.iconUrl
             ? "using your uploaded icon — recoloured white to match the set"
-            : known
-              ? "icon detected automatically"
-              : "no icon for this link — upload one, or it shows the generic link glyph"}
+            : icon.favicon
+              ? "using this site's favicon automatically — upload an icon to override it"
+              : "brand icon detected automatically"}
         </p>
       </div>
     </div>
@@ -671,11 +763,20 @@ function EntryCard({ entry, twitchEnabled, onChange, onMove, onRemove, onStatus 
         </div>
 
         <Field
-          label="link url"
+          label="twitch channel url"
           value={entry.url}
           onChange={text("url")}
           maxLength={500}
           placeholder="https://twitch.tv/chubsc"
+          full
+        />
+        <Field
+          label="discord server url"
+          type="url"
+          value={entry.discordUrl || ""}
+          onChange={text("discordUrl")}
+          maxLength={500}
+          placeholder="https://discord.gg/…"
           full
         />
         <Field
