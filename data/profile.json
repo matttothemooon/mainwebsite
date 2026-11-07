@@ -69,16 +69,18 @@
         "name": "Jasontheween",
         "description": "Help moderate Twitch chat and do most of the Moderation Filters/Bot Work",
         "url": "https://twitch.tv/jasontheween",
+        "discordUrl": "",
         "date": "present",
         "twitch": "jasontheween",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/a04be2b0-9cc1-403c-a4b0-47b32d1fe640-profile_image-300x300.png",
-        "followers": 2843775
+        "followers": 2850978
       },
       {
         "role": "Admin",
         "name": "ChubsC",
         "description": "Help with community administration and day-to-day support.",
         "url": "https://twitch.tv/chubsc",
+        "discordUrl": "",
         "date": "present",
         "twitch": "chubsc",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/7caf04be-7bcc-4097-acc1-da12051def4d-profile_image-300x300.png",
@@ -89,20 +91,22 @@
         "name": "TenacityTV",
         "description": "Help manage and support the Discord community.",
         "url": "https://twitch.tv/tenacitytv",
+        "discordUrl": "",
         "date": "present",
         "twitch": "tenacitytv",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/b337b31d-c1c1-4f00-8472-6ac0e6123d24-profile_image-300x300.png",
-        "followers": 554735
+        "followers": 555430
       },
       {
         "role": "Discord Mod",
         "name": "Cizzorz",
         "description": "Help moderate the community and keep chat welcoming.",
         "url": "https://twitch.tv/cizzorz",
+        "discordUrl": "",
         "date": "present",
         "twitch": "cizzorz",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/b59543d6-96ee-40a6-bf4a-11dbf1d67a18-profile_image-300x300.png",
-        "followers": 1950387
+        "followers": 1950220
       }
     ],
     "past": [
@@ -111,16 +115,18 @@
         "name": "Flynn",
         "description": "Helped guide moderation and support the community.",
         "url": "",
+        "discordUrl": "",
         "date": "Oct 2021 – Jan 2025",
         "twitch": "flynnislivee",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/e558a0bc-5d67-415d-976f-9cd24a435f8f-profile_image-300x300.png",
-        "followers": 7102
+        "followers": 7099
       },
       {
         "role": "Community Manager",
         "name": "DannyyyTTV_",
         "description": "Supported community management and member engagement.",
         "url": "https://twitch.tv/dannyyyttv_",
+        "discordUrl": "",
         "date": "Jun 2016 – Jan 2025",
         "twitch": "dannyyyttv_",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/f82c33f4-9b60-4447-a6a8-a33af9775cc6-profile_image-300x300.png",
@@ -131,10 +137,11 @@
         "name": "Sinnski",
         "description": "Supported community management and day-to-day community needs.",
         "url": "https://www.twitch.tv/sinnski",
+        "discordUrl": "",
         "date": "June 2021-September 2026",
         "twitch": "sinnski",
-        "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/bdac334c-1e61-40c8-8fa2-5bbb20bb82e7-profile_image-300x300.png",
-        "followers": 8032
+        "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/dbe7da08-e101-453a-82b9-ffc053f1da5e-profile_image-300x300.png",
+        "followers": 8019
       }
     ]
   },
@@ -146,7 +153,7 @@
           "label": "CPU",
           "value": "AMD Ryzen 7 8700F 8-Core Processor",
           "url": "https://www.amd.com/en/products/processors/desktops/ryzen/8000-series/amd-ryzen-7-8700f.html",
-          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/19898128d862379c.jpg"
+          "imageUrl": "https://raw.githubusercontent.com/matttothemooon/mainwebsite/main/public/uploads/fad3260a01b72dc3.jpg"
         },
         {
           "label": "GPU",
