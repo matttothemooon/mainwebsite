@@ -8,6 +8,8 @@ import IntroGate from "@/components/home/IntroGate";
 import RotatingRole from "@/components/home/RotatingRole";
 import NowPlaying from "@/components/home/NowPlaying";
 import Reveal from "@/components/home/Reveal";
+import StreamerGrid from "@/components/home/StreamerGrid";
+import { getLiveStatus, profileLogins } from "@/lib/twitch";
 
 // Content comes from the profile, so the admin panel keeps controlling it.
 // The admin panel revalidates this path on save.
@@ -82,6 +84,7 @@ export default async function Home() {
     ...past.map((e) => ({ ...e, past: true })),
   ];
   const guides = (profile.pages || []).filter((p) => p.published);
+  const liveChannels = await getLiveStatus(profileLogins(profile));
 
   return (
     <div className="pf">
@@ -179,49 +182,11 @@ export default async function Home() {
 
           {communities.length > 0 && (
             <section className="sec" aria-labelledby="st-title">
-              <div className="sec-head" data-reveal>
-                <h2 id="st-title" className="sec-title">Streamers I work with</h2>
-                {active.length > 0 && (
-                  <span className="sec-live"><span className="dot" aria-hidden="true" />{active.length} active</span>
-                )}
-              </div>
-              <p className="sec-lede" data-reveal>The communities I help moderate and manage.</p>
-              <ul className="tags" data-reveal aria-label="What I do for streamers">
-                <li>Moderation</li>
-                <li>Discord management</li>
-                <li>Bots &amp; filters</li>
-              </ul>
-              <ul className="st-grid">
-                {communities.map((entry, i) => {
-                  const Tag = entry.url ? "a" : "div";
-                  return (
-                    <li key={`${entry.name}-${i}`} data-reveal style={{ "--d": `${Math.min(i * 30, 300)}ms` }}>
-                      <Tag
-                        className={`card st${entry.past ? " is-past" : ""}`}
-                        {...(entry.url ? { href: entry.url, target: "_blank", rel: "noopener noreferrer" } : {})}
-                        title={entry.description || undefined}
-                      >
-                        <span className="st__ava">
-                          {entry.avatar ? (
-                            // eslint-disable-next-line @next/next/no-img-element -- admin-supplied URL
-                            <img src={entry.avatar} alt="" loading="lazy" width="48" height="48" />
-                          ) : (
-                            <span className="st__initial">{entry.name.slice(0, 1)}</span>
-                          )}
-                        </span>
-                        <span className="st__text">
-                          <span className="st__name">{entry.name}{!entry.past && VERIFIED}</span>
-                          <span className="st__sub">
-                            {entry.role}
-                            {entry.past && entry.date ? ` · ${entry.date}` : ""}
-                          </span>
-                        </span>
-                        {entry.past && <span className="st__badge">Past</span>}
-                      </Tag>
-                    </li>
-                  );
-                })}
-              </ul>
+              <StreamerGrid
+                communities={communities}
+                activeCount={active.length}
+                initialChannels={liveChannels}
+              />
             </section>
           )}
 
