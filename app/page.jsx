@@ -8,7 +8,6 @@ import IntroGate from "@/components/home/IntroGate";
 import RotatingRole from "@/components/home/RotatingRole";
 import NowPlaying from "@/components/home/NowPlaying";
 import Reveal from "@/components/home/Reveal";
-import BannerVideo from "@/components/home/BannerVideo";
 import StreamerGrid from "@/components/home/StreamerGrid";
 import { getLiveStatus, profileLogins } from "@/lib/twitch";
 
@@ -105,7 +104,14 @@ export default async function Home() {
         <main className="pf-col">
           <header className="hero">
             <div className="banner h-in" style={{ "--d": "0ms" }}>
-              <BannerVideo label={`${profile.name}'s banner`} />
+              <span className="banner__stars" aria-hidden="true">
+                {Array.from({ length: 14 }, (_, i) => <i key={i} />)}
+              </span>
+              <span className="banner__moon" aria-hidden="true" />
+              <span className="banner__logo" role="img" aria-label={profile.name}>
+                <span className="banner__word">mattothemoon</span>
+                <span className="banner__sheen" aria-hidden="true" />
+              </span>
             </div>
 
             <div className="hero-row">
