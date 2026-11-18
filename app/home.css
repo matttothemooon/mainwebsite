@@ -286,8 +286,10 @@ html.is-entered .pf .h-in,
 }
 .socials a:hover { transform: translateY(-2px); border-color: rgba(255, 255, 255, .28); color: #fff; background: var(--pf-card-hi); }
 .socials svg, .socials img { width: 18px; height: 18px; fill: currentColor; object-fit: contain; }
-/* Custom/favicon icons become white silhouettes so they match the set. */
-.socials img, .contact__icon img { filter: brightness(0) invert(1); opacity: .85; }
+/* Custom/favicon icons go monochrome to match the set. Not a white
+   silhouette: square favicons with a solid background turned into blank
+   white tiles that way. */
+.socials img, .contact__icon img { border-radius: 4px; filter: grayscale(1) brightness(1.15); }
 .socials .tip {
   position: absolute;
   bottom: calc(100% + 8px);
