@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { resolveIcon } from "@/lib/icons";
-import { cardMeta, cardTitle } from "./Experience";
+import { cardMeta, cardTitle } from "@/lib/streamerCard";
 import IconPreview from "./IconPreview";
 
 const BLANK_ENTRY = {

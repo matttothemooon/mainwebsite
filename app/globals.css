@@ -443,23 +443,6 @@ a {
   line-height: 1.5;
 }
 
-.exp-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.exp-description {
-  margin: 0 0 5px;
-  color: var(--text-dim);
-  font-size: 0.73rem;
-  line-height: 1.55;
-}
-
-.exp-item + .exp-item {
-  margin-top: 4px;
-}
-
 .custom-page__header {
   margin-bottom: var(--gap-lg);
 }
@@ -1137,192 +1120,13 @@ h1 {
   line-height: 1.7;
 }
 
-/* ---------- links (icons only) ---------- */
-.links {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 18px;
-  margin-bottom: var(--gap-md);
-}
-
-.links a {
-  display: inline-flex;
-  color: #ffffff;
-  opacity: 0.72;
-  transition: opacity 0.15s ease, transform 0.15s ease;
-}
-
-.links a:hover,
-.links a:focus-visible {
-  color: var(--accent);
-  opacity: 1;
-  transform: translateY(-1px);
-}
-
-.links a:focus-visible,
 .site-navigation__link:focus-visible,
 .page-back a:focus-visible,
 .guide-link a:focus-visible,
-.exp-place:focus-visible,
 .page-content a:focus-visible,
 .gear-item a:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
-}
-
-.links svg {
-  width: 20px;
-  height: 20px;
-  display: block;
-  fill: currentColor;
-}
-
-/* Custom uploads are forced to a white silhouette so a coloured logo still
-   matches the monochrome set. */
-.links img {
-  width: 20px;
-  height: 20px;
-  display: block;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-}
-
-/* ---------- mod experience ---------- */
-.exp-block {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-md);
-}
-
-.exp-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-xs);
-}
-
-.exp-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-dim);
-  margin-bottom: 2px;
-}
-
-.exp-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--gap-sm);
-  font-size: 0.9rem;
-}
-
-.exp-main {
-  display: flex;
-  gap: var(--gap-xs);
-}
-
-.exp-role {
-  color: var(--text-dim);
-}
-
-.exp-place {
-  color: var(--text);
-  text-decoration: none;
-  border-bottom: 1px dashed var(--accent-dim);
-}
-
-a.exp-place:hover {
-  border-color: var(--accent);
-}
-
-.exp-date {
-  color: var(--text-dim);
-  white-space: nowrap;
-  font-size: 0.8rem;
-}
-
-.exp-place--has-card {
-  cursor: help;
-}
-
-a.exp-place--has-card {
-  cursor: pointer;
-}
-
-.exp-platform-link {
-  color: var(--text-dim);
-  font-size: 0.72rem;
-  text-decoration: underline;
-  text-decoration-color: var(--border);
-  text-underline-offset: 3px;
-  white-space: nowrap;
-}
-
-.exp-platform-link:hover,
-.exp-platform-link:focus-visible {
-  color: var(--accent);
-}
-
-/* ---------- streamer hover card ---------- */
-.streamer-card {
-  position: fixed;
-  /* Rendered at the end of <body> via a portal, so this only has to beat the
-     page itself — but it costs nothing to sit above anything a browser or
-     extension injects alongside it. */
-  z-index: 2147483000;
-  display: flex;
-  align-items: center;
-  gap: var(--gap-sm);
-  padding: 10px var(--gap-sm);
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(-4px);
-  transition: opacity 0.15s ease, transform 0.15s ease;
-}
-
-.streamer-card--visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.streamer-card__avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  background: var(--border);
-  flex-shrink: 0;
-}
-
-.streamer-card__body {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.streamer-card__name {
-  font-size: 0.85rem;
-  color: var(--text);
-  white-space: nowrap;
-}
-
-.streamer-card__meta {
-  font-size: 0.75rem;
-  color: var(--accent);
-  white-space: nowrap;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .streamer-card {
-    transition: none;
-    transform: none;
-  }
 }
 
 .sr-only {
@@ -1336,22 +1140,10 @@ a.exp-place--has-card {
   border: 0;
 }
 
-@media (prefers-reduced-motion: reduce) {
-.links a:hover {
-    transform: none;
-  }
-}
-
 /* ---------- responsive ---------- */
 @media (max-width: 420px) {
   .terminal__content {
     padding: 18px;
-  }
-
-  .exp-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
   }
 }
 
