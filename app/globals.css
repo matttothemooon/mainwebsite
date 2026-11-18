@@ -1,14 +1,14 @@
 /* ---------- design tokens ---------- */
 :root {
-  --bg: #0b0d10;
-  --panel: rgba(16, 18, 22, 0.92);
-  --panel-alt: rgba(21, 24, 29, 0.92);
-  --border: rgba(154, 164, 183, 0.2);
-  --text: #edf1f7;
-  --text-dim: #9aa7ba;
-  --text-soft: #c8d1e0;
-  --accent: #dfe9ff;
-  --accent-dim: #7f8db5;
+  --bg: #0a0a0c;
+  --panel: #121214;
+  --panel-alt: #17171a;
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #ededf0;
+  --text-dim: #8b8b93;
+  --text-soft: #c9c9cf;
+  --accent: #f4f4f5;
+  --accent-dim: #8b8b93;
   --offline: #8892a5;
 
   --status-online: #3ecf8e;
@@ -25,6 +25,11 @@
 }
 
 /* ---------- reset ---------- */
+h1, h2, h3 {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  letter-spacing: -0.02em;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -46,8 +51,9 @@ body {
   align-items: center;
   justify-content: center;
   background: var(--bg);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--text);
+  -webkit-font-smoothing: antialiased;
   padding: var(--gap-md);
 }
 

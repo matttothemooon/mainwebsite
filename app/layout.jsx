@@ -1,7 +1,11 @@
 import "./globals.css";
+import { Bricolage_Grotesque, Geist } from "next/font/google";
+
+const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-display", display: "swap" });
+const sans = Geist({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 
 export const viewport = {
-  themeColor: "#08080d",
+  themeColor: "#0a0a0c",
 };
 
 export const metadata = {
@@ -29,7 +33,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${display.variable} ${sans.variable}`}>
       <body>{children}</body>
     </html>
   );
