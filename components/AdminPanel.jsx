@@ -894,7 +894,17 @@ function EntryCard({ entry, twitchEnabled, onChange, onMove, onRemove, onStatus 
           <Field
             label="twitch name"
             value={entry.twitch}
-            onChange={text("twitch")}
+            onChange={(e) => {
+              const twitch = e.target.value;
+              const patch = { twitch };
+              // Keep the channel link in step while it's empty or still
+              // pointing at the previous name.
+              const old = PREFIXES.twitch.slug(entry.url);
+              if (!entry.url || old.toLowerCase() === (entry.twitch || "").toLowerCase()) {
+                patch.url = PREFIXES.twitch.build(twitch.trim());
+              }
+              onChange(patch);
+            }}
             maxLength={30}
             placeholder="chubsc"
           />
@@ -912,21 +922,20 @@ function EntryCard({ entry, twitchEnabled, onChange, onMove, onRemove, onStatus 
           </button>
         </div>
 
-        <Field
-          label="twitch channel url"
+        <PrefixField
+          label="twitch channel"
+          kind="twitch"
           value={entry.url}
-          onChange={text("url")}
-          maxLength={500}
-          placeholder="https://twitch.tv/chubsc"
+          onChange={(url) => onChange({ url })}
+          placeholder="chubsc"
           full
         />
-        <Field
-          label="discord server url"
-          type="url"
+        <PrefixField
+          label="discord server invite"
+          kind="discord"
           value={entry.discordUrl || ""}
-          onChange={text("discordUrl")}
-          maxLength={500}
-          placeholder="https://discord.gg/…"
+          onChange={(discordUrl) => onChange({ discordUrl })}
+          placeholder="abc123"
           full
         />
         <Field
@@ -1036,6 +1045,58 @@ function GearCategory({ category, onChange, onMove, onRemove, onStatus }) {
         </div>
       ))}
       <button className="btn" onClick={() => onChange({ items: [...category.items, { ...BLANK_GEAR_ITEM }] })}>+ add product</button>
+    </div>
+  );
+}
+
+// Inputs with a fixed start ("discord.gg/", "twitch.tv/") so only the end
+// needs typing. Pasting a whole link works too: the known start is stripped.
+const PREFIXES = {
+  twitch: {
+    shown: "twitch.tv/",
+    strip: /^\s*(?:https?:\/\/)?(?:www\.|m\.)?twitch\.tv\//i,
+    base: "https://twitch.tv/",
+  },
+  discord: {
+    shown: "discord.gg/",
+    strip: /^\s*(?:https?:\/\/)?(?:www\.)?(?:discord\.gg\/|discord(?:app)?\.com\/invite\/)/i,
+    base: "https://discord.gg/",
+  },
+};
+for (const p of Object.values(PREFIXES)) {
+  // The part after the prefix, or the whole value when it's some other URL.
+  p.slug = (value) => String(value || "").replace(p.strip, "");
+  p.build = (typed) => {
+    const rest = String(typed || "").replace(p.strip, "").trim().replace(/^\/+/, "");
+    if (!rest) return "";
+    if (/^[a-z]+:\/\//i.test(rest)) return rest; // some other site: keep as typed
+    return p.base + rest.replace(/[\s?#].*$/, "");
+  };
+}
+
+function PrefixField({ label, kind, value, onChange, placeholder, full }) {
+  const id = `f-${kind}-${useRef(Math.random().toString(36).slice(2, 8)).current}`;
+  const p = PREFIXES[kind];
+  const slug = p.slug(value);
+  const other = /^[a-z]+:\/\//i.test(slug);
+
+  return (
+    <div className={`field${full ? " grid--full" : ""}`}>
+      <label htmlFor={id}>{label}</label>
+      <div className={`prefix-input${other ? " prefix-input--other" : ""}`}>
+        {!other && <span className="prefix-input__prefix" aria-hidden="true">{p.shown}</span>}
+        <input
+          id={id}
+          value={slug}
+          onChange={(e) => onChange(p.build(e.target.value))}
+          placeholder={placeholder}
+          maxLength={500}
+          spellCheck={false}
+          autoCapitalize="off"
+          aria-describedby={`${id}-hint`}
+        />
+      </div>
+      <span id={`${id}-hint`} className="sr-only">{`Starts with ${p.shown}`}</span>
     </div>
   );
 }
