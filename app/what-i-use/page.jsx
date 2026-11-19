@@ -1,3 +1,4 @@
+import "./gear.css";
 import { getProfile } from "@/lib/storage";
 import GearGuide from "@/components/GearGuide";
 import PageContent from "@/components/PageContent";

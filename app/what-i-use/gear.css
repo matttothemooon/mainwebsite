@@ -1,0 +1,87 @@
+/* Gear as product cards on the Tools page. */
+.gear-shelf { display: grid; gap: 36px; margin-top: 18px; }
+.gear-shelf__category h2 {
+  margin: 0 0 14px;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.gear-shelf__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gear-shelf__grid > li { min-width: 0; }
+
+.gear-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--panel);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+a.gear-card:hover { border-color: rgba(255, 255, 255, 0.16); background: var(--panel-alt); transform: translateY(-2px); }
+a.gear-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.gear-card__media {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  margin: 8px 8px 0;
+  overflow: hidden;
+  border-radius: 10px;
+  /* Most product shots are on white; a light tile keeps them from looking
+     like cut-outs on the dark page. */
+  background: #f4f4f5;
+}
+.gear-card__backdrop {
+  position: absolute;
+  inset: -12%;
+  background: center / cover no-repeat;
+  filter: blur(18px) saturate(1.1);
+  opacity: 0.9;
+}
+.gear-card__media img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 8%;
+  object-fit: contain;
+  transition: transform 0.3s;
+}
+.gear-card__media img.is-wide { padding: 0; }
+a.gear-card:hover .gear-card__media img { transform: scale(1.04); }
+.gear-card__placeholder {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background: #1b1b1f;
+  color: #4a4a52;
+}
+.gear-card__placeholder svg { width: 34%; height: 34%; }
+.gear-card__media:has(.gear-card__placeholder) { background: #1b1b1f; }
+
+.gear-card__body { display: flex; flex: 1; flex-direction: column; gap: 3px; padding: 12px 14px 14px; }
+.gear-card__label { color: var(--text-dim); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+.gear-card__name { flex: 1; font-size: 0.95rem; font-weight: 600; line-height: 1.35; }
+.gear-card__cta { display: inline-flex; align-items: center; gap: 5px; margin-top: 6px; color: var(--text-soft); font-size: 0.8rem; font-weight: 600; }
+.gear-card__cta svg { width: 12px; height: 12px; transition: transform 0.2s; }
+a.gear-card:hover .gear-card__cta svg { transform: translate(2px, -2px); }
+
+@media (max-width: 480px) {
+  .gear-shelf__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .gear-card__body { padding: 10px 11px 12px; }
+  .gear-card__name { font-size: 0.85rem; }
+}
