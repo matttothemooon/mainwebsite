@@ -1,5 +1,8 @@
 import "../home.css";
+import "../site.css";
 import "./work.css";
+import TopNav from "@/components/site/TopNav";
+import SiteFooter from "@/components/site/SiteFooter";
 import { getProfile } from "@/lib/storage";
 import { getLiveStatus, profileLogins } from "@/lib/twitch";
 import { profileStats } from "@/lib/profileStats";
@@ -56,12 +59,7 @@ export default async function WorkPage() {
     <div className="pf">
       <Reveal />
       <LiveProvider initialChannels={channels}>
-        <nav className="topnav" aria-label="Main navigation">
-          <a href="/">Home</a>
-          <a href="/pages">Guides</a>
-          <a href="/what-i-use">Tools</a>
-          <a href="/work" aria-current="page">Work with me</a>
-        </nav>
+        <TopNav current="work" />
 
         <main className="pf-col work">
           <header className="work-hero" data-reveal>
@@ -155,10 +153,7 @@ export default async function WorkPage() {
           </section>
         </main>
 
-        <footer className="pf-foot">
-          <span className="pf-foot__mark" aria-hidden="true">mattothemoon</span>
-          <span>mattothemoon.xyz &copy; {new Date().getFullYear()}</span>
-        </footer>
+        <SiteFooter />
       </LiveProvider>
     </div>
   );

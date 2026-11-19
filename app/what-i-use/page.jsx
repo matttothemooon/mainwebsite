@@ -2,7 +2,7 @@ import "./gear.css";
 import { getProfile } from "@/lib/storage";
 import GearGuide from "@/components/GearGuide";
 import PageContent from "@/components/PageContent";
-import SiteNavigation from "@/components/SiteNavigation";
+import SiteShell, { PageHeader } from "@/components/site/SiteShell";
 
 export const metadata = {
   title: "Tools · mattothemoon",
@@ -19,35 +19,30 @@ export default async function WhatIUsePage() {
   const moderationResources = profile.pages?.find(
     (page) => page.slug === "mod-resources" && page.published
   );
-  const gearCount = profile.gear?.reduce(
-    (count, category) => count + (category.items?.length ?? 0),
-    0
-  ) ?? 0;
+  const gearCount = profile.gear?.reduce((count, category) => count + (category.items?.length ?? 0), 0) ?? 0;
 
   return (
-    <div className="terminal terminal--wide tools-page">
-      <main className="terminal__content tools-page__content">
-        <SiteNavigation current="gear" />
-        <header className="tools-page__header">
-          <h1>Tools</h1>
-          <p>Tools and resources I use and recommend.</p>
-        </header>
-        {moderationResources && (
-          <section className="recommended-tools" aria-labelledby="recommended-tools-heading">
-            <h2 id="recommended-tools-heading">Mod tools I recommend</h2>
-            <p className="recommended-tools__description">Helpful resources for moderating on Twitch and Discord.</p>
+    <SiteShell current="tools">
+      <PageHeader eyebrow="Tools" title="What I use">
+        <p className="page-head__lede">The tools, resources and gear I use and recommend.</p>
+      </PageHeader>
+
+      {moderationResources && (
+        <section className="sec sec--tight" aria-labelledby="recommended-tools-heading">
+          <h2 id="recommended-tools-heading" className="sec-title sec-title--sm" data-reveal>Mod tools I recommend</h2>
+          <p className="sec-lede" data-reveal>Helpful resources for moderating on Twitch and Discord.</p>
+          <div className="card link-card" data-reveal>
             <PageContent content={moderationResources.content} />
-          </section>
-        )}
-        {gearCount > 0 && (
-          <details className="tools-setup" id="setup" open>
-            <summary>
-              My setup
-            </summary>
-            <GearGuide gear={profile.gear} />
-          </details>
-        )}
-      </main>
-    </div>
+          </div>
+        </section>
+      )}
+
+      {gearCount > 0 && (
+        <section className="sec sec--tight" id="setup" aria-labelledby="setup-heading">
+          <h2 id="setup-heading" className="sec-title sec-title--sm" data-reveal>My setup</h2>
+          <GearGuide gear={profile.gear} />
+        </section>
+      )}
+    </SiteShell>
   );
 }

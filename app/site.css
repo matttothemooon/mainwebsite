@@ -1,0 +1,100 @@
+/* Inner pages (Guides, a guide, Tools, 404) in the home page's style.
+   Builds on app/home.css (.pf, .card, .sec, .sec-title, .guides, ...). */
+
+.pf-page { padding-top: 96px; }
+
+/* ---------- shared buttons ---------- */
+.page-actions, .work-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 24px; }
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 18px;
+  border-radius: 10px;
+  background: #f4f4f5;
+  color: #0a0a0c !important;
+  font-weight: 700;
+  transition: transform .2s;
+}
+.btn-primary:hover { transform: translateY(-1px); }
+
+/* ---------- page header ---------- */
+.page-head__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 22px;
+  color: var(--pf-muted);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color .2s;
+}
+.page-head__back:hover { color: var(--pf-text); }
+.page-head__eyebrow { margin: 0 0 12px; color: var(--pf-muted); font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.page-head h1 { max-width: 20ch; font-size: clamp(36px, 7vw, 54px); font-weight: 800; letter-spacing: -.04em; line-height: 1.05; }
+.page-head__lede { max-width: 60ch; margin: 18px 0 0; color: var(--pf-soft); font-size: 17px; line-height: 1.7; }
+
+/* Pill links that jump to a section (guide categories). */
+.pill-nav { display: flex; flex-wrap: wrap; gap: 6px; margin: 24px 0 0; padding: 0; list-style: none; }
+.pill-nav a {
+  display: inline-block;
+  padding: 6px 13px;
+  border: 1px solid var(--pf-line-hi);
+  border-radius: 999px;
+  color: var(--pf-soft);
+  font-size: 13px;
+  transition: border-color .2s, color .2s;
+}
+.pill-nav a:hover { border-color: rgba(255, 255, 255, .3); color: #fff; }
+.pill-nav span { margin-left: 6px; color: var(--pf-muted); }
+
+/* Smaller section titles inside a page (e.g. guide categories). */
+.sec--tight { padding-top: 64px; }
+.sec-title--sm { font-size: clamp(24px, 4.5vw, 30px); }
+.sec-count { margin-left: 10px; color: var(--pf-muted); font-family: var(--font-sans), sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 0; }
+
+/* ---------- guide text (components/PageContent) ---------- */
+.pf .page-content { max-width: 68ch; margin-top: 40px; color: var(--pf-soft); font-size: 17px; line-height: 1.75; }
+.pf .page-content > :first-child { margin-top: 0; }
+.pf .page-content p { margin: 0 0 1.1em; }
+.pf .page-content h2,
+.pf .page-content h3,
+.pf .page-content h4 { margin: 1.8em 0 .5em; color: var(--pf-text); font-family: var(--font-display), sans-serif; font-weight: 800; letter-spacing: -.02em; line-height: 1.2; }
+.pf .page-content h2 { font-size: 28px; }
+.pf .page-content h3 { font-size: 22px; }
+.pf .page-content h4 { font-size: 18px; }
+.pf .page-content a { color: var(--pf-text); text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .3); text-underline-offset: 3px; transition: text-decoration-color .2s; }
+.pf .page-content a:hover { text-decoration-color: currentColor; }
+.pf .page-content ul,
+.pf .page-content ol { margin: 0 0 1.2em; padding-left: 1.3em; }
+.pf .page-content li { margin: .35em 0; padding-left: .2em; }
+.pf .page-content li::marker { color: var(--pf-muted); }
+.pf .page-content strong { color: var(--pf-text); }
+.pf .page-content blockquote { margin: 1.4em 0; padding: 4px 0 4px 18px; border-left: 3px solid var(--pf-line-hi); color: var(--pf-soft); font-style: italic; }
+.pf .page-content code { padding: 2px 6px; border-radius: 6px; background: #1b1b1f; color: var(--pf-text); font-size: .88em; }
+.pf .page-content pre { overflow-x: auto; margin: 1.4em 0; padding: 16px 18px; border: 1px solid var(--pf-line); border-radius: 12px; background: var(--pf-card); }
+.pf .page-content pre code { padding: 0; background: none; font-size: 14px; }
+.pf .page-content hr { margin: 2em 0; border: 0; border-top: 1px solid var(--pf-line); }
+.pf .page-content__image { display: block; max-width: 100%; height: auto; margin: 1.6em 0; border: 1px solid var(--pf-line); border-radius: 14px; }
+
+/* A list of links in a card (Tools: mod tools I recommend). */
+.link-card { margin-top: 22px; padding: 8px 22px; }
+.link-card .page-content { max-width: none; margin: 0; font-size: 16px; }
+.link-card .page-content ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; margin: 0; padding: 0; list-style: none; }
+.link-card .page-content li { margin: 0; padding: 12px 0; border-bottom: 1px solid var(--pf-line); }
+.link-card .page-content a { display: flex; align-items: center; justify-content: space-between; gap: 10px; text-decoration: none; font-weight: 600; }
+.link-card .page-content a::after { content: "↗"; color: var(--pf-muted); font-weight: 400; transition: transform .2s; }
+.link-card .page-content a:hover::after { transform: translate(2px, -2px); color: var(--pf-text); }
+
+/* ---------- Tools page gear list on the new frame ---------- */
+.pf .gear-shelf { margin-top: 24px; }
+.pf .gear-row { border-bottom-color: var(--pf-line); }
+.pf .gear-shelf__category h2 { color: var(--pf-muted); }
+
+/* ---------- 404 ---------- */
+.not-found { padding: 40px 0 20px; }
+.not-found .page-head h1 { font-size: clamp(44px, 10vw, 72px); }
+
+@media (max-width: 560px) {
+  .pf-page { padding-top: 72px; }
+  .link-card .page-content ul { grid-template-columns: 1fr; }
+}

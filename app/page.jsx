@@ -1,4 +1,7 @@
 import "./home.css";
+import "./site.css";
+import TopNav from "@/components/site/TopNav";
+import SiteFooter from "@/components/site/SiteFooter";
 import { getProfile } from "@/lib/storage";
 import LinkIcon from "@/components/LinkIcon";
 import ContactForm from "@/components/ContactForm";
@@ -94,12 +97,7 @@ export default async function Home() {
 
       <LiveProvider initialChannels={liveChannels}>
       <PresenceProvider>
-        <nav className="topnav" aria-label="Main navigation">
-          <a href="/" aria-current="page">Home</a>
-          <a href="/pages">Guides</a>
-          <a href="/what-i-use">Tools</a>
-          <a href="/work">Work with me</a>
-        </nav>
+        <TopNav current="home" />
 
         <main className="pf-col">
           <header className="hero">
@@ -250,10 +248,7 @@ export default async function Home() {
           </section>
         </main>
 
-        <footer className="pf-foot">
-          <span className="pf-foot__mark" aria-hidden="true">mattothemoon</span>
-          <span>mattothemoon.xyz &copy; {new Date().getFullYear()}</span>
-        </footer>
+        <SiteFooter />
       </PresenceProvider>
       </LiveProvider>
     </div>

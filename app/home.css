@@ -96,6 +96,7 @@ html.is-entered .pf .h-in,
   transform: translateX(-50%);
 }
 .topnav a {
+  white-space: nowrap;
   padding: 5px 13px;
   border-radius: 999px;
   color: var(--pf-muted);
@@ -628,7 +629,8 @@ a.quote__name:hover { text-decoration: underline; }
   .stats__item { flex: 1 1 40%; min-width: 0; }
   .stats dd { font-size: 22px; }
   .self-live__cta { display: none; }
-  .topnav a { padding: 5px 10px; font-size: 12px; }
+  .topnav { max-width: calc(100vw - 24px); }
+  .topnav a { padding: 5px 9px; font-size: 12px; }
 }
 
 /* ---------- Discord servers ---------- */

@@ -1,7 +1,8 @@
-import PageContent from "@/components/PageContent";
-import SiteNavigation from "@/components/SiteNavigation";
-import { getProfile } from "@/lib/storage";
 import { notFound } from "next/navigation";
+import { getProfile } from "@/lib/storage";
+import PageContent from "@/components/PageContent";
+import SiteShell, { PageHeader } from "@/components/site/SiteShell";
+import Arrow from "@/components/site/Arrow";
 
 export const revalidate = 60;
 
@@ -39,31 +40,31 @@ export default async function CustomPage({ params }) {
         .slice(0, 3);
 
   return (
-    <div className="terminal terminal--wide">
-      <main className="terminal__content">
-        <SiteNavigation current="guide" />
-        <p className="page-back"><a href="/pages">← streamer &amp; mod guide</a></p>
-        <header className="custom-page__header">
-          {page.category && <p className="home-eyebrow">{page.category}</p>}
-          <h1>{page.title}</h1>
-          {page.description && <p className="bio">{page.description}</p>}
-        </header>
-        <PageContent content={page.content} />
-        {relatedPages.length > 0 && (
-          <aside className="related-guides" aria-labelledby="related-guides-heading">
-            <h2 id="related-guides-heading">Related guides</h2>
-            <div className="related-guides__list">
-              {relatedPages.map((related) => (
-                <a href={`/pages/${related.slug}`} key={related.slug}>
-                  <span>{related.category || "More"}</span>
-                  <strong>{related.title}</strong>
-                  {related.description && <small>{related.description}</small>}
-                </a>
-              ))}
-            </div>
-          </aside>
-        )}
-      </main>
-    </div>
+    <SiteShell current="guides">
+      <article>
+        <PageHeader eyebrow={page.category} title={page.title} back={{ href: "/pages", label: "All guides" }}>
+          {page.description && <p className="page-head__lede">{page.description}</p>}
+        </PageHeader>
+        <div data-reveal>
+          <PageContent content={page.content} />
+        </div>
+      </article>
+
+      {relatedPages.length > 0 && (
+        <aside className="sec sec--tight" aria-labelledby="related-guides-heading">
+          <h2 id="related-guides-heading" className="sec-title sec-title--sm" data-reveal>Related guides</h2>
+          <div className="guides">
+            {relatedPages.map((related, i) => (
+              <a className="card guide" href={`/pages/${related.slug}`} key={related.slug} data-reveal style={{ "--d": `${i * 70}ms` }}>
+                <span className="guide__kind">{related.category || "More"}</span>
+                <h3>{related.title}</h3>
+                {related.description && <p>{related.description}</p>}
+                <span className="cta">Read guide <Arrow /></span>
+              </a>
+            ))}
+          </div>
+        </aside>
+      )}
+    </SiteShell>
   );
 }
