@@ -69,7 +69,7 @@
         "name": "Jasontheween",
         "description": "Help moderate Twitch chat and do most of the Moderation Filters/Bot Work",
         "url": "https://twitch.tv/jasontheween",
-        "discordUrl": "",
+        "discordUrl": "https://discord.gg/jasontheween",
         "date": "present",
         "twitch": "jasontheween",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/a04be2b0-9cc1-403c-a4b0-47b32d1fe640-profile_image-300x300.png",
@@ -91,7 +91,7 @@
         "name": "TenacityTV",
         "description": "Help manage and support the Discord community.",
         "url": "https://twitch.tv/tenacitytv",
-        "discordUrl": "",
+        "discordUrl": "https://discord.gg/tenacity",
         "date": "present",
         "twitch": "tenacitytv",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/b337b31d-c1c1-4f00-8472-6ac0e6123d24-profile_image-300x300.png",
@@ -266,5 +266,24 @@
   ],
   "stats": {
     "yearsModding": 10
+  },
+  "testimonials": [],
+  "work": {
+    "available": false,
+    "intro": "I help streamers and communities stay welcoming and run smoothly, from daily streams to major events.",
+    "services": [
+      {
+        "title": "Twitch moderation",
+        "text": "Keeping chat welcoming on daily streams and major events: AutoMod, filters, bots and calling the hard cases."
+      },
+      {
+        "title": "Discord setup & management",
+        "text": "Running servers end to end: roles, channels, staff teams, support and the day-to-day that keeps a community healthy."
+      },
+      {
+        "title": "Bots & filters",
+        "text": "AutoMod rules, blocked terms and bot commands set up and tuned for your community, so problems are handled before they reach chat."
+      }
+    ]
   }
 }
