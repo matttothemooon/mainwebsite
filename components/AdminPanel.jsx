@@ -51,6 +51,8 @@ export default function AdminPanel() {
   const [twitchConnection, setTwitchConnection] = useState(null);
   const [followerCounts, setFollowerCounts] = useState(null);
   const [twitchCallbackUrl, setTwitchCallbackUrl] = useState("");
+  const [discordConnection, setDiscordConnection] = useState(null);
+  const [discordServers, setDiscordServers] = useState(null);
   const [photoCheck, setPhotoCheck] = useState(null); // { running, summary, problems }
   const [devBypass, setDevBypass] = useState(false);
   const [status, setStatus] = useState({ text: "", kind: "" });
@@ -77,11 +79,31 @@ export default function AdminPanel() {
         setTwitchConnection(data.twitchConnection || null);
         setFollowerCounts(data.followerCounts || null);
         setTwitchCallbackUrl(data.twitchCallbackUrl || "");
+        setDiscordConnection(data.discordConnection || null);
+        setDiscordServers(data.discordServers || null);
 
-        // Result of coming back from Twitch's sign-in page.
+        // Result of coming back from Discord's or Twitch's sign-in page.
         const query = new URLSearchParams(window.location.search);
-        const outcome = query.get("twitch");
         const detail = query.get("detail");
+
+        const discordOutcome = query.get("discord");
+        const discordMessages = {
+          connected: ["Discord connected. Your servers are listed under Discord servers.", "ok"],
+          cancelled: ["Discord connection was cancelled.", "err"],
+          expired: ["Discord connection took too long or came from another tab. Try again.", "err"],
+          "signed-out": ["Your admin session ended. Sign in and try again.", "err"],
+          error: ["Discord connection failed.", "err"],
+          "not-configured": ["Discord login isn't configured on this deployment.", "err"],
+        };
+        if (discordMessages[discordOutcome]) {
+          setStatus({
+            text: discordMessages[discordOutcome][0] + (detail ? ` Reason: ${detail}` : ""),
+            kind: discordMessages[discordOutcome][1],
+          });
+          window.history.replaceState(null, "", window.location.pathname + window.location.hash);
+        }
+
+        const outcome = query.get("twitch");
         const messages = {
           connected: ["Twitch connected. Follower counts now update automatically.", "ok"],
           cancelled: ["Twitch sign-in was cancelled.", "err"],
@@ -120,7 +142,7 @@ export default function AdminPanel() {
 
   useEffect(() => {
     if (state !== "ready") return;
-    const sections = ["profile", "links", "mods-active", "mods-past", "work", "testimonials", "pages", "gear"]
+    const sections = ["profile", "links", "mods-active", "mods-past", "discord", "work", "testimonials", "pages", "gear"]
       .map((id) => document.getElementById(id))
       .filter(Boolean);
     const observer = new IntersectionObserver(
@@ -367,6 +389,14 @@ export default function AdminPanel() {
               Mod list
             </AdminNavLink>
             <AdminNavLink
+              href="#discord"
+              icon="discord"
+              active={activeSection === "discord"}
+              onClick={() => setActiveSection("discord")}
+            >
+              Discord servers
+            </AdminNavLink>
+            <AdminNavLink
               href="#work"
               icon="work"
               active={activeSection === "work"}
@@ -606,6 +636,107 @@ export default function AdminPanel() {
           </button>
         </section>
       ))}
+
+      <section className="section" id="discord">
+        <h2 className="section__title">discord servers</h2>
+        <div className="twitch-connect">
+          {discordConnection ? (
+            <>
+              <span>
+                <b>Discord connected</b> as {discordConnection.username}. Servers you own or moderate are listed
+                below with member counts, refreshed every hour. Untick any you don&apos;t want on the site, then save.
+              </span>
+              <button
+                className="btn"
+                type="button"
+                onClick={async () => {
+                  const res = await fetch("/api/admin/discord/disconnect", { method: "POST" });
+                  if (res.ok) {
+                    setDiscordConnection(null);
+                    setDiscordServers(null);
+                    setStatus({ text: "Discord disconnected.", kind: "ok" });
+                  } else {
+                    setStatus({ text: "Could not disconnect Discord.", kind: "err" });
+                  }
+                }}
+              >
+                disconnect
+              </button>
+            </>
+          ) : (
+            <>
+              <span>
+                <b>Show the Discord servers you help run.</b> Connect your Discord account and the site lists the
+                servers you own or moderate, with live member and online counts.
+              </span>
+              <a
+                className="btn btn--primary"
+                href="/api/admin/discord/connect"
+                onClick={(e) => {
+                  if (dirty && !window.confirm("You have unsaved changes. Leave and connect Discord anyway?")) e.preventDefault();
+                }}
+              >
+                connect discord
+              </a>
+            </>
+          )}
+        </div>
+        {discordConnection && !discordServers?.length && (
+          <p className="hint">No servers found where you&apos;re the owner or have moderator permissions.</p>
+        )}
+        {discordServers?.length > 0 && (
+          <>
+            <div className="dc-admin__bulk">
+              <button className="btn" type="button" onClick={() => edit((p) => ({ ...p, discord: { hidden: [] } }))}>
+                show all
+              </button>
+              <button
+                className="btn"
+                type="button"
+                onClick={() => edit((p) => ({ ...p, discord: { hidden: discordServers.map((s) => s.id) } }))}
+              >
+                hide all
+              </button>
+              <span className="hint">
+                {discordServers.filter((s) => !(profile.discord?.hidden || []).includes(s.id)).length} of {discordServers.length} shown
+              </span>
+            </div>
+            <ul className="dc-admin">
+              {discordServers.map((s) => {
+                const shown = !(profile.discord?.hidden || []).includes(s.id);
+                return (
+                  <li key={s.id}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={shown}
+                        onChange={(e) =>
+                          edit((p) => {
+                            const hidden = new Set(p.discord?.hidden || []);
+                            if (e.target.checked) hidden.delete(s.id);
+                            else hidden.add(s.id);
+                            return { ...p, discord: { hidden: [...hidden] } };
+                          })
+                        }
+                      />
+                      {s.icon ? (
+                        // eslint-disable-next-line @next/next/no-img-element -- Discord CDN icon
+                        <img src={s.icon} alt="" width="28" height="28" />
+                      ) : (
+                        <span className="dc-admin__noicon" aria-hidden="true" />
+                      )}
+                      <span className="dc-admin__name">{s.name}</span>
+                      <span className="dc-admin__meta">
+                        {s.role} · {Number.isFinite(s.members) ? s.members.toLocaleString() : "?"} members
+                      </span>
+                    </label>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
+      </section>
 
       <section className="section" id="work">
         <h2 className="section__title">work with me</h2>
@@ -860,6 +991,7 @@ function AdminIcon({ name }) {
     mods: <><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="10" cy="7" r="4" /><path d="M20 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8" /></>,
     guides: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></>,
     gear: <><circle cx="12" cy="12" r="3" /><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.7 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.7-1l-1.7.7-1.4-2.4L7.3 15a8 8 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.7-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.7 1l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1-.1 2Z" /></>,
+    discord: <><path d="M8 4.5c-1.6.3-3 .8-4.2 1.5C2 9 1.6 12 2 15c1.3 1 2.8 1.7 4.4 2.2l1-1.7M16 4.5c1.6.3 3 .8 4.2 1.5C22 9 22.4 12 22 15c-1.3 1-2.8 1.7-4.4 2.2l-1-1.7" /><path d="M7 16c3.3 1.3 6.7 1.3 10 0" /><circle cx="9" cy="11.5" r="1.3" /><circle cx="15" cy="11.5" r="1.3" /></>,
     work: <><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18" /></>,
     quote: <><path d="M7 11H4V8a3 3 0 0 1 3-3M17 11h-3V8a3 3 0 0 1 3-3" /><path d="M4 11h4v6H4zM14 11h4v6h-4z" /></>,
     signout: <><path d="M10 17l5-5-5-5M15 12H3" /><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7" /></>,

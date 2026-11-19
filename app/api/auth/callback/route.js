@@ -1,4 +1,12 @@
+import { revalidatePath } from "next/cache";
 import {
+  CONNECT_STATE_COOKIE,
+  CONNECT_STATE_PREFIX,
+  connectWithCode,
+  loginCallbackUrl,
+} from "@/lib/discordConnect";
+import {
+  requireAuth,
   authConfigProblems,
   clearStateCookie,
   consumeState,
@@ -35,6 +43,37 @@ function fail(request, status, message) {
   );
 }
 
+// The admin panel's "connect discord" comes back through this same address
+// (it's the one registered with the Discord app). Requires an existing admin
+// session; saves the server-list connection and returns to the admin panel.
+async function finishConnect(request, url) {
+  const back = (outcome, detail = "") => {
+    const query = new URLSearchParams({ discord: outcome });
+    if (detail) query.set("detail", String(detail).slice(0, 200));
+    const headers = new Headers({ Location: `/admin?${query}#discord` });
+    headers.append("Set-Cookie", clearStateCookie(request, CONNECT_STATE_COOKIE));
+    return new Response(null, { status: 302, headers });
+  };
+
+  const denied = requireAuth(request);
+  if (denied) return back("signed-out");
+  if (url.searchParams.get("error")) {
+    return back("cancelled", url.searchParams.get("error_description") || url.searchParams.get("error"));
+  }
+  const state = url.searchParams.get("state").slice(CONNECT_STATE_PREFIX.length);
+  if (!consumeState(request, state, CONNECT_STATE_COOKIE)) return back("expired");
+
+  try {
+    await connectWithCode(url.searchParams.get("code"), loginCallbackUrl(request), { isAllowed });
+    revalidatePath("/");
+    revalidatePath("/work");
+    return back("connected");
+  } catch (err) {
+    console.error("Discord connect failed:", err);
+    return back("error", err.message);
+  }
+}
+
 export async function GET(request) {
   const problems = authConfigProblems();
   if (problems.length) {
@@ -48,6 +87,9 @@ export async function GET(request) {
   }
 
   const url = new URL(request.url);
+  if ((url.searchParams.get("state") || "").startsWith(CONNECT_STATE_PREFIX)) {
+    return finishConnect(request, url);
+  }
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const error = url.searchParams.get("error");

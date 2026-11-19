@@ -4,6 +4,8 @@ import { getProfile } from "@/lib/storage";
 import { getLiveStatus, profileLogins } from "@/lib/twitch";
 import { profileStats } from "@/lib/profileStats";
 import { withLiveFollowers } from "@/lib/twitchAuth";
+import { shownServers } from "@/lib/discordConnect";
+import DiscordServers from "@/components/home/DiscordServers";
 import ContactForm from "@/components/ContactForm";
 import LinkIcon from "@/components/LinkIcon";
 import Reveal from "@/components/home/Reveal";
@@ -48,6 +50,7 @@ export default async function WorkPage() {
   const active = profile.experience?.active || [];
   const channels = await getLiveStatus(profileLogins(profile));
   const quick = contactLinks(profile.links);
+  const servers = await shownServers(profile);
 
   return (
     <div className="pf">
@@ -74,7 +77,7 @@ export default async function WorkPage() {
                 </span>
               ) : null}
             </div>
-            <StatsStrip stats={profileStats(profile)} />
+            <StatsStrip stats={profileStats(profile, { servers })} />
           </header>
 
           {work.services?.length > 0 && (
@@ -111,6 +114,13 @@ export default async function WorkPage() {
                 })}
               </ul>
               <a className="more-link" href="/#streamers" data-reveal>See everyone I work with →</a>
+            </section>
+          )}
+
+          {servers.length > 0 && (
+            <section className="sec" aria-labelledby="dc-title">
+              <h2 id="dc-title" className="sec-title" data-reveal>Discord servers I help run</h2>
+              <DiscordServers servers={servers} />
             </section>
           )}
 

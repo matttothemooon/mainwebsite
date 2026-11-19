@@ -630,3 +630,16 @@ a.quote__name:hover { text-decoration: underline; }
   .self-live__cta { display: none; }
   .topnav a { padding: 5px 10px; font-size: 12px; }
 }
+
+/* ---------- Discord servers ---------- */
+.dc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 22px 0 0; padding: 0; list-style: none; }
+.dc-grid > li { min-width: 0; }
+.dc { position: relative; display: flex; align-items: center; gap: 12px; height: 100%; padding: 12px; }
+.dc__icon { display: grid; flex: none; place-items: center; width: 48px; height: 48px; overflow: hidden; border-radius: 14px; background: #5865f2; color: #fff; font-weight: 700; }
+.dc__icon img { width: 100%; height: 100%; object-fit: cover; }
+.dc__text { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.dc__name { overflow: hidden; font-family: var(--font-display), sans-serif; font-size: 16px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.dc__meta { display: flex; align-items: center; gap: 6px; color: var(--pf-muted); font-size: 13px; white-space: nowrap; }
+.dc__dot { width: 7px; height: 7px; margin-left: 4px; border-radius: 50%; background: #23a55a; }
+.dc__role { position: absolute; top: 8px; right: 10px; color: var(--pf-muted); font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+@media (max-width: 560px) { .dc-grid { grid-template-columns: 1fr; } }

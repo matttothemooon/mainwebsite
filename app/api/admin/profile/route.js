@@ -3,6 +3,7 @@ import { requireAuth, isDevAuthBypass } from "@/lib/auth";
 import { getProfile, saveProfile, validateProfile } from "@/lib/storage";
 import { isConfigured } from "@/lib/twitch";
 import { getConnection, getFollowerCounts, callbackUrl } from "@/lib/twitchAuth";
+import { getConnection as getDiscordConnection, getStaffServers } from "@/lib/discordConnect";
 
 const NO_STORE = { "Cache-Control": "no-store" };
 
@@ -20,9 +21,13 @@ export async function GET(request) {
           [...profile.experience.active, ...profile.experience.past].map((e) => e.twitch)
         )
       : null;
+    const discord = await getDiscordConnection();
+    const discordServers = discord ? await getStaffServers() : null;
     return Response.json(
       {
         profile,
+        discordConnection: discord ? { username: discord.username, connectedAt: discord.connectedAt } : null,
+        discordServers,
         twitchEnabled: isConfigured(),
         twitchConnection: connection ? { login: connection.login, connectedAt: connection.connectedAt } : null,
         // Shown in the admin panel so it can be compared with the Twitch app's

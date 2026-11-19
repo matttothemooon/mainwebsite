@@ -17,6 +17,8 @@ import ServiceCards from "@/components/home/ServiceCards";
 import { profileStats } from "@/lib/profileStats";
 import { getLiveStatus, ownLogin, profileLogins } from "@/lib/twitch";
 import { withLiveFollowers } from "@/lib/twitchAuth";
+import { shownServers } from "@/lib/discordConnect";
+import DiscordServers from "@/components/home/DiscordServers";
 
 // Content comes from the profile, so the admin panel keeps controlling it.
 // The admin panel revalidates this path on save.
@@ -79,7 +81,8 @@ export default async function Home() {
   const liveChannels = await getLiveStatus(profileLogins(profile));
   const myLogin = ownLogin(profile);
   const work = profile.work || { services: [] };
-  const stats = profileStats(profile);
+  const servers = await shownServers(profile);
+  const stats = profileStats(profile, { servers });
 
   return (
     <div className="pf">
@@ -179,6 +182,14 @@ export default async function Home() {
                 communities={communities}
                 activeCount={active.length}
               />
+            </section>
+          )}
+
+          {servers.length > 0 && (
+            <section id="discord" className="sec" aria-labelledby="dc-title">
+              <h2 id="dc-title" className="sec-title" data-reveal>Discord servers I help run</h2>
+              <p className="sec-lede" data-reveal>Live member counts from Discord.</p>
+              <DiscordServers servers={servers} />
             </section>
           )}
 
