@@ -285,5 +285,19 @@
         "text": "AutoMod rules, blocked terms and bot commands set up and tuned for your community, so problems are handled before they reach chat."
       }
     ]
+  },
+  "discord": {
+    "hidden": [
+      "890069757217349632",
+      "552229963894620214",
+      "1559697449067618324",
+      "1505254289235247205",
+      "1529712719064727674",
+      "1544509721552355340",
+      "1551003474228027454",
+      "1490454967385850091",
+      "1517375084879282266",
+      "1459917776251654147"
+    ]
   }
 }
