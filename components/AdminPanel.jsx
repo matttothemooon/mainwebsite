@@ -872,7 +872,7 @@ function LinkRow({ link, onChange, onMove, onRemove, onStatus }) {
       if (!res.ok) throw new Error(data.error || "upload failed");
 
       onChange({ iconUrl: data.url });
-      onStatus({ text: "icon uploaded — remember to save", kind: "ok" });
+      onStatus({ text: "icon uploaded — remember to save; it shows on the site a minute or two later", kind: "ok" });
     } catch (err) {
       onStatus({ text: err.message, kind: "err" });
     } finally {
@@ -1124,7 +1124,7 @@ function GearCategory({ category, onChange, onMove, onRemove, onStatus }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "upload failed");
       patchItem(i, { imageUrl: data.url });
-      onStatus({ text: "product image uploaded — remember to save", kind: "ok" });
+      onStatus({ text: "product image uploaded — remember to save; it shows on the site a minute or two later", kind: "ok" });
     } catch (err) {
       onStatus({ text: err.message, kind: "err" });
     } finally {
@@ -1148,7 +1148,7 @@ function GearCategory({ category, onChange, onMove, onRemove, onStatus }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "could not find image");
       patchItem(i, { imageUrl: data.url });
-      onStatus({ text: "product image found — remember to save", kind: "ok" });
+      onStatus({ text: "product image found — remember to save; it shows on the site a minute or two later", kind: "ok" });
     } catch (err) {
       onStatus({ text: err.message, kind: "err" });
     } finally {
