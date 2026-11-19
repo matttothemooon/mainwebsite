@@ -9,7 +9,13 @@ import RotatingRole from "@/components/home/RotatingRole";
 import NowPlaying from "@/components/home/NowPlaying";
 import Reveal from "@/components/home/Reveal";
 import StreamerGrid from "@/components/home/StreamerGrid";
-import { getLiveStatus, profileLogins } from "@/lib/twitch";
+import LiveProvider from "@/components/home/LiveProvider";
+import { LiveAvatar, LiveBanner } from "@/components/home/SelfLive";
+import Testimonials from "@/components/home/Testimonials";
+import StatsStrip from "@/components/home/StatsStrip";
+import ServiceCards from "@/components/home/ServiceCards";
+import { profileStats } from "@/lib/profileStats";
+import { getLiveStatus, ownLogin, profileLogins } from "@/lib/twitch";
 
 // Content comes from the profile, so the admin panel keeps controlling it.
 // The admin panel revalidates this path on save.
@@ -27,23 +33,6 @@ export async function generateMetadata() {
 
 const ROLES = ["Community Mod", "Streamer", "Community Manager"];
 
-const SERVICES = [
-  {
-    icon: "shield",
-    title: "Twitch moderation",
-    text: "Keeping chat welcoming on daily streams and major events: AutoMod, filters, bots and calling the hard cases.",
-  },
-  {
-    icon: "users",
-    title: "Discord community management",
-    text: "Running servers end to end: roles, channels, staff teams, support and the day-to-day that keeps a community healthy.",
-  },
-];
-
-const ICONS = {
-  shield: "M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Zm-1 13.6-3.3-3.3 1.4-1.4 1.9 1.9 4.6-4.6 1.4 1.4-6 6Z",
-  users: "M16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4Zm8 0c-.3 0-.7 0-1.1.1 1.3.9 2.1 2.2 2.1 3.9v2h7v-2c0-2.7-5.3-4-8-4Z",
-};
 
 const ARROW = (
   <svg className="arrow" viewBox="0 0 24 24" aria-hidden="true">
@@ -72,6 +61,7 @@ function handleFor(url) {
   }
 }
 
+
 const titleCase = (s) => s.replace(/\b\w/g, (c) => c.toUpperCase());
 
 export default async function Home() {
@@ -85,6 +75,9 @@ export default async function Home() {
   ];
   const guides = (profile.pages || []).filter((p) => p.published);
   const liveChannels = await getLiveStatus(profileLogins(profile));
+  const myLogin = ownLogin(profile);
+  const work = profile.work || { services: [] };
+  const stats = profileStats(profile);
 
   return (
     <div className="pf">
@@ -94,11 +87,13 @@ export default async function Home() {
       <IntroGate />
       <Reveal />
 
+      <LiveProvider initialChannels={liveChannels}>
       <PresenceProvider>
         <nav className="topnav" aria-label="Main navigation">
           <a href="/" aria-current="page">Home</a>
           <a href="/pages">Guides</a>
           <a href="/what-i-use">Tools</a>
+          <a href="/work">Work with me</a>
         </nav>
 
         <main className="pf-col">
@@ -116,13 +111,15 @@ export default async function Home() {
 
             <div className="hero-row">
               <span className="h-in" style={{ "--d": "90ms" }}>
-                <DiscordAvatar />
+                <LiveAvatar login={myLogin}>
+                  <DiscordAvatar />
+                </LiveAvatar>
               </span>
-              {communities.length > 0 && (
-                <span className="chip h-in" style={{ "--d": "135ms" }}>
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d={ICONS.users} /></svg>
-                  <b>{communities.length}</b> communities
-                </span>
+              {work.available && (
+                <a className="chip chip--open h-in" href="/work" style={{ "--d": "135ms" }}>
+                  <span className="chip__dot" aria-hidden="true" />
+                  Open to new communities
+                </a>
               )}
             </div>
 
@@ -137,6 +134,8 @@ export default async function Home() {
             <div className="hero-bio h-in" style={{ "--d": "270ms" }}>
               {profile.about ? <p>{profile.about}</p> : <p>{profile.bio}</p>}
             </div>
+
+            <StatsStrip stats={stats} className="h-in" style={{ "--d": "290ms" }} />
 
             {links.length > 0 && (
               <ul className="socials h-in" style={{ "--d": "315ms" }}>
@@ -160,33 +159,31 @@ export default async function Home() {
           </header>
 
           <div className="h-in" style={{ "--d": "360ms" }}>
+            <LiveBanner login={myLogin} />
             <NowPlaying />
           </div>
 
-          <section className="sec" aria-labelledby="do-title">
-            <h2 id="do-title" className="sec-title" data-reveal>What I do</h2>
-            <ul className="services">
-              {SERVICES.map((s, i) => (
-                <li className="card service" data-reveal style={{ "--d": `${(i + 1) * 70}ms` }} key={s.title}>
-                  <span className="service__icon">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d={ICONS[s.icon]} /></svg>
-                  </span>
-                  <div>
-                    <h3>{s.title}</h3>
-                    <p>{s.text}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
+          {work.services?.length > 0 && (
+            <section className="sec" aria-labelledby="do-title">
+              <h2 id="do-title" className="sec-title" data-reveal>What I do</h2>
+              <ServiceCards services={work.services} />
+              <a className="more-link" href="/work" data-reveal>Work with me {ARROW}</a>
+            </section>
+          )}
 
           {communities.length > 0 && (
-            <section className="sec" aria-labelledby="st-title">
+            <section id="streamers" className="sec" aria-labelledby="st-title">
               <StreamerGrid
                 communities={communities}
                 activeCount={active.length}
-                initialChannels={liveChannels}
               />
+            </section>
+          )}
+
+          {profile.testimonials?.length > 0 && (
+            <section className="sec" aria-labelledby="quotes-title">
+              <h2 id="quotes-title" className="sec-title" data-reveal>What streamers say</h2>
+              <Testimonials items={profile.testimonials} />
             </section>
           )}
 
@@ -245,6 +242,7 @@ export default async function Home() {
           <span>mattothemoon.xyz &copy; {new Date().getFullYear()}</span>
         </footer>
       </PresenceProvider>
+      </LiveProvider>
     </div>
   );
 }

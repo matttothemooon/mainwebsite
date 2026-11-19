@@ -263,5 +263,8 @@
         }
       ]
     }
-  ]
+  ],
+  "stats": {
+    "yearsModding": 10
+  }
 }

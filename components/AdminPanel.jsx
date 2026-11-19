@@ -20,6 +20,8 @@ const BLANK_ENTRY = {
 const BLANK_LINK = { label: "", url: "", iconUrl: "" };
 const BLANK_GEAR = { name: "", items: [] };
 const BLANK_GEAR_ITEM = { label: "", value: "", url: "", imageUrl: "" };
+const BLANK_TESTIMONIAL = { quote: "", name: "", role: "", twitch: "", url: "", avatar: "" };
+const BLANK_SERVICE = { title: "", text: "" };
 const BLANK_PAGE = { title: "", slug: "", category: "", description: "", content: "", published: false };
 
 function pageSlug(value) {
@@ -92,7 +94,7 @@ export default function AdminPanel() {
 
   useEffect(() => {
     if (state !== "ready") return;
-    const sections = ["profile", "links", "mods-active", "mods-past", "pages", "gear"]
+    const sections = ["profile", "links", "mods-active", "mods-past", "work", "testimonials", "pages", "gear"]
       .map((id) => document.getElementById(id))
       .filter(Boolean);
     const observer = new IntersectionObserver(
@@ -140,6 +142,21 @@ export default function AdminPanel() {
       return p;
     });
 
+  const patchWork = (patch) =>
+    edit((p) => ({ ...p, work: { ...p.work, ...patch } }));
+
+  const patchService = (i, patch) =>
+    edit((p) => {
+      p.work.services[i] = { ...p.work.services[i], ...patch };
+      return p;
+    });
+
+  const patchTestimonial = (i, patch) =>
+    edit((p) => {
+      p.testimonials[i] = { ...p.testimonials[i], ...patch };
+      return p;
+    });
+
   const patchPage = (i, patch) =>
     edit((p) => {
       p.pages[i] = { ...p.pages[i], ...patch };
@@ -166,6 +183,11 @@ export default function AdminPanel() {
           items: category.items.filter((item) => item.label.trim() && item.value.trim()),
         }))
         .filter((category) => category.name.trim()),
+      testimonials: (profile.testimonials || []).filter((t) => t.quote.trim() && t.name.trim()),
+      work: {
+        ...profile.work,
+        services: (profile.work?.services || []).filter((s) => s.title.trim()),
+      },
       pages: profile.pages
         .filter((page) => page.title.trim())
         .map((page) => ({
@@ -270,6 +292,22 @@ export default function AdminPanel() {
               Mod list
             </AdminNavLink>
             <AdminNavLink
+              href="#work"
+              icon="work"
+              active={activeSection === "work"}
+              onClick={() => setActiveSection("work")}
+            >
+              Work with me
+            </AdminNavLink>
+            <AdminNavLink
+              href="#testimonials"
+              icon="quote"
+              active={activeSection === "testimonials"}
+              onClick={() => setActiveSection("testimonials")}
+            >
+              Testimonials
+            </AdminNavLink>
+            <AdminNavLink
               href="#pages"
               icon="guides"
               active={activeSection === "pages"}
@@ -348,6 +386,27 @@ export default function AdminPanel() {
             placeholder="A little more about what you do, care about, and share here"
           />
         </div>
+        <div className="field">
+          <label htmlFor="f-years">years moderating</label>
+          <input
+            id="f-years"
+            type="number"
+            min={0}
+            max={80}
+            value={profile.stats?.yearsModding ?? ""}
+            onChange={(e) =>
+              edit((p) => ({
+                ...p,
+                stats: { ...p.stats, yearsModding: e.target.value === "" ? null : Number(e.target.value) },
+              }))
+            }
+            placeholder="e.g. 10"
+          />
+          <p className="hint">
+            Shown as &ldquo;10+ years moderating&rdquo; in the stats under your bio. Leave empty to hide it.
+            Combined followers and the community count come from your mod list.
+          </p>
+        </div>
       </section>
 
       <section className="section" id="links">
@@ -413,6 +472,95 @@ export default function AdminPanel() {
           </button>
         </section>
       ))}
+
+      <section className="section" id="work">
+        <h2 className="section__title">work with me</h2>
+        <p className="hint" style={{ marginBottom: "var(--gap-sm)" }}>
+          Shown on the /work page. The services also fill the &ldquo;What I do&rdquo; cards on the homepage.
+        </p>
+        <label className="page-editor__published">
+          <input
+            type="checkbox"
+            checked={Boolean(profile.work?.available)}
+            onChange={(e) => patchWork({ available: e.target.checked })}
+          />
+          open to new communities (shows a green badge on the homepage and /work)
+        </label>
+        <div className="field">
+          <label htmlFor="f-work-intro">intro</label>
+          <textarea
+            id="f-work-intro"
+            maxLength={600}
+            value={profile.work?.intro || ""}
+            onChange={(e) => patchWork({ intro: e.target.value })}
+            placeholder="A sentence or two about who you help and how"
+          />
+        </div>
+        {(profile.work?.services || []).map((service, i) => (
+          <div className="entry" key={i}>
+            <div className="entry__head">
+              <span className="entry__title">{service.title || "(new service)"}</span>
+              <div className="entry__actions">
+                <button className="btn btn--icon" title="move up" onClick={() => edit((p) => { p.work.services = move(p.work.services, i, -1); return p; })}>↑</button>
+                <button className="btn btn--icon" title="move down" onClick={() => edit((p) => { p.work.services = move(p.work.services, i, 1); return p; })}>↓</button>
+                <button className="btn btn--icon btn--danger" title="remove" onClick={() => edit((p) => { p.work.services = p.work.services.filter((_, j) => j !== i); return p; })}>×</button>
+              </div>
+            </div>
+            <div className="grid">
+              <Field label="service" value={service.title} onChange={(e) => patchService(i, { title: e.target.value })} maxLength={80} placeholder="Twitch moderation" full />
+              <div className="field grid--full">
+                <label htmlFor={`f-service-${i}`}>description</label>
+                <textarea id={`f-service-${i}`} maxLength={300} value={service.text} onChange={(e) => patchService(i, { text: e.target.value })} />
+              </div>
+            </div>
+          </div>
+        ))}
+        <button
+          className="btn"
+          disabled={(profile.work?.services || []).length >= 8}
+          onClick={() => edit((p) => ({ ...p, work: { ...p.work, services: [...(p.work?.services || []), { ...BLANK_SERVICE }] } }))}
+        >
+          + add service
+        </button>
+      </section>
+
+      <section className="section" id="testimonials">
+        <h2 className="section__title">testimonials</h2>
+        <p className="hint" style={{ marginBottom: "var(--gap-sm)" }}>
+          Quotes from streamers you&apos;ve worked with, shown on the homepage and /work. The section stays hidden until you add one.
+          With a Twitch name, their current Twitch picture is used automatically.
+        </p>
+        {(profile.testimonials || []).map((t, i) => (
+          <div className="entry" key={i}>
+            <div className="entry__head">
+              <span className="entry__title">{t.name || "(new testimonial)"}</span>
+              <div className="entry__actions">
+                <button className="btn btn--icon" title="move up" onClick={() => edit((p) => ({ ...p, testimonials: move(p.testimonials, i, -1) }))}>↑</button>
+                <button className="btn btn--icon" title="move down" onClick={() => edit((p) => ({ ...p, testimonials: move(p.testimonials, i, 1) }))}>↓</button>
+                <button className="btn btn--icon btn--danger" title="remove" onClick={() => edit((p) => ({ ...p, testimonials: p.testimonials.filter((_, j) => j !== i) }))}>×</button>
+              </div>
+            </div>
+            <div className="grid">
+              <div className="field grid--full">
+                <label htmlFor={`f-quote-${i}`}>quote</label>
+                <textarea id={`f-quote-${i}`} maxLength={400} value={t.quote} onChange={(e) => patchTestimonial(i, { quote: e.target.value })} placeholder="What they said about working with you" />
+              </div>
+              <Field label="name" value={t.name} onChange={(e) => patchTestimonial(i, { name: e.target.value })} maxLength={60} placeholder="ChubsC" />
+              <Field label="role or context" value={t.role} onChange={(e) => patchTestimonial(i, { role: e.target.value })} maxLength={80} placeholder="Streamer · 11K followers" />
+              <Field label="twitch name" value={t.twitch} onChange={(e) => patchTestimonial(i, { twitch: e.target.value })} maxLength={30} placeholder="chubsc" />
+              <Field label="link (optional)" value={t.url} onChange={(e) => patchTestimonial(i, { url: e.target.value })} maxLength={500} placeholder="https://twitch.tv/chubsc" />
+              <Field label="picture url (optional)" value={t.avatar} onChange={(e) => patchTestimonial(i, { avatar: e.target.value })} maxLength={500} placeholder="https://…" full />
+            </div>
+          </div>
+        ))}
+        <button
+          className="btn"
+          disabled={(profile.testimonials || []).length >= 12}
+          onClick={() => edit((p) => ({ ...p, testimonials: [...(p.testimonials || []), { ...BLANK_TESTIMONIAL }] }))}
+        >
+          + add testimonial
+        </button>
+      </section>
 
       <section className="section" id="gear">
         <h2 className="section__title">what i use</h2>
@@ -560,6 +708,8 @@ function AdminIcon({ name }) {
     mods: <><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="10" cy="7" r="4" /><path d="M20 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8" /></>,
     guides: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></>,
     gear: <><circle cx="12" cy="12" r="3" /><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.7 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.7-1l-1.7.7-1.4-2.4L7.3 15a8 8 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.7-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.7 1l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1-.1 2Z" /></>,
+    work: <><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18" /></>,
+    quote: <><path d="M7 11H4V8a3 3 0 0 1 3-3M17 11h-3V8a3 3 0 0 1 3-3" /><path d="M4 11h4v6H4zM14 11h4v6h-4z" /></>,
     signout: <><path d="M10 17l5-5-5-5M15 12H3" /><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7" /></>,
   };
   return (

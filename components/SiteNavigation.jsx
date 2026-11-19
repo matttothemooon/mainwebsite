@@ -2,6 +2,7 @@ const links = [
   { href: "/", label: "Home", section: "home" },
   { href: "/pages", label: "Guides", section: "guide" },
   { href: "/what-i-use", label: "Tools", section: "gear" },
+  { href: "/work", label: "Work with me", section: "work" },
 ];
 
 export default function SiteNavigation({ current }) {

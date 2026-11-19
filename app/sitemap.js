@@ -10,6 +10,7 @@ export default async function sitemap() {
     { url: siteUrl, priority: 1 },
     { url: `${siteUrl}/pages`, priority: 0.8 },
     { url: `${siteUrl}/what-i-use`, priority: 0.8 },
+    { url: `${siteUrl}/work`, priority: 0.8 },
     ...publishedPages.map((page) => ({
       url: `${siteUrl}/pages/${page.slug}`,
       priority: 0.7,

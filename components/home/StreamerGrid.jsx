@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-const REFRESH_MS = 60_000;
+import { useLive } from "./LiveProvider";
 
 const VERIFIED = (
   <svg className="verified" viewBox="0 0 24 24" aria-label="verified" role="img">
@@ -18,31 +16,10 @@ function formatViewers(n) {
   return `${n} watching`;
 }
 
-// The "Streamers I work with" header pill and grid. Live status comes from
-// /api/live: rendered from the server's answer first, then refreshed every
-// minute while the page is open.
-export default function StreamerGrid({ communities = [], activeCount = 0, initialChannels = null }) {
-  const [channels, setChannels] = useState(initialChannels);
-
-  useEffect(() => {
-    let cancelled = false;
-    async function refresh() {
-      if (document.hidden) return;
-      try {
-        const res = await fetch("/api/live");
-        if (!res.ok) return;
-        const json = await res.json();
-        if (!cancelled && json.channels) setChannels(json.channels);
-      } catch {}
-    }
-    const id = setInterval(refresh, REFRESH_MS);
-    document.addEventListener("visibilitychange", refresh);
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-      document.removeEventListener("visibilitychange", refresh);
-    };
-  }, []);
+// The "Streamers I work with" header pill and grid, with live status from
+// LiveProvider.
+export default function StreamerGrid({ communities = [], activeCount = 0 }) {
+  const channels = useLive();
 
   const info = (entry) => (channels && channels[loginOf(entry)]) || null;
 

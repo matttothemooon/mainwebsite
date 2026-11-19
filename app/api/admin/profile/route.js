@@ -41,6 +41,8 @@ export async function PUT(request) {
     await saveProfile(profile);
     revalidatePath("/");
     revalidatePath("/pages");
+    revalidatePath("/work");
+    revalidatePath("/what-i-use");
     revalidatePath("/pages/[slug]", "page");
     return Response.json({ profile }, { headers: NO_STORE });
   } catch (err) {
