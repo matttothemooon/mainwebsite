@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 import { requireAuth, isDevAuthBypass } from "@/lib/auth";
 import { getProfile, saveProfile, validateProfile } from "@/lib/storage";
 import { isConfigured } from "@/lib/twitch";
+import { getConnection, getFollowerCounts } from "@/lib/twitchAuth";
 
 const NO_STORE = { "Cache-Control": "no-store" };
 
@@ -12,10 +13,19 @@ export async function GET(request) {
   if (denied) return denied;
 
   try {
+    const profile = await getProfile({ fresh: true });
+    const connection = isConfigured() ? await getConnection() : null;
+    const followerCounts = connection
+      ? await getFollowerCounts(
+          [...profile.experience.active, ...profile.experience.past].map((e) => e.twitch)
+        )
+      : null;
     return Response.json(
       {
-        profile: await getProfile({ fresh: true }),
+        profile,
         twitchEnabled: isConfigured(),
+        twitchConnection: connection ? { login: connection.login, connectedAt: connection.connectedAt } : null,
+        followerCounts,
         devAuthBypass: isDevAuthBypass(request),
       },
       { headers: NO_STORE }

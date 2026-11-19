@@ -3,6 +3,7 @@ import "./work.css";
 import { getProfile } from "@/lib/storage";
 import { getLiveStatus, profileLogins } from "@/lib/twitch";
 import { profileStats } from "@/lib/profileStats";
+import { withLiveFollowers } from "@/lib/twitchAuth";
 import ContactForm from "@/components/ContactForm";
 import LinkIcon from "@/components/LinkIcon";
 import Reveal from "@/components/home/Reveal";
@@ -42,7 +43,7 @@ function contactLinks(links = []) {
 const titleCase = (s) => s.replace(/\b\w/g, (c) => c.toUpperCase());
 
 export default async function WorkPage() {
-  const profile = await getProfile({ fresh: true });
+  const profile = await withLiveFollowers(await getProfile({ fresh: true }));
   const work = profile.work || { services: [] };
   const active = profile.experience?.active || [];
   const channels = await getLiveStatus(profileLogins(profile));

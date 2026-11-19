@@ -782,3 +782,30 @@ body:has(.admin-wrap) {
 .admin-wrap .prefix-input--other input { padding-left: 10px; }
 .admin-wrap .prefix-input input:focus,
 .admin-wrap .prefix-input input:focus-visible { outline: none; box-shadow: none; }
+
+/* Twitch sign-in for follower counts, above the mod list. */
+.twitch-connect {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: var(--gap-md, 20px);
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.twitch-connect b { color: var(--text); font-weight: 600; }
+.twitch-connect .btn { flex: none; text-decoration: none; }
+.follower-live { margin-top: -6px; color: #7ee2a8; }
+@media (max-width: 640px) {
+  .twitch-connect { flex-direction: column; align-items: flex-start; }
+}
+
+/* "re-check all photos" in the gear section */
+.photo-check { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 10px 0 var(--gap-md, 20px); }
+.photo-check .hint { margin: 0; }
+.photo-check__list { flex-basis: 100%; margin: 4px 0 0; padding-left: 18px; color: var(--text-dim); font-size: 0.8rem; line-height: 1.6; }

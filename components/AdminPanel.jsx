@@ -48,6 +48,9 @@ export default function AdminPanel() {
   const [message, setMessage] = useState("loading…");
   const [profile, setProfile] = useState(null);
   const [twitchEnabled, setTwitchEnabled] = useState(false);
+  const [twitchConnection, setTwitchConnection] = useState(null);
+  const [followerCounts, setFollowerCounts] = useState(null);
+  const [photoCheck, setPhotoCheck] = useState(null); // { running, summary, problems }
   const [devBypass, setDevBypass] = useState(false);
   const [status, setStatus] = useState({ text: "", kind: "" });
   const [dirty, setDirty] = useState(false);
@@ -70,6 +73,22 @@ export default function AdminPanel() {
         const data = await res.json();
         setProfile(data.profile);
         setTwitchEnabled(Boolean(data.twitchEnabled));
+        setTwitchConnection(data.twitchConnection || null);
+        setFollowerCounts(data.followerCounts || null);
+
+        // Result of coming back from Twitch's sign-in page.
+        const outcome = new URLSearchParams(window.location.search).get("twitch");
+        const messages = {
+          connected: ["Twitch connected. Follower counts now update automatically.", "ok"],
+          cancelled: ["Twitch sign-in was cancelled.", "err"],
+          expired: ["Twitch sign-in took too long or came from another tab. Try again.", "err"],
+          error: ["Twitch sign-in failed. Check that the redirect URL is added to the Twitch app.", "err"],
+          "not-configured": ["Set TWITCH_CLIENT_ID / TWITCH_CLIENT_SECRET first.", "err"],
+        };
+        if (messages[outcome]) {
+          setStatus({ text: messages[outcome][0], kind: messages[outcome][1] });
+          window.history.replaceState(null, "", window.location.pathname + window.location.hash);
+        }
         setDevBypass(Boolean(data.devAuthBypass));
         setState("ready");
 
@@ -162,6 +181,55 @@ export default function AdminPanel() {
       p.pages[i] = { ...p.pages[i], ...patch };
       return p;
     });
+
+  // Checks every gear photo still loads and fills in missing or broken ones
+  // from the product links. Changes are applied like any edit; saving is
+  // still a separate step.
+  async function recheckPhotos() {
+    const items = [];
+    profile.gear.forEach((category, ci) =>
+      category.items.forEach((item, ii) => {
+        if (item.value.trim()) items.push({ key: `${ci}:${ii}`, url: item.url, imageUrl: item.imageUrl, name: item.value });
+      })
+    );
+    setPhotoCheck({ running: true, summary: `checking ${items.length} products…`, problems: [] });
+    try {
+      const res = await fetch("/api/admin/gear-photos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: items.map(({ name, ...rest }) => rest) }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "photo check failed");
+
+      const byKey = Object.fromEntries(items.map((i) => [i.key, i]));
+      const updates = data.results.filter((r) => r.imageUrl);
+      if (updates.length) {
+        edit((p) => {
+          for (const r of updates) {
+            const [ci, ii] = r.key.split(":").map(Number);
+            if (p.gear[ci]?.items[ii]) p.gear[ci].items[ii].imageUrl = r.imageUrl;
+          }
+          return p;
+        });
+      }
+      const count = (s) => data.results.filter((r) => r.status === s).length;
+      const found = count("found") + count("replaced");
+      const problems = data.results
+        .filter((r) => r.status === "missing" || r.status === "broken")
+        .map((r) => ({ name: byKey[r.key]?.name, status: r.status }));
+      setPhotoCheck({
+        running: false,
+        summary:
+          `${count("ok")} fine, ${found} found` +
+          (problems.length ? `, ${problems.length} still need a photo` : "") +
+          (found ? " — remember to save" : ""),
+        problems,
+      });
+    } catch (err) {
+      setPhotoCheck({ running: false, summary: err.message, problems: [] });
+    }
+  }
 
   /* ---------- save ---------- */
 
@@ -433,6 +501,51 @@ export default function AdminPanel() {
         </button>
       </section>
 
+      {twitchEnabled && (
+        <div className="twitch-connect">
+          {twitchConnection ? (
+            <>
+              <span>
+                <b>Twitch connected</b> as {twitchConnection.login}. Follower counts on the site update from Twitch
+                every hour; the numbers below are only a fallback.
+              </span>
+              <button
+                className="btn"
+                type="button"
+                onClick={async () => {
+                  const res = await fetch("/api/admin/twitch/disconnect", { method: "POST" });
+                  if (res.ok) {
+                    setTwitchConnection(null);
+                    setFollowerCounts(null);
+                    setStatus({ text: "Twitch disconnected.", kind: "ok" });
+                  } else {
+                    setStatus({ text: "Could not disconnect Twitch.", kind: "err" });
+                  }
+                }}
+              >
+                disconnect
+              </button>
+            </>
+          ) : (
+            <>
+              <span>
+                <b>Keep follower counts up to date.</b> Sign in with your Twitch account once and the site reads each
+                channel&apos;s follower count from Twitch automatically.
+              </span>
+              <a
+                className="btn btn--primary"
+                href="/api/admin/twitch/connect"
+                onClick={(e) => {
+                  if (dirty && !window.confirm("You have unsaved changes. Leave and connect Twitch anyway?")) e.preventDefault();
+                }}
+              >
+                connect twitch
+              </a>
+            </>
+          )}
+        </div>
+      )}
+
       {["active", "past"].map((group) => (
         <section className="section" id={`mods-${group}`} key={group}>
           <h2 className="section__title">mod experience — {group}</h2>
@@ -442,6 +555,7 @@ export default function AdminPanel() {
               key={i}
               entry={entry}
               twitchEnabled={twitchEnabled}
+              liveFollowers={entry.twitch ? followerCounts?.[entry.twitch.toLowerCase()] : undefined}
               onChange={(patch) => patchEntry(group, i, patch)}
               onMove={(d) =>
                 edit((p) => {
@@ -565,6 +679,24 @@ export default function AdminPanel() {
       <section className="section" id="gear">
         <h2 className="section__title">what i use</h2>
         <p className="hint">Add, reorder, or remove guide sections and products.</p>
+        <div className="photo-check">
+          <button className="btn" type="button" onClick={recheckPhotos} disabled={photoCheck?.running}>
+            {photoCheck?.running ? "checking…" : "re-check all photos"}
+          </button>
+          <span className="hint">
+            {photoCheck?.summary ||
+              "Checks every photo still loads, and finds photos for products that have none from their product links."}
+          </span>
+          {photoCheck?.problems?.length > 0 && (
+            <ul className="photo-check__list">
+              {photoCheck.problems.map((p, i) => (
+                <li key={i}>
+                  {p.name} — {p.status === "broken" ? "photo no longer loads and no replacement found" : "no photo found on its product page"}; upload one below
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
         {profile.gear.map((category, i) => (
           <GearCategory
             key={i}
@@ -810,7 +942,7 @@ function LinkRow({ link, onChange, onMove, onRemove, onStatus }) {
 
 /* ---------- experience ---------- */
 
-function EntryCard({ entry, twitchEnabled, onChange, onMove, onRemove, onStatus }) {
+function EntryCard({ entry, twitchEnabled, liveFollowers, onChange, onMove, onRemove, onStatus }) {
   const [fetching, setFetching] = useState(false);
 
   async function autofill() {
@@ -882,13 +1014,20 @@ function EntryCard({ entry, twitchEnabled, onChange, onMove, onRemove, onStatus 
           placeholder="A short note about what you did in this role"
           full
         />
-        <Field
-          label="follower count"
-          type="number"
-          value={entry.followers ?? ""}
-          onChange={followers}
-          placeholder="e.g. 125000"
-        />
+        <div className="field">
+          <Field
+            label="follower count"
+            type="number"
+            value={entry.followers ?? ""}
+            onChange={followers}
+            placeholder="e.g. 125000"
+          />
+          {Number.isFinite(liveFollowers) && (
+            <p className="hint follower-live">
+              Twitch now: {liveFollowers.toLocaleString()} (used on the site automatically)
+            </p>
+          )}
+        </div>
 
         <div className="twitch-row">
           <Field
@@ -962,7 +1101,7 @@ function EntryCard({ entry, twitchEnabled, onChange, onMove, onRemove, onStatus 
 
       <p className="hint">
         {twitchEnabled
-          ? '"fetch" pulls the avatar and display name from Twitch. Twitch no longer serves other channels\' follower counts to apps, so that number usually has to be typed in.'
+          ? '"fetch" pulls the avatar and display name from Twitch. Follower counts update automatically once Twitch is connected above; otherwise type them in.'
           : "Fill these in by hand, or set TWITCH_CLIENT_ID / TWITCH_CLIENT_SECRET to enable Twitch lookup."}
       </p>
     </div>

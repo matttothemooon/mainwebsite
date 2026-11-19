@@ -16,6 +16,7 @@ import StatsStrip from "@/components/home/StatsStrip";
 import ServiceCards from "@/components/home/ServiceCards";
 import { profileStats } from "@/lib/profileStats";
 import { getLiveStatus, ownLogin, profileLogins } from "@/lib/twitch";
+import { withLiveFollowers } from "@/lib/twitchAuth";
 
 // Content comes from the profile, so the admin panel keeps controlling it.
 // The admin panel revalidates this path on save.
@@ -65,7 +66,8 @@ function handleFor(url) {
 const titleCase = (s) => s.replace(/\b\w/g, (c) => c.toUpperCase());
 
 export default async function Home() {
-  const profile = await getProfile({ fresh: true });
+  // Follower counts come from Twitch when the owner has connected it.
+  const profile = await withLiveFollowers(await getProfile({ fresh: true }));
   const links = profile.links || [];
   const active = profile.experience?.active || [];
   const past = profile.experience?.past || [];
