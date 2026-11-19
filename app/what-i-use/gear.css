@@ -1,50 +1,86 @@
-/* Gear as product cards on the Tools page. */
-.gear-shelf { display: grid; gap: 36px; margin-top: 18px; }
+/* Gear on the Tools page: a compact list, photo on hover. */
+.gear-shelf { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 40px; margin-top: 18px; }
 .gear-shelf__category h2 {
-  margin: 0 0 14px;
+  margin: 0 0 6px;
   color: var(--text-dim);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
-.gear-shelf__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.gear-shelf__grid > li { min-width: 0; }
 
-.gear-card {
+.gear-list { margin: 0; padding: 0; list-style: none; }
+.gear-row {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+}
+.gear-row:last-child { border-bottom: 0; }
+.gear-row__label { color: var(--text-dim); font-size: 0.85rem; }
+
+.gear-row__name {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-self: start;
+  min-width: 0;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+.gear-row__text { text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.2); text-underline-offset: 3px; transition: text-decoration-color 0.2s; }
+a.gear-row__name:hover .gear-row__text,
+a.gear-row__name:focus-visible .gear-row__text { text-decoration-color: currentColor; }
+span.gear-row__name .gear-row__text { text-decoration: none; }
+.gear-row__name > svg { flex: none; width: 12px; height: 12px; color: var(--text-dim); transition: transform 0.2s; }
+a.gear-row__name:hover > svg { transform: translate(2px, -2px); }
+.gear-row__name:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+/* ---- the hover card ---- */
+.gear-pop {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 0;
+  z-index: 30;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  width: 240px;
   overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: var(--panel);
-  color: var(--text);
-  text-decoration: none;
-  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: #141417;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(6px) scale(0.98);
+  transform-origin: bottom left;
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0s linear 0.16s;
 }
-a.gear-card:hover { border-color: rgba(255, 255, 255, 0.16); background: var(--panel-alt); transform: translateY(-2px); }
-a.gear-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
-.gear-card__media {
+.gear-row__name:hover .gear-pop,
+.gear-row__name:focus-visible .gear-pop {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0s;
+}
+.gear-pop__media,
+.gear-row__thumb {
   position: relative;
   display: grid;
   place-items: center;
-  aspect-ratio: 4 / 3;
-  margin: 8px 8px 0;
   overflow: hidden;
-  border-radius: 10px;
-  /* Most product shots are on white; a light tile keeps them from looking
-     like cut-outs on the dark page. */
   background: #f4f4f5;
 }
+.gear-pop__media { aspect-ratio: 4 / 3; }
+.gear-pop__caption { padding: 9px 12px 10px; color: var(--text-soft); font-size: 0.8rem; font-weight: 500; line-height: 1.35; }
+
+/* shared photo bits (GearImage) */
 .gear-card__backdrop {
   position: absolute;
   inset: -12%;
@@ -52,36 +88,37 @@ a.gear-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3p
   filter: blur(18px) saturate(1.1);
   opacity: 0.9;
 }
-.gear-card__media img {
+.gear-pop__media img,
+.gear-row__thumb img {
   position: relative;
   width: 100%;
   height: 100%;
   padding: 8%;
   object-fit: contain;
-  transition: transform 0.3s;
 }
-.gear-card__media img.is-wide { padding: 0; }
-a.gear-card:hover .gear-card__media img { transform: scale(1.04); }
-.gear-card__placeholder {
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 100%;
-  background: #1b1b1f;
-  color: #4a4a52;
+.gear-pop__media img.is-wide,
+.gear-row__thumb img.is-wide { padding: 0; }
+.gear-card__placeholder { display: grid; place-items: center; width: 100%; height: 100%; background: #1b1b1f; color: #4a4a52; }
+.gear-card__placeholder svg { width: 30%; height: 30%; }
+.gear-row__thumb:has(.gear-card__placeholder) { display: none !important; }
+
+/* Thumbnails only where there's no hover (phones, tablets). */
+.gear-row__thumb { display: none; }
+@media (hover: none) {
+  .gear-pop { display: none; }
+  .gear-row__name { align-items: center; gap: 10px; }
+  .gear-row__thumb { display: grid; flex: none; width: 44px; height: 44px; border-radius: 8px; }
+  .gear-row__thumb img { padding: 6%; }
 }
-.gear-card__placeholder svg { width: 34%; height: 34%; }
-.gear-card__media:has(.gear-card__placeholder) { background: #1b1b1f; }
 
-.gear-card__body { display: flex; flex: 1; flex-direction: column; gap: 3px; padding: 12px 14px 14px; }
-.gear-card__label { color: var(--text-dim); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
-.gear-card__name { flex: 1; font-size: 0.95rem; font-weight: 600; line-height: 1.35; }
-.gear-card__cta { display: inline-flex; align-items: center; gap: 5px; margin-top: 6px; color: var(--text-soft); font-size: 0.8rem; font-weight: 600; }
-.gear-card__cta svg { width: 12px; height: 12px; transition: transform 0.2s; }
-a.gear-card:hover .gear-card__cta svg { transform: translate(2px, -2px); }
+@media (prefers-reduced-motion: reduce) {
+  .gear-pop { transition: none; transform: none; }
+}
 
-@media (max-width: 480px) {
-  .gear-shelf__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-  .gear-card__body { padding: 10px 11px 12px; }
-  .gear-card__name { font-size: 0.85rem; }
+@media (max-width: 720px) {
+  .gear-shelf { grid-template-columns: 1fr; gap: 28px; }
+}
+@media (max-width: 420px) {
+  .gear-row { grid-template-columns: 1fr; gap: 4px; }
+  .gear-row__label { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; }
 }

@@ -11,8 +11,9 @@ const ARROW = (
   </svg>
 );
 
-// Gear as product cards. Items with an uploaded image use it; the rest get
-// the picture from their product link, looked up on the server.
+// Gear as a compact list; hovering an item's link shows its photo. Items with
+// an uploaded image use it; the rest get the picture from their product link,
+// looked up on the server.
 export default async function GearGuide({ gear }) {
   const categories = (gear || [])
     .map((category) => ({
@@ -40,23 +41,32 @@ export default async function GearGuide({ gear }) {
       {withImages.map((category) => (
         <section className="gear-shelf__category" key={category.name} aria-label={category.name}>
           <h2>{category.name}</h2>
-          <ul className="gear-shelf__grid">
+          <ul className="gear-list">
             {category.items.map((item, i) => {
-              const Tag = item.url ? "a" : "div";
+              const Tag = item.url ? "a" : "span";
               return (
-                <li key={`${item.label}-${item.value}-${i}`}>
+                <li className="gear-row" key={`${item.label}-${item.value}-${i}`}>
+                  <span className="gear-row__label">{item.label}</span>
                   <Tag
-                    className="gear-card"
-                    {...(item.url ? { href: item.url, target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className="gear-row__name"
+                    {...(item.url ? { href: item.url, target: "_blank", rel: "noopener noreferrer" } : { tabIndex: 0 })}
                   >
-                    <span className="gear-card__media">
-                      <GearImage src={item.image} />
-                    </span>
-                    <span className="gear-card__body">
-                      <span className="gear-card__label">{item.label}</span>
-                      <span className="gear-card__name">{item.value}</span>
-                      {item.url && <span className="gear-card__cta">View {ARROW}</span>}
-                    </span>
+                    {/* Small thumbnail on touch screens; a hover card elsewhere. */}
+                    {item.image && (
+                      <span className="gear-row__thumb" aria-hidden="true">
+                        <GearImage src={item.image} />
+                      </span>
+                    )}
+                    <span className="gear-row__text">{item.value}</span>
+                    {item.url && ARROW}
+                    {item.image && (
+                      <span className="gear-pop" aria-hidden="true">
+                        <span className="gear-pop__media">
+                          <GearImage src={item.image} />
+                        </span>
+                        <span className="gear-pop__caption">{item.value}</span>
+                      </span>
+                    )}
                   </Tag>
                 </li>
               );
