@@ -24,9 +24,9 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // Uploaded icons may be SVG, which can carry scripts. Locally they are
-        // served from this origin out of public/uploads, so they get a CSP that
-        // makes them inert. (In production they live on the Vercel Blob origin.)
+        // Uploaded icons may be SVG, which can carry scripts. They are served
+        // from this origin out of public/uploads, so they get a CSP that makes
+        // them inert.
         source: "/uploads/:path*",
         headers: [
           { key: "Content-Security-Policy", value: "default-src 'none'; style-src 'unsafe-inline'; sandbox" },
