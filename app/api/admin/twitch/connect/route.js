@@ -7,7 +7,7 @@ export async function GET(request) {
   const denied = requireAuth(request);
   if (denied) return denied;
   if (!isConfigured()) {
-    return Response.redirect(new URL("/admin?twitch=not-configured#mods-active", request.url), 302);
+    return new Response(null, { status: 302, headers: { Location: "/admin?twitch=not-configured#mods-active" } });
   }
 
   const { nonce, cookie } = createState(request, STATE_COOKIE);

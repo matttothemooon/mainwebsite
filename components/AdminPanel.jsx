@@ -77,16 +77,21 @@ export default function AdminPanel() {
         setFollowerCounts(data.followerCounts || null);
 
         // Result of coming back from Twitch's sign-in page.
-        const outcome = new URLSearchParams(window.location.search).get("twitch");
+        const query = new URLSearchParams(window.location.search);
+        const outcome = query.get("twitch");
+        const detail = query.get("detail");
         const messages = {
           connected: ["Twitch connected. Follower counts now update automatically.", "ok"],
           cancelled: ["Twitch sign-in was cancelled.", "err"],
           expired: ["Twitch sign-in took too long or came from another tab. Try again.", "err"],
-          error: ["Twitch sign-in failed. Check that the redirect URL is added to the Twitch app.", "err"],
+          error: ["Twitch sign-in failed.", "err"],
           "not-configured": ["Set TWITCH_CLIENT_ID / TWITCH_CLIENT_SECRET first.", "err"],
         };
         if (messages[outcome]) {
-          setStatus({ text: messages[outcome][0], kind: messages[outcome][1] });
+          setStatus({
+            text: messages[outcome][0] + (detail ? ` Reason: ${detail}` : ""),
+            kind: messages[outcome][1],
+          });
           window.history.replaceState(null, "", window.location.pathname + window.location.hash);
         }
         setDevBypass(Boolean(data.devAuthBypass));
