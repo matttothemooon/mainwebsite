@@ -14,6 +14,13 @@ const nextConfig = {
     ];
   },
 
+  // Short, shareable link to the gear list.
+  async redirects() {
+    return [
+      { source: "/specs", destination: "/what-i-use#setup", permanent: false },
+    ];
+  },
+
   async headers() {
     return [
       {
