@@ -2,7 +2,7 @@ import { revalidatePath } from "next/cache";
 import { requireAuth, isDevAuthBypass } from "@/lib/auth";
 import { getProfile, saveProfile, validateProfile } from "@/lib/storage";
 import { isConfigured } from "@/lib/twitch";
-import { getConnection, getFollowerCounts } from "@/lib/twitchAuth";
+import { getConnection, getFollowerCounts, callbackUrl } from "@/lib/twitchAuth";
 
 const NO_STORE = { "Cache-Control": "no-store" };
 
@@ -25,6 +25,9 @@ export async function GET(request) {
         profile,
         twitchEnabled: isConfigured(),
         twitchConnection: connection ? { login: connection.login, connectedAt: connection.connectedAt } : null,
+        // Shown in the admin panel so it can be compared with the Twitch app's
+        // OAuth Redirect URLs, which must contain it exactly.
+        twitchCallbackUrl: callbackUrl(request),
         followerCounts,
         devAuthBypass: isDevAuthBypass(request),
       },

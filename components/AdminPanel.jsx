@@ -50,6 +50,7 @@ export default function AdminPanel() {
   const [twitchEnabled, setTwitchEnabled] = useState(false);
   const [twitchConnection, setTwitchConnection] = useState(null);
   const [followerCounts, setFollowerCounts] = useState(null);
+  const [twitchCallbackUrl, setTwitchCallbackUrl] = useState("");
   const [photoCheck, setPhotoCheck] = useState(null); // { running, summary, problems }
   const [devBypass, setDevBypass] = useState(false);
   const [status, setStatus] = useState({ text: "", kind: "" });
@@ -75,6 +76,7 @@ export default function AdminPanel() {
         setTwitchEnabled(Boolean(data.twitchEnabled));
         setTwitchConnection(data.twitchConnection || null);
         setFollowerCounts(data.followerCounts || null);
+        setTwitchCallbackUrl(data.twitchCallbackUrl || "");
 
         // Result of coming back from Twitch's sign-in page.
         const query = new URLSearchParams(window.location.search);
@@ -546,6 +548,19 @@ export default function AdminPanel() {
               >
                 connect twitch
               </a>
+              {twitchCallbackUrl && (
+                <span className="twitch-connect__url">
+                  Your Twitch app&apos;s OAuth Redirect URLs (dev.twitch.tv/console) must include exactly:{" "}
+                  <code>{twitchCallbackUrl}</code>{" "}
+                  <button
+                    className="btn btn--icon"
+                    type="button"
+                    onClick={() => navigator.clipboard?.writeText(twitchCallbackUrl).then(() => setStatus({ text: "copied", kind: "ok" }))}
+                  >
+                    copy
+                  </button>
+                </span>
+              )}
             </>
           )}
         </div>

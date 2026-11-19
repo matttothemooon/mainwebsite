@@ -809,3 +809,6 @@ body:has(.admin-wrap) {
 .photo-check { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 10px 0 var(--gap-md, 20px); }
 .photo-check .hint { margin: 0; }
 .photo-check__list { flex-basis: 100%; margin: 4px 0 0; padding-left: 18px; color: var(--text-dim); font-size: 0.8rem; line-height: 1.6; }
+.twitch-connect { flex-wrap: wrap; }
+.twitch-connect__url { flex-basis: 100%; font-size: 0.8rem; }
+.twitch-connect__url code { padding: 2px 6px; border-radius: 4px; background: #000; color: var(--text); word-break: break-all; }
