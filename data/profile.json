@@ -269,7 +269,7 @@
   },
   "testimonials": [],
   "work": {
-    "available": false,
+    "available": true,
     "intro": "I help streamers and communities stay welcoming and run smoothly, from daily streams to major events.",
     "services": [
       {
