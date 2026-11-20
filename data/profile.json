@@ -73,7 +73,7 @@
         "date": "present",
         "twitch": "jasontheween",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/a04be2b0-9cc1-403c-a4b0-47b32d1fe640-profile_image-300x300.png",
-        "followers": 2891665
+        "followers": 2907223
       },
       {
         "role": "Admin",
@@ -106,7 +106,7 @@
         "date": "present",
         "twitch": "cizzorz",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/b59543d6-96ee-40a6-bf4a-11dbf1d67a18-profile_image-300x300.png",
-        "followers": 1950220
+        "followers": 1949933
       }
     ],
     "past": [
@@ -119,7 +119,7 @@
         "date": "Oct 2021 – Jan 2025",
         "twitch": "flynnislivee",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/e558a0bc-5d67-415d-976f-9cd24a435f8f-profile_image-300x300.png",
-        "followers": 7099
+        "followers": 7093
       },
       {
         "role": "Community Manager",
@@ -153,13 +153,13 @@
           "label": "CPU",
           "value": "AMD Ryzen 7 8700F 8-Core Processor",
           "url": "https://www.amd.com/en/products/processors/desktops/ryzen/8000-series/amd-ryzen-7-8700f.html",
-          "imageUrl": "/uploads/7c6cd0731effcc80.jpg"
+          "imageUrl": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2608523-amd-ryzen-8000-series-processor.jpg"
         },
         {
           "label": "GPU",
           "value": "NVIDIA GeForce RTX 5070",
           "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5070-family/",
-          "imageUrl": "/uploads/8f117c3a35debe0f.jpg"
+          "imageUrl": "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/graphic-cards/50-series/5070-family/geforce-rtx-5070-ti-og-image.jpg"
         },
         {
           "label": "RAM",
@@ -177,7 +177,7 @@
           "label": "Storage",
           "value": "4TB SSD (Internal)",
           "url": "https://www.samsung.com/us/computing/memory-storage/solid-state-drives/990-pro-pcie-4-0-nvme-ssd-4tb-mz-v9p4t0b-am/",
-          "imageUrl": "/uploads/762a31898c7d9eec.jpg"
+          "imageUrl": "https://images.samsung.com/is/image/samsung/p6pim/us/mz-v9p4t0b-am/gallery/us-nvme-ssd-mz-v9p4t0b-am-----pro---tb-ssd-nvme--m---black-551140993"
         }
       ]
     },
@@ -188,7 +188,7 @@
           "label": "Keyboard",
           "value": "Wooting 80HE",
           "url": "https://wooting.io/wooting-80he",
-          "imageUrl": "/uploads/9ef9ab8e3792d3f9.webp"
+          "imageUrl": "https://wooting-website.ams3.cdn.digitaloceanspaces.com/products/keyboards/80HE/80HE_OG_2.webp"
         },
         {
           "label": "Mouse",
@@ -200,7 +200,7 @@
           "label": "Mousepad",
           "value": "Icy Cyan TOPO Mousepad",
           "url": "https://gutzyaiden.com/products/icy-cyan-topo-mousepad",
-          "imageUrl": "/uploads/355cbcab90c5491d.jpg"
+          "imageUrl": "http://gutzyaiden.com/cdn/shop/files/GA_XXL_Icy_Cyan_Topo_36x18_a6e831b4-c103-4905-b9ac-d7b9eb498c3e.jpg?v=1789593452"
         },
         {
           "label": "Stream Deck",
@@ -212,25 +212,25 @@
           "label": "Stream Deck",
           "value": "Elgato Stream Deck Neo",
           "url": "https://www.elgato.com/us/en/p/stream-deck-neo",
-          "imageUrl": "/uploads/701740e4b1b6b5a1.jpg"
+          "imageUrl": "https://images.ctfassets.net/h50kqpe25yx1/3NT4RDTJhTZzcPn1VJit5i/1517ec0ba0b189cd1a3f1c31ad7eafae/social-graph-NEO-Key-Light.jpg"
         },
         {
           "label": "Microphone",
           "value": "Elgato Wave:3",
           "url": "https://www.elgato.com/us/en/p/wave-3",
-          "imageUrl": "/uploads/0a5c198f3441f6f4.png"
+          "imageUrl": "https://images.ctfassets.net/h50kqpe25yx1/sQ05quBdMBremHxGG4s7S/f06b910c6f9491e2a8bef93357dfa516/Wave3-Open-Graph.png"
         },
         {
           "label": "Mic Arm",
           "value": "Elgato Wave Mic Arm LP",
           "url": "https://www.elgato.com/us/en/p/wave-mic-arm-lp",
-          "imageUrl": "/uploads/dad125d334b80b9e.jpg"
+          "imageUrl": "https://images.ctfassets.net/h50kqpe25yx1/7BWftay7QCkvQpVZeLgpA8/024faeddb87e63ee784a45557cec676a/wave-mic-arm-lp.jpg"
         },
         {
           "label": "Headphones",
           "value": "Apple AirPods Max",
           "url": "https://www.apple.com/airpods-max/",
-          "imageUrl": "/uploads/769fdfe5cf3c2028.png"
+          "imageUrl": "https://www.apple.com/v/airpods-max/l/images/meta/airpods-max_overview__c2mz40a3bugm_og.png?202611101257"
         }
       ]
     },
