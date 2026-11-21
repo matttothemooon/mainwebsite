@@ -16,7 +16,7 @@
       "slug": "mod-resources",
       "category": "Mod resources",
       "description": "Useful links for stream and community moderation.",
-      "content": "- [Twitch Moderator View](https://help.twitch.tv/s/article/moderator-view?language=en_US)\n- [Twitch AutoMod](https://help.twitch.tv/s/article/automod?language=en_US)\n- [Twitch Safety Center](https://safety.twitch.tv/)\n- [Discord Moderator Academy](https://discord.com/moderation)\n- [Discord Safety Center](https://discord.com/safety)",
+      "content": "- [Fossabot](https://fossabot.com/)\n- [StreamElements](https://streamelements.com/)\n- [bleed](https://bleed.bot/)\n- [hxdes RegEx Generator](https://hxdes.de/regex)\n- [Moltorino](https://moltorino.com/)",
       "published": true
     }
   ],
