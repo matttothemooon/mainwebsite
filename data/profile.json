@@ -265,6 +265,8 @@
     }
   ],
   "stats": {
+    "showViews": false,
+    "viewsOffset": 0,
     "yearsModding": 11
   },
   "testimonials": [],
@@ -298,6 +300,18 @@
       "1490454967385850091",
       "1517375084879282266",
       "1459917776251654147"
+    ]
+  },
+  "home": {
+    "roles": [
+      "Community Mod",
+      "Streamer",
+      "Community Manager"
+    ],
+    "tags": [
+      "Moderation",
+      "Discord management",
+      "Bots & filters"
     ]
   }
 }
