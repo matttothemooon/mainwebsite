@@ -9,7 +9,7 @@ import { profileStats } from "@/lib/profileStats";
 import { withLiveFollowers } from "@/lib/twitchAuth";
 import { shownServers } from "@/lib/discordConnect";
 import DiscordServers from "@/components/home/DiscordServers";
-import ContactForm from "@/components/ContactForm";
+import DiscordDm from "@/components/site/DiscordDm";
 import LinkIcon from "@/components/LinkIcon";
 import Reveal from "@/components/home/Reveal";
 import LiveProvider from "@/components/home/LiveProvider";
@@ -132,7 +132,7 @@ export default async function WorkPage() {
           <section id="contact" className="sec" aria-labelledby="contact-title">
             <h2 id="contact-title" className="sec-title" data-reveal>Get in touch</h2>
             <p className="sec-lede" data-reveal>
-              Tell me about your community and what you need.
+              DM me on Discord and tell me about your community and what you need.
             </p>
             {quick.length > 0 && (
               <ul className="contact-grid work-quick">
@@ -146,10 +146,7 @@ export default async function WorkPage() {
                 ))}
               </ul>
             )}
-            <div className="card form-card" data-reveal>
-              <h3>Send a message</h3>
-              <ContactForm />
-            </div>
+            <DiscordDm links={profile.links} />
           </section>
         </main>
 

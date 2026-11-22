@@ -4,7 +4,7 @@ import TopNav from "@/components/site/TopNav";
 import SiteFooter from "@/components/site/SiteFooter";
 import { getProfile } from "@/lib/storage";
 import LinkIcon from "@/components/LinkIcon";
-import ContactForm from "@/components/ContactForm";
+import DiscordDm from "@/components/site/DiscordDm";
 import PresenceProvider from "@/components/PresenceProvider";
 import DiscordAvatar from "@/components/DiscordAvatar";
 import RotatingRole from "@/components/home/RotatingRole";
@@ -229,7 +229,7 @@ export default async function Home() {
 
           <section id="contact" className="sec" aria-labelledby="contact-title">
             <h2 id="contact-title" className="sec-title" data-reveal>Get in touch</h2>
-            <p className="sec-lede" data-reveal>Want to reach out? Find me on any of these, or send a message below.</p>
+            <p className="sec-lede" data-reveal>Find me on any of these, or DM me on Discord.</p>
             <ul className="contact-grid">
               {links.map((link, i) => {
                 const external = !link.url.startsWith("/");
@@ -249,10 +249,7 @@ export default async function Home() {
                 );
               })}
             </ul>
-            <div className="card form-card" data-reveal>
-              <h3>Send a message</h3>
-              <ContactForm />
-            </div>
+            <DiscordDm links={links} />
           </section>
         </main>
 

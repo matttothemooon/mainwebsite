@@ -421,49 +421,14 @@ a.st.is-live:hover .st__live { border-color: var(--pf-card-hi); }
 .contact__handle { flex: 1; min-width: 0; overflow: hidden; color: var(--pf-muted); font-size: 13px; text-align: right; text-overflow: ellipsis; white-space: nowrap; }
 .contact .arrow { color: var(--pf-muted); }
 
-.form-card { margin-top: 10px; padding: 22px; }
-.form-card h3 { margin-bottom: 16px; font-size: 18px; font-weight: 700; }
-.pf .tw-contact__form { display: grid; gap: 14px; }
-.pf .tw-contact__row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.pf .tw-contact__form label { display: grid; gap: 6px; color: var(--pf-muted); font-size: 13px; }
-.pf .tw-contact__message-label { display: flex; justify-content: space-between; }
-.pf .tw-contact__required { color: #f87171; }
-.pf .tw-contact__form input,
-.pf .tw-contact__form select,
-.pf .tw-contact__form textarea {
-  width: 100%;
-  padding: 11px 13px;
-  border: 1px solid var(--pf-line-hi);
-  border-radius: 10px;
-  background: var(--pf-bg);
-  color: var(--pf-text);
-  font: inherit;
-  font-size: 15px;
-  transition: border-color .2s;
-}
-.pf .tw-contact__form textarea { resize: vertical; min-height: 120px; }
-.pf .tw-contact__form input:focus,
-.pf .tw-contact__form select:focus,
-.pf .tw-contact__form textarea:focus { border-color: rgba(255, 255, 255, .4); outline: none; }
-.pf .tw-contact__honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-.pf .tw-contact__submit {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 18px;
-  border: 0;
-  border-radius: 10px;
-  background: #f4f4f5;
-  color: #0a0a0c;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity .2s, transform .2s;
-}
-.pf .tw-contact__submit:hover { transform: translateY(-1px); }
-.pf .tw-contact__submit:disabled { opacity: .6; cursor: progress; }
-.pf .tw-contact__status { margin: 0; min-height: 1em; color: var(--pf-soft); font-size: 14px; }
+.dm-card { display: flex; align-items: center; gap: 16px; margin-top: 10px; padding: 20px 22px; }
+.dm-card__icon { display: grid; flex: none; place-items: center; width: 48px; height: 48px; border-radius: 10px; background: #5865f2; color: #fff; }
+.dm-card__icon svg { width: 26px; height: 26px; }
+.dm-card__text { flex: 1; min-width: 0; }
+.dm-card h3 { font-size: 18px; font-weight: 700; letter-spacing: -.02em; }
+.dm-card p { margin: 4px 0 0; color: var(--pf-soft); font-size: 14px; }
+.dm-card__btn { flex: none; padding: 10px 16px; border-radius: 8px; background: #f2f2f2; color: #0a0a0a !important; font-size: 14px; font-weight: 700; transition: transform .2s; }
+.dm-card__btn:hover { transform: translateY(-1px); }
 
 /* ---------- footer ---------- */
 .pf-foot {
@@ -500,7 +465,9 @@ a.st.is-live:hover .st__live { border-color: var(--pf-card-hi); }
   .topnav__links a { font-size: 13px; }
   .sec { padding-top: 72px; }
   .banner { height: 120px; margin-top: 4px; border-radius: 12px; }
-  .guides, .contact-grid, .pf .tw-contact__row { grid-template-columns: 1fr; }
+  .guides, .contact-grid { grid-template-columns: 1fr; }
+  .dm-card { flex-wrap: wrap; }
+  .dm-card__btn { flex-basis: 100%; text-align: center; }
   .service { padding: 18px; gap: 14px; }
   .np__status { display: none; }
 }
