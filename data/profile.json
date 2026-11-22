@@ -107,6 +107,17 @@
         "twitch": "cizzorz",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/b59543d6-96ee-40a6-bf4a-11dbf1d67a18-profile_image-300x300.png",
         "followers": 1949933
+      },
+      {
+        "role": "Twitch Mod",
+        "name": "oSaph",
+        "description": "",
+        "url": "https://twitch.tv/osaph",
+        "discordUrl": "",
+        "date": "present",
+        "twitch": "osaph",
+        "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/277df46e-9034-4f77-828f-d31721553adc-profile_image-300x300.png",
+        "followers": 32954
       }
     ],
     "past": [
@@ -265,6 +276,8 @@
     }
   ],
   "stats": {
+    "showViews": false,
+    "viewsOffset": 0,
     "yearsModding": 11
   },
   "testimonials": [],
@@ -298,6 +311,18 @@
       "1490454967385850091",
       "1517375084879282266",
       "1459917776251654147"
+    ]
+  },
+  "home": {
+    "roles": [
+      "Community Mod",
+      "Streamer",
+      "Community Manager"
+    ],
+    "tags": [
+      "Moderation",
+      "Discord management",
+      "Bots & filters"
     ]
   }
 }

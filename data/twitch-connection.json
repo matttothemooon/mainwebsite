@@ -1,6 +1,10 @@
 {
   "login": "mattothemoon",
   "userId": "538374017",
-  "connectedAt": "2026-11-19T20:41:23.802Z",
-  "refresh": "xhr4Afr-eSpyrFOw.Mp6Dm7aa_lRFzmpjXWj5lw.LO82vpYWtiW7OvB2lc-fiFAwCeieLrUI2t_NPGUX8fxfvnMzd42sFBaedrY6guVOaas"
+  "scopes": [
+    "moderator:read:followers",
+    "user:read:moderated_channels"
+  ],
+  "connectedAt": "2026-11-22T06:49:44.696Z",
+  "refresh": "DI0BIOEIL2roSMxR.kY17X5Sdf1pBmrDzUVU78g.3SqOopwKM8AbRJwnhmmAhbu4xTeAYI2MHuoiwBaLvN9hBjRHWMVrQNahBdje4yEThBY"
 }
