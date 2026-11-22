@@ -79,20 +79,13 @@
 }
 .season-toast button { padding: 0 6px; border: 0; background: none; color: #8b8b93; font-size: 18px; cursor: pointer; }
 
-/* ---- colour tweaks per season (home-style pages) ---- */
-html[data-season="halloween"] .pf { --pf-live: #ff8a3d; }
-html[data-season="halloween"] .banner { background: radial-gradient(120% 140% at 50% 120%, rgba(255, 138, 61, .22), transparent 60%), linear-gradient(180deg, #16110d, #0d0b0a); }
-html[data-season="halloween"] .banner__stars i { background: #ffb37a; }
-html[data-season="halloween"] .banner__word { background-image: linear-gradient(180deg, #fff3e6 0%, #ffcf9e 30%, #8a4a1c 50%, #ffe2c2 62%, #c06a2b 82%, #fff0e0 100%); }
-
-html[data-season="holidays"] .banner { background: radial-gradient(120% 140% at 50% 120%, rgba(147, 197, 253, .2), transparent 60%), linear-gradient(180deg, #0f1218, #0b0d11); }
-html[data-season="holidays"] .banner__word { background-image: linear-gradient(180deg, #ffffff 0%, #dbeafe 30%, #5b7aa6 50%, #eff6ff 62%, #93b4dd 82%, #f0f7ff 100%); }
-
-html[data-season="valentine"] .banner { background: radial-gradient(120% 140% at 50% 120%, rgba(244, 114, 182, .2), transparent 60%), linear-gradient(180deg, #161015, #0d0b0d); }
-html[data-season="valentine"] .banner__word { background-image: linear-gradient(180deg, #fff1f7 0%, #fbcfe8 30%, #9d3d6e 50%, #fff1f7 62%, #e489b6 82%, #fff5fa 100%); }
-
-html[data-season="anniversary"] .banner { background: radial-gradient(120% 140% at 50% 120%, rgba(250, 204, 21, .18), transparent 60%), linear-gradient(180deg, #14130d, #0c0c0a); }
-html[data-season="anniversary"] .banner__word { background-image: linear-gradient(180deg, #fffbea 0%, #fde68a 30%, #8a6d12 50%, #fff8dc 62%, #d4a82a 82%, #fffbea 100%); }
+/* ---- colour tweaks per season: profile card and the role highlight ---- */
+html[data-season="halloween"] .pf { --pf-live: #ff8a3d; --season: 255, 138, 61; }
+html[data-season="holidays"] .pf { --season: 147, 197, 253; }
+html[data-season="valentine"] .pf { --season: 244, 114, 182; }
+html[data-season="anniversary"] .pf { --season: 250, 204, 21; }
+html[data-season] .hero-card { border-color: rgba(var(--season), .35); box-shadow: 0 0 40px rgba(var(--season), .08); }
+html[data-season] .hero-name .verified { color: rgb(var(--season)); }
 
 @media (prefers-reduced-motion: reduce) {
   .season__item { animation: none !important; display: none; }

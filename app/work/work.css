@@ -1,7 +1,8 @@
 /* "Work with me" page; builds on the home page styles. */
-.work { padding-top: 96px; }
-.work-eyebrow { margin: 0 0 12px; color: var(--pf-muted); font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
-.work-hero h1 { max-width: 18ch; font-size: clamp(36px, 7vw, 54px); font-weight: 800; letter-spacing: -.04em; line-height: 1.05; }
+.work { padding-top: 32px; }
+.work-eyebrow { margin: 0 0 12px; color: var(--pf-muted); font-family: var(--pf-mono); font-size: 13px; letter-spacing: .04em; text-transform: lowercase; }
+.work-eyebrow::before { content: "> "; color: var(--pf-soft); }
+.work-hero h1 { max-width: 18ch; font-size: clamp(40px, 7.5vw, 64px); font-weight: 700; letter-spacing: -.05em; line-height: 1; }
 .work-intro { max-width: 60ch; margin: 18px 0 0; color: var(--pf-soft); font-size: 17px; line-height: 1.7; }
 .work-hero .stats { margin-top: 32px; }
 
@@ -24,6 +25,6 @@
 
 .work-quick { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 560px) {
-  .work { padding-top: 72px; }
+  .work { padding-top: 16px; }
   .work-quick { grid-template-columns: 1fr; }
 }

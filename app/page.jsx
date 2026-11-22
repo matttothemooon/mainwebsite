@@ -7,7 +7,6 @@ import LinkIcon from "@/components/LinkIcon";
 import ContactForm from "@/components/ContactForm";
 import PresenceProvider from "@/components/PresenceProvider";
 import DiscordAvatar from "@/components/DiscordAvatar";
-import IntroGate from "@/components/home/IntroGate";
 import RotatingRole from "@/components/home/RotatingRole";
 import NowPlaying from "@/components/home/NowPlaying";
 import Reveal from "@/components/home/Reveal";
@@ -91,10 +90,6 @@ export default async function Home() {
 
   return (
     <div className="pf">
-      <noscript>
-        <style>{`.intro{display:none!important}.pf .h-in,.pf [data-reveal]{opacity:1!important;transform:none!important}`}</style>
-      </noscript>
-      <IntroGate />
       <Reveal />
 
       <LiveProvider initialChannels={liveChannels}>
@@ -103,24 +98,51 @@ export default async function Home() {
 
         <main className="pf-col">
           <header className="hero">
-            <div className="banner h-in" style={{ "--d": "0ms" }}>
-              <span className="banner__stars" aria-hidden="true">
-                {Array.from({ length: 14 }, (_, i) => <i key={i} />)}
-              </span>
-              <span className="banner__moon" aria-hidden="true" />
-              <span className="banner__logo" role="img" aria-label={profile.name}>
-                <span className="banner__word">mattothemoon</span>
-                <span className="banner__sheen" aria-hidden="true" />
-              </span>
+            <div className="hero__main">
+              <p className="hero__eyebrow h-in" style={{ "--d": "0ms" }}>
+                {profile.bio || "Community mod & streamer"}
+              </p>
+              <h1 className="hero-name h-in" style={{ "--d": "60ms" }}>
+                {profile.name}
+                {VERIFIED}
+              </h1>
+              {profile.home?.roles?.length > 0 && (
+                <p className="hero-role h-in" style={{ "--d": "120ms" }}>
+                  <span className="hero-role__pre">I&apos;m a</span>
+                  <RotatingRole roles={profile.home.roles} />
+                </p>
+              )}
+              {profile.about && (
+                <div className="hero-bio h-in" style={{ "--d": "180ms" }}>
+                  <p>{profile.about}</p>
+                </div>
+              )}
+              {links.length > 0 && (
+                <ul className="socials h-in" style={{ "--d": "240ms" }}>
+                  {links.map((link, i) => {
+                    const external = !link.url.startsWith("/");
+                    return (
+                      <li key={`${link.url}-${i}`}>
+                        <a
+                          href={link.url}
+                          aria-label={link.label}
+                          {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                        >
+                          <LinkIcon link={link} />
+                          <span className="tip">{titleCase(link.label)}</span>
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </div>
 
-            <div className="hero-row">
-              <span className="h-in" style={{ "--d": "90ms" }}>
-                <LiveAvatar login={myLogin}>
-                  <DiscordAvatar />
-                </LiveAvatar>
-              </span>
-              <span className="hero-chips h-in" style={{ "--d": "135ms" }}>
+            <aside className="hero-card h-in" style={{ "--d": "120ms" }} aria-label="Profile">
+              <LiveAvatar login={myLogin}>
+                <DiscordAvatar />
+              </LiveAvatar>
+              <div className="hero-card__chips">
                 {work.available && (
                   <a className="chip chip--open" href="/work">
                     <span className="chip__dot" aria-hidden="true" />
@@ -135,50 +157,14 @@ export default async function Home() {
                     <b>{views.toLocaleString("en-US")}</b> views
                   </span>
                 )}
-              </span>
-            </div>
-
-            <h1 className="hero-name h-in" style={{ "--d": "180ms" }}>
-              {profile.name}
-              {VERIFIED}
-            </h1>
-            {profile.home?.roles?.length > 0 && (
-              <p className="hero-role h-in" style={{ "--d": "225ms" }}>
-                <span className="hero-role__pre">I&apos;m a</span>
-                <RotatingRole roles={profile.home.roles} />
-              </p>
-            )}
-            <div className="hero-bio h-in" style={{ "--d": "270ms" }}>
-              {profile.about ? <p>{profile.about}</p> : <p>{profile.bio}</p>}
-            </div>
-
-            <StatsStrip stats={stats} className="h-in" style={{ "--d": "290ms" }} />
-
-            {links.length > 0 && (
-              <ul className="socials h-in" style={{ "--d": "315ms" }}>
-                {links.map((link, i) => {
-                  const external = !link.url.startsWith("/");
-                  return (
-                    <li key={`${link.url}-${i}`}>
-                      <a
-                        href={link.url}
-                        aria-label={link.label}
-                        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                      >
-                        <LinkIcon link={link} />
-                        <span className="tip">{titleCase(link.label)}</span>
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
+              </div>
+              <NowPlaying />
+            </aside>
           </header>
 
-          <div className="h-in" style={{ "--d": "360ms" }}>
-            <LiveBanner login={myLogin} />
-            <NowPlaying />
-          </div>
+          <StatsStrip stats={stats} className="h-in" style={{ "--d": "300ms" }} />
+
+          <LiveBanner login={myLogin} />
 
           {work.services?.length > 0 && (
             <section className="sec" aria-labelledby="do-title">

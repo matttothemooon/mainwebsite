@@ -4,10 +4,11 @@ import ViewTracker from "@/components/site/ViewTracker";
 import SeasonalDecor from "@/components/site/SeasonalDecor";
 import { getProfile } from "@/lib/storage";
 import { pickSeason } from "@/lib/seasons";
-import { Bricolage_Grotesque, Geist } from "next/font/google";
+import { Space_Grotesk, Manrope, JetBrains_Mono } from "next/font/google";
 
-const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-display", display: "swap" });
-const sans = Geist({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const display = Space_Grotesk({ subsets: ["latin"], variable: "--font-display", display: "swap" });
+const sans = Manrope({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-code", display: "swap" });
 
 export const viewport = {
   themeColor: "#0a0a0c",
@@ -40,7 +41,7 @@ export default async function RootLayout({ children }) {
   const { season, years } = pickSeason(new Date(), profile?.themes);
 
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`} data-season={season || undefined}>
+    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`} data-season={season || undefined}>
       <body>
         {children}
         <ViewTracker />

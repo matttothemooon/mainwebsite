@@ -1,15 +1,8 @@
-// Shared look for the link-preview images (Discord, X, iMessage...): the
-// home banner's dark starry card with a chrome wordmark, plus a page title.
+// Shared look for the link-preview images (Discord, X, iMessage...): plain
+// dark background, big white title, small grey labels.
 import { ImageResponse } from "next/og";
 
 export const OG_SIZE = { width: 1200, height: 630 };
-
-const STARS = [
-  [90, 120], [210, 470], [340, 90], [470, 540], [610, 70], [720, 520],
-  [860, 140], [980, 470], [1110, 230], [150, 300], [1060, 560], [540, 300],
-];
-
-const CHROME = "linear-gradient(180deg, #ffffff 0%, #d9d9de 30%, #6e6e76 50%, #f2f2f4 62%, #9a9aa2 82%, #e8e8ec 100%)";
 
 const clip = (s, n) => (s && s.length > n ? `${s.slice(0, n - 1).trimEnd()}…` : s || "");
 
@@ -29,41 +22,14 @@ export function ogImage({ eyebrow = "", title = "mattothemoon", subtitle = "", c
         flexDirection: "column",
         justifyContent: "center",
         padding: "0 90px",
-        background: "linear-gradient(180deg, #111114 0%, #0a0a0c 100%)",
+        background: "#0a0a0a",
         color: "#ededf0",
         fontFamily: "Arial, sans-serif",
       }}
     >
-      {STARS.map(([x, y], i) => (
-        <div
-          key={i}
-          style={{
-            position: "absolute",
-            left: x,
-            top: y,
-            width: i % 3 ? 3 : 4,
-            height: i % 3 ? 3 : 4,
-            borderRadius: 4,
-            background: "#ffffff",
-            opacity: i % 2 ? 0.35 : 0.6,
-          }}
-        />
-      ))}
-      <div
-        style={{
-          position: "absolute",
-          top: -170,
-          right: -110,
-          width: 460,
-          height: 460,
-          borderRadius: "50%",
-          background: "radial-gradient(circle at 35% 35%, rgba(255,255,255,0.16), rgba(255,255,255,0.03) 55%, rgba(255,255,255,0) 70%)",
-        }}
-      />
-
       {eyebrow && (
-        <div style={{ display: "flex", color: "#8b8b93", fontSize: 28, letterSpacing: 4, textTransform: "uppercase", marginBottom: 18 }}>
-          {clip(eyebrow, 40)}
+        <div style={{ display: "flex", color: "#8a8a8a", fontSize: 28, fontFamily: "monospace", marginBottom: 18 }}>
+          {`> ${clip(eyebrow, 40).toLowerCase()}`}
         </div>
       )}
       <div
@@ -71,12 +37,10 @@ export function ogImage({ eyebrow = "", title = "mattothemoon", subtitle = "", c
           display: "flex",
           maxWidth: 1000,
           fontSize: titleSize,
-          fontWeight: 800,
-          letterSpacing: -3,
+          fontWeight: 700,
+          letterSpacing: -4,
           lineHeight: 1.05,
-          backgroundImage: CHROME,
-          backgroundClip: "text",
-          color: "transparent",
+          color: "#f2f2f2",
         }}
       >
         {t}
@@ -111,21 +75,9 @@ export function ogImage({ eyebrow = "", title = "mattothemoon", subtitle = "", c
         </div>
       )}
 
-      <div style={{ position: "absolute", left: 90, bottom: 44, display: "flex", alignItems: "center", gap: 18 }}>
-        <span
-          style={{
-            fontSize: 30,
-            fontWeight: 800,
-            fontStyle: "italic",
-            letterSpacing: -1,
-            backgroundImage: CHROME,
-            backgroundClip: "text",
-            color: "transparent",
-          }}
-        >
-          mattothemoon
-        </span>
-        <span style={{ color: "#55555c", fontSize: 22, letterSpacing: 2 }}>mattothemoon.xyz</span>
+      <div style={{ position: "absolute", left: 90, right: 90, bottom: 44, display: "flex", justifyContent: "space-between", borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 22 }}>
+        <span style={{ color: "#f2f2f2", fontSize: 28, fontWeight: 700 }}>mattothemoon</span>
+        <span style={{ color: "#8a8a8a", fontSize: 24 }}>mattothemoon.xyz</span>
       </div>
     </div>,
     OG_SIZE

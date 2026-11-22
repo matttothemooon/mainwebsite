@@ -5,15 +5,18 @@ const LINKS = [
   { href: "/work", label: "Work with me", key: "work" },
 ];
 
-// The floating pill navigation used on every page.
+// The top bar used on every page: name on the left, sections on the right.
 export default function TopNav({ current }) {
   return (
-    <nav className="topnav" aria-label="Main navigation">
-      {LINKS.map((link) => (
-        <a key={link.key} href={link.href} aria-current={link.key === current ? "page" : undefined}>
-          {link.label}
-        </a>
-      ))}
-    </nav>
+    <header className="topnav">
+      <a className="topnav__brand" href="/">mattothemoon</a>
+      <nav className="topnav__links" aria-label="Main navigation">
+        {LINKS.map((link) => (
+          <a key={link.key} href={link.href} aria-current={link.key === current ? "page" : undefined}>
+            {link.label}
+          </a>
+        ))}
+      </nav>
+    </header>
   );
 }

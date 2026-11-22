@@ -1,7 +1,7 @@
 /* Inner pages (Guides, a guide, Tools, 404) in the home page's style.
    Builds on app/home.css (.pf, .card, .sec, .sec-title, .guides, ...). */
 
-.pf-page { padding-top: 96px; }
+.pf-page { padding-top: 32px; }
 
 /* ---------- shared buttons ---------- */
 .page-actions, .work-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 24px; }
@@ -29,8 +29,9 @@
   transition: color .2s;
 }
 .page-head__back:hover { color: var(--pf-text); }
-.page-head__eyebrow { margin: 0 0 12px; color: var(--pf-muted); font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
-.page-head h1 { max-width: 20ch; font-size: clamp(36px, 7vw, 54px); font-weight: 800; letter-spacing: -.04em; line-height: 1.05; }
+.page-head__eyebrow { margin: 0 0 12px; color: var(--pf-muted); font-family: var(--pf-mono); font-size: 13px; letter-spacing: .04em; text-transform: lowercase; }
+.page-head__eyebrow::before { content: "> "; color: var(--pf-soft); }
+.page-head h1 { max-width: 20ch; font-size: clamp(40px, 7.5vw, 64px); font-weight: 700; letter-spacing: -.05em; line-height: 1; }
 .page-head__lede { max-width: 60ch; margin: 18px 0 0; color: var(--pf-soft); font-size: 17px; line-height: 1.7; }
 
 /* Pill links that jump to a section (guide categories). */
@@ -95,7 +96,7 @@
 .not-found .page-head h1 { font-size: clamp(44px, 10vw, 72px); }
 
 @media (max-width: 560px) {
-  .pf-page { padding-top: 72px; }
+  .pf-page { padding-top: 16px; }
   .link-card .page-content ul { grid-template-columns: 1fr; }
 }
 
