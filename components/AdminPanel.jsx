@@ -547,6 +547,8 @@ export default function AdminPanel() {
       <VisitorsSection
         showViews={Boolean(profile.stats?.showViews)}
         onShowViews={(on) => edit((p) => ({ ...p, stats: { ...p.stats, showViews: on } }))}
+        viewsOffset={profile.stats?.viewsOffset || 0}
+        onViewsOffset={(n) => edit((p) => ({ ...p, stats: { ...p.stats, viewsOffset: n } }))}
       />
 
       <section className="section" id="links">
@@ -1003,7 +1005,7 @@ export default function AdminPanel() {
 
 /* ---------- visitors ---------- */
 
-function VisitorsSection({ showViews, onShowViews }) {
+function VisitorsSection({ showViews, onShowViews, viewsOffset, onViewsOffset }) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -1084,6 +1086,23 @@ function VisitorsSection({ showViews, onShowViews }) {
           <input type="checkbox" checked={showViews} onChange={(e) => onShowViews(e.target.checked)} />
           show the all-time view count on the homepage
         </label>
+      )}
+      {showViews && (
+        <div className="field" style={{ maxWidth: 320 }}>
+          <label htmlFor="f-views-offset">starting count</label>
+          <input
+            id="f-views-offset"
+            type="number"
+            min={0}
+            value={viewsOffset || ""}
+            placeholder="0"
+            onChange={(e) => onViewsOffset(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
+          />
+          <p className="hint">
+            Views from before counting began (e.g. a total from Vercel Analytics). Added to the homepage number only;
+            the stats above stay real counted visits.
+          </p>
+        </div>
       )}
       <p className="hint">
         Counts real page loads only: no bots or link previews, not your own visits while signed in here, and not

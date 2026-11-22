@@ -85,7 +85,8 @@ export default async function Home() {
   const myLogin = ownLogin(profile);
   const work = profile.work || { services: [] };
   const servers = await shownServers(profile);
-  const views = profile.stats?.showViews ? await totalViews() : null;
+  const counted = profile.stats?.showViews ? await totalViews() : null;
+  const views = profile.stats?.showViews ? (counted || 0) + (profile.stats?.viewsOffset || 0) : null;
   const stats = profileStats(profile, { servers });
 
   return (
