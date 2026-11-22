@@ -49,3 +49,12 @@
   .bt__copy--end { justify-content: stretch; }
   .bt__copy--end .chip { flex: 1; text-align: center; }
 }
+.bt__sample { margin-top: 4px; }
+.bt__result { margin-top: 12px; padding: 12px 14px; border: 1px solid var(--pf-line-hi); border-radius: 12px; background: #0d0d10; }
+.bt__result > b { display: inline-block; padding: 2px 10px; border-radius: 999px; background: rgba(255, 255, 255, .08); color: var(--pf-soft); font-size: 13px; }
+.bt__result.is-caught { border-color: rgba(35, 165, 90, .45); }
+.bt__result.is-caught > b { background: rgba(35, 165, 90, .2); color: #7ee2a8; }
+.bt__result-msg { margin: 10px 0 0; color: var(--pf-text); font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.bt__result-msg mark { padding: 0 2px; border-radius: 4px; background: rgba(239, 68, 68, .35); color: #fff; }
+.bt__result-why { margin: 10px 0 0; padding-left: 18px; color: var(--pf-soft); font-size: 13px; line-height: 1.6; }
+.bt__result-tip { margin: 8px 0 0; color: var(--pf-muted); font-size: 13px; list-style: none; }

@@ -37,7 +37,19 @@ export default async function WhatIUsePage() {
             <p>Turn a word into the spellings people use to dodge filters, ready to paste into Blocked Terms or AutoMod.</p>
             <span className="cta">Open the tool <Arrow /></span>
           </a>
-          <a className="card guide" href="/haste" data-reveal style={{ "--d": "70ms" }}>
+          <a className="card guide" href="/commands" data-reveal style={{ "--d": "70ms" }}>
+            <span className="guide__kind">Twitch · Fossabot · Nightbot</span>
+            <h3>Mod command cheat sheet</h3>
+            <p>Every moderation command worth knowing, searchable, with copy buttons.</p>
+            <span className="cta">Open the cheat sheet <Arrow /></span>
+          </a>
+          <a className="card guide" href="/pages/new-mod-guide" data-reveal style={{ "--d": "140ms" }}>
+            <span className="guide__kind">Guide</span>
+            <h3>New mod starter kit</h3>
+            <p>The page to send a new mod: when to time out vs ban, common situations and what to do in a hate raid.</p>
+            <span className="cta">Read the kit <Arrow /></span>
+          </a>
+          <a className="card guide" href="/haste" data-reveal style={{ "--d": "210ms" }}>
             <span className="guide__kind">Sharing</span>
             <h3>Haste</h3>
             <p>Paste logs, configs or code and share a short link that expires on its own.</p>

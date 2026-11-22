@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { variantsFor, regexFor } from "@/lib/variants";
+import { variantsFor, regexFor, testMessage } from "@/lib/variants";
 
 const OPTIONS = [
   ["leet", "Number & symbol swaps", "sc4m, $cam"],
@@ -57,6 +57,7 @@ const REGEX_TARGETS = {
 export default function BlockedTermsTool() {
   const [input, setInput] = useState("");
   const [target, setTarget] = useState("discord");
+  const [sample, setSample] = useState("");
   const [opts, setOpts] = useState({ leet: true, spacing: true, lookalike: true, doubled: false, wildcard: false });
 
   const words = useMemo(
@@ -67,6 +68,20 @@ export default function BlockedTermsTool() {
   const regexes = useMemo(() => words.map(regexFor).filter(Boolean), [words]);
   const longRegex = regexes.find((r) => r.length > 260);
   const regexOut = regexes.map(REGEX_TARGETS[target].format).join("\n");
+  const result = useMemo(
+    () => testMessage(sample, { terms, regexes: words.map((w) => ({ word: w, pattern: regexFor(w) })) }),
+    [sample, terms, words]
+  );
+
+  // The message with caught parts wrapped in <mark>.
+  const highlighted = [];
+  let at = 0;
+  for (const [start, end] of result.ranges) {
+    if (start > at) highlighted.push(sample.slice(at, start));
+    highlighted.push(<mark key={start}>{sample.slice(start, end)}</mark>);
+    at = end;
+  }
+  if (at < sample.length) highlighted.push(sample.slice(at));
 
   return (
     <div className="bt">
@@ -119,6 +134,48 @@ export default function BlockedTermsTool() {
             </ul>
             {terms.some((t) => /[^\x00-\x7f]/.test(t)) && (
               <p className="bt__legend">Dashed ones look normal but use letters from other alphabets (like Cyrillic а, с, о).</p>
+            )}
+          </section>
+
+          <section className="card bt__out" aria-labelledby="bt-test">
+            <div className="bt__out-head">
+              <h2 id="bt-test">Test a message</h2>
+            </div>
+            <p className="bt__hint">Paste a chat message to see whether the terms and regex above would catch it.</p>
+            <textarea
+              className="bt__sample"
+              value={sample}
+              onChange={(e) => setSample(e.target.value)}
+              rows={2}
+              placeholder="e.g. get fr33 n1tr0 here, s.c.a.m link in bio"
+              spellCheck={false}
+              aria-label="Chat message to test"
+            />
+            {sample.trim() && !words.length && <p className="bt__empty">Add a word above first.</p>}
+            {sample.trim() && words.length > 0 && (
+              <div className={`bt__result${result.caught ? " is-caught" : ""}`} role="status">
+                <b>{result.caught ? "Caught" : "Not caught"}</b>
+                <p className="bt__result-msg">{highlighted}</p>
+                {result.caught && (
+                  <ul className="bt__result-why">
+                    {result.byTerm.length > 0 && (
+                      <li>
+                        Word list ({result.byTerm.length}): {result.byTerm.slice(0, 6).map((t) => t.term).join(", ")}
+                        {result.byTerm.length > 6 ? "…" : ""}
+                      </li>
+                    )}
+                    {result.byRegex.map((r) => (
+                      <li key={r.word}>Regex for &ldquo;{r.word}&rdquo;</li>
+                    ))}
+                    {!result.byTerm.length && result.byRegex.length > 0 && (
+                      <li className="bt__result-tip">Only the regex catches this, so the word list alone (Twitch Blocked Terms) would miss it.</li>
+                    )}
+                  </ul>
+                )}
+                {!result.caught && (
+                  <p className="bt__result-tip">Try adding the word that got through, or turning on more variant options.</p>
+                )}
+              </div>
             )}
           </section>
 
