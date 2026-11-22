@@ -880,3 +880,15 @@ body:has(.admin-wrap) {
 .mod-sync__name small { color: var(--text-dim); }
 .mod-sync__meta { color: var(--text-dim); font-size: 0.78rem; white-space: nowrap; }
 .mod-sync .hint { margin: 10px 0 0; }
+
+.admin-wrap select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #0b0a0d;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.85rem;
+}
+.admin-wrap select:focus { outline: none; border-color: var(--accent-dim); }

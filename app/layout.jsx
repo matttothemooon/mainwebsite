@@ -1,5 +1,9 @@
 import "./globals.css";
+import "./seasons.css";
 import ViewTracker from "@/components/site/ViewTracker";
+import SeasonalDecor from "@/components/site/SeasonalDecor";
+import { getProfile } from "@/lib/storage";
+import { pickSeason } from "@/lib/seasons";
 import { Bricolage_Grotesque, Geist } from "next/font/google";
 
 const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-display", display: "swap" });
@@ -30,12 +34,17 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  // Same request as the page's own profile read, so Next serves both from one fetch.
+  const profile = await getProfile({ fresh: true }).catch(() => null);
+  const { season, years } = pickSeason(new Date(), profile?.themes);
+
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`}>
+    <html lang="en" className={`${display.variable} ${sans.variable}`} data-season={season || undefined}>
       <body>
         {children}
         <ViewTracker />
+        <SeasonalDecor season={season} years={years} />
       </body>
     </html>
   );

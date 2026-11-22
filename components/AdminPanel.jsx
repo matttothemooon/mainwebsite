@@ -516,6 +516,41 @@ export default function AdminPanel() {
             placeholder="A little more about what you do, care about, and share here"
           />
         </div>
+        <div className="field">
+          <label htmlFor="f-season">seasonal theme</label>
+          <select
+            id="f-season"
+            value={profile.themes?.mode || "auto"}
+            onChange={(e) => edit((p) => ({ ...p, themes: { ...p.themes, mode: e.target.value } }))}
+          >
+            <option value="auto">Automatic (by date)</option>
+            <option value="off">Off</option>
+            <option value="halloween">Halloween, always (preview)</option>
+            <option value="holidays">Holidays, always (preview)</option>
+            <option value="valentine">Valentine&apos;s, always (preview)</option>
+            <option value="anniversary">Twitch anniversary, always (preview)</option>
+          </select>
+          <p className="hint">
+            Automatic: Halloween Oct 20–31, holidays Dec 10–Jan 1, Valentine&apos;s Feb 12–14, and your Twitch anniversary
+            on its day. Visitors with reduced motion get the colours without the falling bits.
+          </p>
+        </div>
+        <div className="field">
+          <label htmlFor="f-anniversary">twitch anniversary (the day you started)</label>
+          <input
+            id="f-anniversary"
+            type="date"
+            value={profile.themes?.since && profile.themes?.anniversary ? `${profile.themes.since}-${profile.themes.anniversary}` : ""}
+            onChange={(e) => {
+              const [y, m, d] = e.target.value.split("-");
+              edit((p) => ({
+                ...p,
+                themes: { ...p.themes, anniversary: m && d ? `${m}-${d}` : "", since: y ? Number(y) : null },
+              }));
+            }}
+          />
+          <p className="hint">On this day each year the site shows confetti and &ldquo;N years on Twitch today&rdquo;.</p>
+        </div>
         <ListField
           id="f-roles"
           label="rotating roles (one per line)"
