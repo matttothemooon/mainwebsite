@@ -97,6 +97,13 @@ export default async function Home() {
         <TopNav current="home" />
 
         <main className="pf-col">
+          <div className="banner h-in" style={{ "--d": "0ms" }}>
+            <span className="banner__logo" role="img" aria-label={profile.name}>
+              <span className="banner__word">mattothemoon</span>
+              <span className="banner__sheen" aria-hidden="true" />
+            </span>
+          </div>
+
           <header className="hero">
             <div className="hero__main">
               <p className="hero__eyebrow h-in" style={{ "--d": "0ms" }}>
