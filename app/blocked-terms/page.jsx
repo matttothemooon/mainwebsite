@@ -18,7 +18,7 @@ export default function BlockedTermsPage() {
       <PageHeader eyebrow="Free mod tool" title="Blocked-terms generator" back={{ href: "/what-i-use", label: "Tools" }}>
         <p className="page-head__lede">
           Type a word and get the spellings people use to get around filters, like sc4m, s c a m or ѕсаm with
-          look-alike letters. Copy them into Twitch Blocked Terms or Discord AutoMod.
+          look-alike letters. Copy them into Twitch Blocked Terms, Discord AutoMod, Fossabot or Chatterino.
         </p>
       </PageHeader>
       <div className="sec sec--tight" data-reveal>

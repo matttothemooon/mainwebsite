@@ -557,18 +557,14 @@ a.st.is-live:hover .st__live { border-color: var(--pf-card-hi); }
 .self-ava.is-live .tw-presence { display: none; }
 
 .self-live {
-  display: flex;
-  align-items: center;
-  gap: 14px;
   margin-top: 40px;
-  padding: 12px 14px;
+  overflow: hidden;
   border: 1px solid rgba(239, 68, 68, .35);
   border-radius: 14px;
   background: linear-gradient(90deg, rgba(239, 68, 68, .12), rgba(239, 68, 68, .03) 60%), var(--pf-card);
-  transition: border-color .2s;
 }
-.self-live:hover { border-color: rgba(239, 68, 68, .6); }
 .self-live + .np { margin-top: 10px; }
+.self-live__bar { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
 .self-live__pill {
   display: inline-flex;
   flex: none;
@@ -585,7 +581,24 @@ a.st.is-live:hover .st__live { border-color: var(--pf-card-hi); }
 .self-live__text { display: flex; flex: 1; flex-direction: column; min-width: 0; }
 .self-live__text strong { overflow: hidden; font-size: 15px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
 .self-live__text span { color: var(--pf-muted); font-size: 13px; }
-.self-live__cta { flex: none; padding: 7px 14px; border-radius: 10px; background: #f4f4f5; color: #0a0a0c; font-size: 13px; font-weight: 700; }
+.self-live__toggle {
+  flex: none;
+  padding: 7px 12px;
+  border: 1px solid var(--pf-line-hi);
+  border-radius: 10px;
+  background: none;
+  color: var(--pf-soft);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.self-live__toggle:hover { color: #fff; border-color: rgba(255, 255, 255, .3); }
+.self-live__cta { flex: none; padding: 7px 14px; border-radius: 10px; background: #f4f4f5; color: #0a0a0c !important; font-size: 13px; font-weight: 700; }
+.self-live__embed { display: grid; grid-template-columns: minmax(0, 1fr) 300px; border-top: 1px solid rgba(239, 68, 68, .25); background: #000; }
+.self-live__player { aspect-ratio: 16 / 9; }
+.self-live__embed iframe { display: block; width: 100%; height: 100%; border: 0; }
+.self-live__chat { border-left: 1px solid var(--pf-line); }
 
 /* ---------- availability chip ---------- */
 .chip--open { color: var(--pf-soft); transition: border-color .2s, color .2s; }
@@ -629,6 +642,8 @@ a.quote__name:hover { text-decoration: underline; }
   .stats__item { flex: 1 1 40%; min-width: 0; }
   .stats dd { font-size: 22px; }
   .self-live__cta { display: none; }
+  .self-live__embed { grid-template-columns: 1fr; }
+  .self-live__chat { height: 360px; border-left: 0; border-top: 1px solid var(--pf-line); }
   .topnav { max-width: calc(100vw - 24px); }
   .topnav a { padding: 5px 9px; font-size: 12px; }
 }

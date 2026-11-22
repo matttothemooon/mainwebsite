@@ -33,3 +33,8 @@
 .bt__terms li { padding: 4px 10px; border: 1px solid var(--pf-line); border-radius: 8px; background: #0d0d10; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; white-space: pre; }
 .bt__regex { overflow-x: auto; margin: 0; padding: 12px 14px; border: 1px solid var(--pf-line); border-radius: 10px; background: #0d0d10; color: #8be0a4; font-size: 13px; line-height: 1.6; }
 .bt__privacy { font-size: 13px; }
+.bt__tabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 3px; border: 1px solid var(--pf-line); border-radius: 999px; }
+.bt__tab { padding: 5px 12px; border: 0; border-radius: 999px; background: none; color: var(--pf-muted); font: inherit; font-size: 13px; cursor: pointer; }
+.bt__tab:hover { color: var(--pf-text); }
+.bt__tab.is-on { background: rgba(255, 255, 255, .1); color: var(--pf-text); }
+.bt__copy--end { justify-content: flex-end; margin-top: 10px; }

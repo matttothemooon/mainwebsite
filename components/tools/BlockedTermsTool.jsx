@@ -31,8 +31,29 @@ function Copy({ text, label }) {
   );
 }
 
+// The same pattern works in all three (checked against Rust regex, RE2 and
+// PCRE2); they differ in how a regex is marked and where it goes.
+const REGEX_TARGETS = {
+  discord: {
+    label: "Discord AutoMod",
+    format: (re) => re,
+    how: "Discord: Server Settings → AutoMod → a custom keyword rule → \u201cRegex patterns\u201d. Up to 10 patterns per rule, 260 characters each.",
+  },
+  fossabot: {
+    label: "Fossabot",
+    format: (re) => `regex:${re}`,
+    how: "Fossabot: add each line as a blocked term or keyword phrase. The regex: prefix tells Fossabot it\u2019s a regex (its engine is RE2).",
+  },
+  chatterino: {
+    label: "Chatterino",
+    format: (re) => re,
+    how: "Chatterino: Settings → Highlights (to spot it) or Ignores (to hide it), add a row per line and tick the regex option.",
+  },
+};
+
 export default function BlockedTermsTool() {
   const [input, setInput] = useState("");
+  const [target, setTarget] = useState("discord");
   const [opts, setOpts] = useState({ leet: true, spacing: true, lookalike: true, doubled: false, wildcard: false });
 
   const words = useMemo(
@@ -42,6 +63,7 @@ export default function BlockedTermsTool() {
   const terms = useMemo(() => [...new Set(words.flatMap((w) => variantsFor(w, opts)))], [words, opts]);
   const regexes = useMemo(() => words.map(regexFor).filter(Boolean), [words]);
   const longRegex = regexes.find((r) => r.length > 260);
+  const regexOut = regexes.map(REGEX_TARGETS[target].format).join("\n");
 
   return (
     <div className="bt">
@@ -100,17 +122,32 @@ export default function BlockedTermsTool() {
           <section className="card bt__out" aria-labelledby="bt-regex">
             <div className="bt__out-head">
               <h2 id="bt-regex">Regex <span className="sec-count">{regexes.length}</span></h2>
-              <div className="bt__copy">
-                <Copy text={regexes.join("\n")} label="Copy regex" />
+              <div className="bt__tabs" role="tablist" aria-label="Where you'll use the regex">
+                {Object.entries(REGEX_TARGETS).map(([key, t]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    role="tab"
+                    aria-selected={target === key}
+                    className={`bt__tab${target === key ? " is-on" : ""}`}
+                    onClick={() => setTarget(key)}
+                  >
+                    {t.label}
+                  </button>
+                ))}
               </div>
             </div>
             <p className="bt__hint">
               One pattern per word that catches all of the above, plus repeated letters and junk between letters
-              (s.c.a.a.m, $-c-4-m). Paste into Discord AutoMod&apos;s &ldquo;Regex patterns&rdquo; (up to 10 per rule, 260
-              characters each).
+              (s.c.a.a.m, $-c-4-m). {REGEX_TARGETS[target].how}
             </p>
-            {longRegex && <p className="bt__warn">One pattern is over Discord&apos;s 260-character limit; try a shorter word.</p>}
-            <pre className="bt__regex">{regexes.join("\n")}</pre>
+            {target === "discord" && longRegex && (
+              <p className="bt__warn">One pattern is over Discord&apos;s 260-character limit; try a shorter word.</p>
+            )}
+            <pre className="bt__regex">{regexOut}</pre>
+            <div className="bt__copy bt__copy--end">
+              <Copy text={regexOut} label={`Copy for ${REGEX_TARGETS[target].label}`} />
+            </div>
           </section>
         </>
       )}
