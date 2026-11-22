@@ -36,16 +36,19 @@ function Copy({ text, label }) {
 const REGEX_TARGETS = {
   discord: {
     label: "Discord AutoMod",
+    short: "Discord",
     format: (re) => re,
     how: "Discord: Server Settings → AutoMod → a custom keyword rule → \u201cRegex patterns\u201d. Up to 10 patterns per rule, 260 characters each.",
   },
   fossabot: {
     label: "Fossabot",
+    short: "Fossabot",
     format: (re) => `regex:${re}`,
     how: "Fossabot: add each line as a blocked term or keyword phrase. The regex: prefix tells Fossabot it\u2019s a regex (its engine is RE2).",
   },
   chatterino: {
     label: "Chatterino",
+    short: "Chatterino",
     format: (re) => re,
     how: "Chatterino: Settings → Highlights (to spot it) or Ignores (to hide it), add a row per line and tick the regex option.",
   },
@@ -91,8 +94,7 @@ export default function BlockedTermsTool() {
         </div>
       </div>
 
-      {words.length > 0 && (
-        <>
+      <>
           <section className="card bt__out" aria-labelledby="bt-terms">
             <div className="bt__out-head">
               <h2 id="bt-terms">Terms <span className="sec-count">{terms.length}</span></h2>
@@ -105,6 +107,7 @@ export default function BlockedTermsTool() {
               Twitch: Creator Dashboard → Settings → Moderation → Blocked Terms. Discord: Server Settings → AutoMod →
               Block Custom Words (paste the comma-separated list).
             </p>
+            {!words.length && <p className="bt__empty">Type a word above to see its variants.</p>}
             <ul className="bt__terms">
               {terms.map((t) =>
                 /[^\x00-\x7f]/.test(t) ? (
@@ -132,7 +135,8 @@ export default function BlockedTermsTool() {
                     className={`bt__tab${target === key ? " is-on" : ""}`}
                     onClick={() => setTarget(key)}
                   >
-                    {t.label}
+                    <span className="bt__tab-long">{t.label}</span>
+                    <span className="bt__tab-short">{t.short}</span>
                   </button>
                 ))}
               </div>
@@ -144,13 +148,16 @@ export default function BlockedTermsTool() {
             {target === "discord" && longRegex && (
               <p className="bt__warn">One pattern is over Discord&apos;s 260-character limit; try a shorter word.</p>
             )}
-            <pre className="bt__regex">{regexOut}</pre>
+            {words.length ? (
+              <pre className="bt__regex">{regexOut}</pre>
+            ) : (
+              <p className="bt__empty">Type a word above to get a regex for {REGEX_TARGETS[target].label}.</p>
+            )}
             <div className="bt__copy bt__copy--end">
               <Copy text={regexOut} label={`Copy for ${REGEX_TARGETS[target].label}`} />
             </div>
           </section>
-        </>
-      )}
+      </>
     </div>
   );
 }

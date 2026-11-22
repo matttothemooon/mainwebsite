@@ -38,3 +38,14 @@
 .bt__tab:hover { color: var(--pf-text); }
 .bt__tab.is-on { background: rgba(255, 255, 255, .1); color: var(--pf-text); }
 .bt__copy--end { justify-content: flex-end; margin-top: 10px; }
+.bt__empty { margin: 4px 0 0; color: var(--pf-muted); font-size: 14px; }
+.bt__tab-short { display: none; }
+@media (max-width: 560px) {
+  .bt__out-head { flex-direction: column; align-items: stretch; }
+  .bt__tabs { display: grid; grid-template-columns: repeat(3, 1fr); border-radius: 12px; }
+  .bt__tab { padding: 9px 4px; border-radius: 9px; font-size: 14px; text-align: center; }
+  .bt__tab-long { display: none; }
+  .bt__tab-short { display: inline; }
+  .bt__copy--end { justify-content: stretch; }
+  .bt__copy--end .chip { flex: 1; text-align: center; }
+}
