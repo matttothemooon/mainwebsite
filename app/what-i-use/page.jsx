@@ -3,6 +3,7 @@ import { getProfile } from "@/lib/storage";
 import GearGuide from "@/components/GearGuide";
 import PageContent from "@/components/PageContent";
 import SiteShell, { PageHeader } from "@/components/site/SiteShell";
+import Arrow from "@/components/site/Arrow";
 
 export const metadata = {
   title: "Tools · mattothemoon",
@@ -26,6 +27,24 @@ export default async function WhatIUsePage() {
       <PageHeader eyebrow="Tools" title="What I use">
         <p className="page-head__lede">The tools, resources and gear I use and recommend.</p>
       </PageHeader>
+
+      <section className="sec sec--tight" aria-labelledby="free-tools-heading">
+        <h2 id="free-tools-heading" className="sec-title sec-title--sm" data-reveal>Free mod tools</h2>
+        <div className="guides">
+          <a className="card guide" href="/blocked-terms" data-reveal>
+            <span className="guide__kind">Twitch &amp; Discord</span>
+            <h3>Blocked-terms generator</h3>
+            <p>Turn a word into the spellings people use to dodge filters, ready to paste into Blocked Terms or AutoMod.</p>
+            <span className="cta">Open the tool <Arrow /></span>
+          </a>
+          <a className="card guide" href="/haste" data-reveal style={{ "--d": "70ms" }}>
+            <span className="guide__kind">Sharing</span>
+            <h3>Haste</h3>
+            <p>Paste logs, configs or code and share a short link that expires on its own.</p>
+            <span className="cta">Open Haste <Arrow /></span>
+          </a>
+        </div>
+      </section>
 
       {moderationResources && (
         <section className="sec sec--tight" aria-labelledby="recommended-tools-heading">

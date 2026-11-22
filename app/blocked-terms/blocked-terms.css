@@ -1,0 +1,35 @@
+.bt { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.bt > * { min-width: 0; }
+.bt__input, .bt__out { padding: 20px; }
+.bt__label { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; font-weight: 600; }
+.bt__label small, .bt__opt small { color: var(--pf-muted); font-weight: 400; }
+.bt textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--pf-line-hi);
+  border-radius: 10px;
+  background: #0d0d0f;
+  color: var(--pf-text);
+  font: inherit;
+  font-size: 16px;
+  resize: vertical;
+}
+.bt textarea:focus { border-color: rgba(255, 255, 255, .4); outline: none; }
+.bt__options { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin-top: 14px; }
+.bt__opt { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid var(--pf-line); border-radius: 10px; cursor: pointer; transition: border-color .2s, background .2s; }
+.bt__opt.is-on { border-color: var(--pf-line-hi); background: var(--pf-card-hi); }
+.bt__opt input { margin-top: 3px; accent-color: #f4f4f5; }
+.bt__opt span { display: flex; flex-direction: column; font-size: 14px; }
+.bt__out-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; }
+.bt__out h2 { margin: 0; font-size: 20px; font-weight: 800; }
+.bt__copy { display: flex; flex-wrap: wrap; gap: 6px; }
+.bt__copy .chip { cursor: pointer; padding: 6px 12px; font: inherit; font-size: 13px; color: var(--pf-soft); }
+.bt__copy .chip:hover { border-color: rgba(255, 255, 255, .3); color: #fff; }
+.bt__hint { margin: 8px 0 12px; color: var(--pf-muted); font-size: 13px; line-height: 1.55; }
+.bt__warn { margin: 0 0 10px; color: #f0b232; font-size: 13px; }
+.bt__terms { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.bt__terms li.is-lookalike { border-style: dashed; text-decoration: underline dotted rgba(255, 255, 255, .45); text-underline-offset: 4px; }
+.bt__legend { margin: 10px 0 0; color: var(--pf-muted); font-size: 12px; }
+.bt__terms li { padding: 4px 10px; border: 1px solid var(--pf-line); border-radius: 8px; background: #0d0d10; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; white-space: pre; }
+.bt__regex { overflow-x: auto; margin: 0; padding: 12px 14px; border: 1px solid var(--pf-line); border-radius: 10px; background: #0d0d10; color: #8be0a4; font-size: 13px; line-height: 1.6; }
+.bt__privacy { font-size: 13px; }

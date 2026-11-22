@@ -1,7 +1,7 @@
 // Starts the owner's Twitch sign-in (for follower counts). Admin only.
 import { requireAuth, createState } from "@/lib/auth";
 import { isConfigured } from "@/lib/twitch";
-import { STATE_COOKIE, callbackUrl } from "@/lib/twitchAuth";
+import { STATE_COOKIE, callbackUrl, TWITCH_SCOPES } from "@/lib/twitchAuth";
 
 export async function GET(request) {
   const denied = requireAuth(request);
@@ -15,7 +15,7 @@ export async function GET(request) {
     client_id: process.env.TWITCH_CLIENT_ID,
     redirect_uri: callbackUrl(request),
     response_type: "code",
-    scope: "moderator:read:followers",
+    scope: TWITCH_SCOPES.join(" "),
     state: nonce,
   });
   return new Response(null, {

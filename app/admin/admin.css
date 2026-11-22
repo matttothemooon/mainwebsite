@@ -856,3 +856,27 @@ body:has(.admin-wrap) {
   .vis-cards { grid-template-columns: 1fr 1fr; }
   .vis-lists { grid-template-columns: 1fr; }
 }
+
+/* Guestbook queue */
+.gb-admin__title { margin: 14px 0 6px; color: var(--text-dim); font-size: 0.72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.gb-admin { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.gb-admin li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; }
+.gb-admin b { color: var(--text); }
+.gb-admin p { margin: 4px 0 0; color: var(--text); white-space: pre-line; overflow-wrap: anywhere; font-size: 0.85rem; }
+.gb-admin__meta { color: var(--text-dim); font-size: 0.75rem; }
+.gb-admin__actions { display: flex; flex: none; align-items: flex-start; gap: 6px; }
+
+/* Twitch mod list sync */
+.mod-sync { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin: -8px 0 var(--gap-md, 20px); padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--panel); color: var(--text-dim); font-size: 0.85rem; }
+.mod-sync b { color: var(--text); }
+.mod-sync .btn { flex: none; text-decoration: none; }
+.mod-sync--list { display: block; }
+.mod-sync__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.mod-sync__items { display: grid; gap: 4px; margin: 10px 0 0; padding: 0; list-style: none; }
+.mod-sync__items li { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 8px; }
+.mod-sync__items li:hover { background: var(--panel-alt); }
+.mod-sync__items img, .mod-sync__noava { flex: none; width: 28px; height: 28px; border-radius: 50%; background: #1d1d21; }
+.mod-sync__name { flex: 1; min-width: 0; color: var(--text); }
+.mod-sync__name small { color: var(--text-dim); }
+.mod-sync__meta { color: var(--text-dim); font-size: 0.78rem; white-space: nowrap; }
+.mod-sync .hint { margin: 10px 0 0; }

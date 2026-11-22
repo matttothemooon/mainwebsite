@@ -54,6 +54,7 @@ export default function AdminPanel() {
   const [discordConnection, setDiscordConnection] = useState(null);
   const [discordServers, setDiscordServers] = useState(null);
   const [photoCheck, setPhotoCheck] = useState(null); // { running, summary, problems }
+  const [guestbookWaiting, setGuestbookWaiting] = useState(0);
   const [devBypass, setDevBypass] = useState(false);
   const [status, setStatus] = useState({ text: "", kind: "" });
   const [dirty, setDirty] = useState(false);
@@ -142,7 +143,7 @@ export default function AdminPanel() {
 
   useEffect(() => {
     if (state !== "ready") return;
-    const sections = ["profile", "visitors", "links", "mods-active", "mods-past", "discord", "work", "testimonials", "pages", "gear", "haste"]
+    const sections = ["profile", "visitors", "links", "mods-active", "mods-past", "discord", "work", "testimonials", "pages", "gear", "guestbook", "haste"]
       .map((id) => document.getElementById(id))
       .filter(Boolean);
     const observer = new IntersectionObserver(
@@ -437,6 +438,14 @@ export default function AdminPanel() {
               Gear
             </AdminNavLink>
             <AdminNavLink
+              href="#guestbook"
+              icon="guestbook"
+              active={activeSection === "guestbook"}
+              onClick={() => setActiveSection("guestbook")}
+            >
+              Guestbook{guestbookWaiting > 0 ? ` (${guestbookWaiting})` : ""}
+            </AdminNavLink>
+            <AdminNavLink
               href="#haste"
               icon="haste"
               active={activeSection === "haste"}
@@ -632,6 +641,8 @@ export default function AdminPanel() {
           )}
         </div>
       )}
+
+      {twitchConnection && <ModSync profile={profile} edit={edit} dirty={dirty} />}
 
       {["active", "past"].map((group) => (
         <section className="section" id={`mods-${group}`} key={group}>
@@ -900,6 +911,8 @@ export default function AdminPanel() {
         </button>
       </section>
 
+      <GuestbookSection onStatus={setStatus} onWaiting={setGuestbookWaiting} />
+
       <PastesSection onStatus={setStatus} />
 
       <section className="section" id="pages">
@@ -1000,6 +1013,130 @@ export default function AdminPanel() {
         </main>
       </div>
     </Shell>
+  );
+}
+
+/* ---------- Twitch mod list sync ---------- */
+
+// Compares the channels you moderate on Twitch with the mod list.
+function ModSync({ profile, edit, dirty }) {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/admin/twitch/moderated")
+      .then((r) => r.json())
+      .then(setData)
+      .catch((err) => setData({ error: err.message }));
+  }, []);
+
+  if (!data) return <div className="mod-sync"><p className="hint">checking the channels you mod on Twitch…</p></div>;
+  if (data.error) return <div className="mod-sync"><p className="hint">Could not read your Twitch mod list: {data.error}</p></div>;
+  if (data.needsReconnect) {
+    return (
+      <div className="mod-sync">
+        <span>
+          <b>Sync your mod list from Twitch.</b> Reconnect Twitch once to let the site see which channels you moderate.
+        </span>
+        <a
+          className="btn btn--primary"
+          href="/api/admin/twitch/connect"
+          onClick={(e) => {
+            if (dirty && !window.confirm("You have unsaved changes. Leave and reconnect Twitch anyway?")) e.preventDefault();
+          }}
+        >
+          reconnect twitch
+        </a>
+      </div>
+    );
+  }
+  if (!data.channels) return null;
+
+  const listed = (group) => new Set(profile.experience[group].map((e) => (e.twitch || "").toLowerCase()).filter(Boolean));
+  const active = listed("active");
+  const past = listed("past");
+  const modded = new Set(data.channels.map((c) => c.login));
+  const missing = data.channels.filter((c) => !active.has(c.login));
+  // Active entries with a Twitch name you no longer mod. (Discord-only roles
+  // without a Twitch mod badge show here too, so this only suggests.)
+  const gone = profile.experience.active.filter((e) => e.twitch && !modded.has(e.twitch.toLowerCase()));
+
+  const entryFor = (c) => ({
+    role: "Twitch Mod",
+    name: c.name,
+    description: "",
+    url: `https://twitch.tv/${c.login}`,
+    discordUrl: "",
+    date: "present",
+    twitch: c.login,
+    avatar: c.avatar || "",
+    followers: c.followers,
+  });
+  const add = (channels) =>
+    edit((p) => {
+      const logins = new Set(channels.map((c) => c.login));
+      p.experience.past = p.experience.past.filter((e) => !logins.has((e.twitch || "").toLowerCase()));
+      p.experience.active = [...p.experience.active, ...channels.map(entryFor)];
+      return p;
+    });
+  const moveToPast = (entry) =>
+    edit((p) => {
+      p.experience.active = p.experience.active.filter((e) => e !== p.experience.active.find((x) => x.twitch === entry.twitch));
+      p.experience.past = [{ ...entry, date: entry.date === "present" ? "" : entry.date }, ...p.experience.past];
+      return p;
+    });
+  const fmt = (n) => (Number.isFinite(n) ? `${n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${Math.round(n / 1e3)}K` : n} followers` : "");
+
+  return (
+    <div className="mod-sync mod-sync--list">
+      <div className="mod-sync__head">
+        <span>
+          <b>Channels you mod on Twitch: {data.channels.length}.</b>{" "}
+          {missing.length ? `${missing.length} aren't on your list yet.` : "Your list includes all of them."}
+        </span>
+        {missing.length > 1 && (
+          <button className="btn btn--primary" type="button" onClick={() => add(missing)}>
+            add all {missing.length}
+          </button>
+        )}
+      </div>
+      {missing.length > 0 && (
+        <ul className="mod-sync__items">
+          {missing.map((c) => (
+            <li key={c.login}>
+              {c.avatar ? (
+                // eslint-disable-next-line @next/next/no-img-element -- Twitch avatar
+                <img src={c.avatar} alt="" width="28" height="28" />
+              ) : (
+                <span className="mod-sync__noava" aria-hidden="true" />
+              )}
+              <span className="mod-sync__name">
+                {c.name} {past.has(c.login) && <small>(in past)</small>}
+              </span>
+              <span className="mod-sync__meta">{fmt(c.followers)}</span>
+              <button className="btn" type="button" onClick={() => add([c])}>+ add</button>
+            </li>
+          ))}
+        </ul>
+      )}
+      {gone.length > 0 && (
+        <>
+          <p className="hint">
+            On your active list but you&apos;re not a Twitch mod there anymore (fine to keep if your role there is on
+            Discord):
+          </p>
+          <ul className="mod-sync__items">
+            {gone.map((e) => (
+              <li key={e.twitch}>
+                <span className="mod-sync__name">{e.name}</span>
+                <span className="mod-sync__meta">{e.role}</span>
+                <button className="btn" type="button" onClick={() => moveToPast(e)}>move to past</button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      {(missing.length > 0 || gone.length > 0) && <p className="hint">Changes apply to the lists below; remember to save.</p>}
+    </div>
   );
 }
 
@@ -1108,6 +1245,96 @@ function VisitorsSection({ showViews, onShowViews, viewsOffset, onViewsOffset })
         Counts real page loads only: no bots or link previews, not your own visits while signed in here, and not
         visitors with &ldquo;Do Not Track&rdquo; on. Unique visitors are counted per day without cookies or stored IPs.
       </p>
+    </section>
+  );
+}
+
+/* ---------- guestbook ---------- */
+
+function GuestbookSection({ onStatus, onWaiting }) {
+  const [data, setData] = useState(null);
+  const [busy, setBusy] = useState(false);
+
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/guestbook");
+      const json = await res.json();
+      setData(res.ok ? json : { error: json.error || "could not load the guestbook" });
+      onWaiting(json.pending?.length || 0);
+    } catch (err) {
+      setData({ error: err.message });
+    }
+  }, [onWaiting]);
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  async function act(action, entry) {
+    if (action === "delete" && !window.confirm(`Delete the message from ${entry.name}?`)) return;
+    setBusy(true);
+    const res = await fetch("/api/admin/guestbook", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action, id: entry.id }),
+    });
+    const json = await res.json().catch(() => ({}));
+    setBusy(false);
+    onStatus(res.ok ? { text: action === "approve" ? `approved ${entry.name}'s message` : "message deleted", kind: "ok" } : { text: json.error || "failed", kind: "err" });
+    load();
+  }
+
+  const when = (iso) => new Date(iso).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+
+  return (
+    <section className="section" id="guestbook">
+      <h2 className="section__title">guestbook</h2>
+      <p className="hint" style={{ marginBottom: "var(--gap-sm)" }}>
+        New messages at <a href="/guestbook" target="_blank" rel="noreferrer">/guestbook</a> wait here until you approve them.
+      </p>
+      {!data && <p className="hint">loading…</p>}
+      {data?.error && <p className="hint">Could not load the guestbook: {data.error}</p>}
+      {data?.configured === false && <p className="hint">The guestbook uses the same Vercel Blob store as pastes; connect one to switch it on.</p>}
+      {data?.pending && (
+        <>
+          <h3 className="gb-admin__title">waiting for review ({data.pending.length})</h3>
+          {data.pending.length ? (
+            <ul className="gb-admin">
+              {data.pending.map((e) => (
+                <li key={e.id}>
+                  <div>
+                    <b>{e.name}</b> <span className="gb-admin__meta">{when(e.createdAt)}</span>
+                    <p>{e.message}</p>
+                  </div>
+                  <div className="gb-admin__actions">
+                    <button className="btn btn--primary" type="button" disabled={busy} onClick={() => act("approve", e)}>approve</button>
+                    <button className="btn btn--icon btn--danger" type="button" title="delete" disabled={busy} onClick={() => act("delete", e)}>×</button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="hint">Nothing waiting.</p>
+          )}
+          <h3 className="gb-admin__title">on the site ({data.approved.length})</h3>
+          {data.approved.length ? (
+            <ul className="gb-admin">
+              {data.approved.map((e) => (
+                <li key={e.id}>
+                  <div>
+                    <b>{e.name}</b> <span className="gb-admin__meta">{when(e.createdAt)}</span>
+                    <p>{e.message}</p>
+                  </div>
+                  <div className="gb-admin__actions">
+                    <button className="btn btn--icon btn--danger" type="button" title="delete" disabled={busy} onClick={() => act("delete", e)}>×</button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="hint">No approved messages yet.</p>
+          )}
+        </>
+      )}
     </section>
   );
 }
@@ -1229,6 +1456,7 @@ function AdminIcon({ name }) {
     mods: <><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="10" cy="7" r="4" /><path d="M20 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8" /></>,
     guides: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></>,
     gear: <><circle cx="12" cy="12" r="3" /><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.7 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.7-1l-1.7.7-1.4-2.4L7.3 15a8 8 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.7-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.7 1l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1-.1 2Z" /></>,
+    guestbook: <><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21.5v-17Z" /><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M9 7h7M9 11h5" /></>,
     visitors: <><path d="M3 20h18" /><path d="M6 16v-5M11 16V7M16 16v-8M21 16v-3" /></>,
     haste: <><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2" /><rect x="8" y="2" width="8" height="4" rx="1" /><path d="M8 12h8M8 16h5" /></>,
     discord: <><path d="M8 4.5c-1.6.3-3 .8-4.2 1.5C2 9 1.6 12 2 15c1.3 1 2.8 1.7 4.4 2.2l1-1.7M16 4.5c1.6.3 3 .8 4.2 1.5C22 9 22.4 12 22 15c-1.3 1-2.8 1.7-4.4 2.2l-1-1.7" /><path d="M7 16c3.3 1.3 6.7 1.3 10 0" /><circle cx="9" cy="11.5" r="1.3" /><circle cx="15" cy="11.5" r="1.3" /></>,
