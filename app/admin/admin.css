@@ -818,3 +818,21 @@ body:has(.admin-wrap) {
 .dc-admin img, .dc-admin__noicon { flex: none; width: 28px; height: 28px; border-radius: 8px; background: #5865f2; }
 .dc-admin__name { flex: 1; min-width: 0; overflow: hidden; color: var(--text); text-overflow: ellipsis; white-space: nowrap; }
 .dc-admin__meta { color: var(--text-dim); font-size: 0.78rem; white-space: nowrap; }
+
+/* Pastes list */
+.paste-admin { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.paste-admin li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas: "id preview del" "id meta del";
+  align-items: center;
+  gap: 2px 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.paste-admin__id { grid-area: id; font-family: ui-monospace, monospace; color: var(--text); }
+.paste-admin__preview { grid-area: preview; overflow: hidden; color: var(--text); font-family: ui-monospace, monospace; font-size: 0.8rem; text-overflow: ellipsis; white-space: nowrap; }
+.paste-admin__meta { grid-area: meta; color: var(--text-dim); font-size: 0.75rem; }
+.paste-admin li > .btn { grid-area: del; }
+.paste-admin__source { padding: 0; border: 0; background: none; color: #f0b232; font: inherit; text-decoration: underline; cursor: pointer; }

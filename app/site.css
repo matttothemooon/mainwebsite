@@ -98,3 +98,9 @@
   .pf-page { padding-top: 72px; }
   .link-card .page-content ul { grid-template-columns: 1fr; }
 }
+
+/* Wider column for tools like the pastebin. */
+.pf-col.pf-page--wide { max-width: 1040px; }
+.pf-foot__links { display: inline-flex; align-items: center; gap: 16px; }
+.pf-foot__links a { color: var(--pf-soft); transition: color .2s; }
+.pf-foot__links a:hover { color: #fff; }

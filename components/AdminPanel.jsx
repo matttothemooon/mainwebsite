@@ -142,7 +142,7 @@ export default function AdminPanel() {
 
   useEffect(() => {
     if (state !== "ready") return;
-    const sections = ["profile", "links", "mods-active", "mods-past", "discord", "work", "testimonials", "pages", "gear"]
+    const sections = ["profile", "links", "mods-active", "mods-past", "discord", "work", "testimonials", "pages", "gear", "haste"]
       .map((id) => document.getElementById(id))
       .filter(Boolean);
     const observer = new IntersectionObserver(
@@ -427,6 +427,14 @@ export default function AdminPanel() {
               onClick={() => setActiveSection("gear")}
             >
               Gear
+            </AdminNavLink>
+            <AdminNavLink
+              href="#haste"
+              icon="haste"
+              active={activeSection === "haste"}
+              onClick={() => setActiveSection("haste")}
+            >
+              Pastes
             </AdminNavLink>
           </nav>
           <div className="admin-sidebar__account">
@@ -863,6 +871,8 @@ export default function AdminPanel() {
         </button>
       </section>
 
+      <PastesSection onStatus={setStatus} />
+
       <section className="section" id="pages">
         <h2 className="section__title">pages</h2>
         <p className="hint" style={{ marginBottom: "var(--gap-sm)" }}>
@@ -964,6 +974,96 @@ export default function AdminPanel() {
   );
 }
 
+/* ---------- pastes (/haste) ---------- */
+
+function PastesSection({ onStatus }) {
+  const [data, setData] = useState(null); // { configured, pastes } | { error }
+  const [busy, setBusy] = useState(false);
+
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/haste");
+      const json = await res.json();
+      setData(res.ok ? json : { error: json.error || "could not load pastes" });
+    } catch (err) {
+      setData({ error: err.message });
+    }
+  }, []);
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  async function remove(ids, label) {
+    if (!window.confirm(`Delete ${label}? This can't be undone.`)) return;
+    setBusy(true);
+    const query = ids.map((id) => `id=${encodeURIComponent(id)}`).join("&");
+    const res = await fetch(`/api/admin/haste?${query}`, { method: "DELETE" });
+    setBusy(false);
+    onStatus(res.ok ? { text: `deleted ${label}`, kind: "ok" } : { text: "delete failed", kind: "err" });
+    load();
+  }
+
+  const when = (iso) => new Date(iso).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+  const kb = (n) => (n < 1024 ? `${n} B` : `${(n / 1024).toFixed(1)} KB`);
+  const pastes = data?.pastes || [];
+  // How many pastes each visitor fingerprint made, to spot floods.
+  const bySource = pastes.reduce((m, p) => m.set(p.ipHash, (m.get(p.ipHash) || 0) + 1), new Map());
+
+  return (
+    <section className="section" id="haste">
+      <h2 className="section__title">pastes</h2>
+      <p className="hint" style={{ marginBottom: "var(--gap-sm)" }}>
+        Anyone can create pastes at <a href="/haste" target="_blank" rel="noreferrer">/haste</a>. They expire on their own;
+        delete anything that shouldn&apos;t be there.
+      </p>
+      {!data && <p className="hint">loading…</p>}
+      {data?.error && <p className="hint">Could not load pastes: {data.error}</p>}
+      {data && data.configured === false && (
+        <p className="hint">
+          Pastes are off until a Vercel Blob store is connected: in Vercel, open this project → Storage → Create → Blob,
+          connect it to the project, then redeploy.
+        </p>
+      )}
+      {data?.configured && !pastes.length && <p className="hint">No pastes right now.</p>}
+      {pastes.length > 0 && (
+        <ul className="paste-admin">
+          {pastes.map((p) => (
+            <li key={p.id}>
+              <a className="paste-admin__id" href={`/haste/${p.id}`} target="_blank" rel="noreferrer">{p.id}</a>
+              <span className="paste-admin__preview">{p.preview || "(blank first line)"}</span>
+              <span className="paste-admin__meta">
+                {kb(p.size)} · {p.lines} lines · {when(p.createdAt)} · expires {when(p.expiresAt)}
+                {bySource.get(p.ipHash) > 1 && (
+                  <>
+                    {" · "}
+                    <button
+                      className="paste-admin__source"
+                      type="button"
+                      disabled={busy}
+                      title="Delete every paste from this visitor"
+                      onClick={() =>
+                        remove(
+                          pastes.filter((x) => x.ipHash === p.ipHash).map((x) => x.id),
+                          `all ${bySource.get(p.ipHash)} pastes from this visitor`
+                        )
+                      }
+                    >
+                      {bySource.get(p.ipHash)} from same visitor
+                    </button>
+                  </>
+                )}
+              </span>
+              <button className="btn btn--icon btn--danger" type="button" title="delete" disabled={busy} onClick={() => remove([p.id], `paste ${p.id}`)}>
+                ×
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
 function Shell({ children }) {
   return (
     <div className="admin-wrap">{children}</div>
@@ -991,6 +1091,7 @@ function AdminIcon({ name }) {
     mods: <><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="10" cy="7" r="4" /><path d="M20 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8" /></>,
     guides: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></>,
     gear: <><circle cx="12" cy="12" r="3" /><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.7 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.7-1l-1.7.7-1.4-2.4L7.3 15a8 8 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.7-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.7 1l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1-.1 2Z" /></>,
+    haste: <><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2" /><rect x="8" y="2" width="8" height="4" rx="1" /><path d="M8 12h8M8 16h5" /></>,
     discord: <><path d="M8 4.5c-1.6.3-3 .8-4.2 1.5C2 9 1.6 12 2 15c1.3 1 2.8 1.7 4.4 2.2l1-1.7M16 4.5c1.6.3 3 .8 4.2 1.5C22 9 22.4 12 22 15c-1.3 1-2.8 1.7-4.4 2.2l-1-1.7" /><path d="M7 16c3.3 1.3 6.7 1.3 10 0" /><circle cx="9" cy="11.5" r="1.3" /><circle cx="15" cy="11.5" r="1.3" /></>,
     work: <><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18" /></>,
     quote: <><path d="M7 11H4V8a3 3 0 0 1 3-3M17 11h-3V8a3 3 0 0 1 3-3" /><path d="M4 11h4v6H4zM14 11h4v6h-4z" /></>,
