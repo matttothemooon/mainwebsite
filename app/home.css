@@ -645,3 +645,5 @@ a.quote__name:hover { text-decoration: underline; }
 .dc__dot { width: 7px; height: 7px; margin-left: 4px; border-radius: 50%; background: #23a55a; }
 .dc__role { position: absolute; top: 8px; right: 10px; color: var(--pf-muted); font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
 @media (max-width: 560px) { .dc-grid { grid-template-columns: 1fr; } }
+
+.hero-chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }

@@ -142,7 +142,7 @@ export default function AdminPanel() {
 
   useEffect(() => {
     if (state !== "ready") return;
-    const sections = ["profile", "links", "mods-active", "mods-past", "discord", "work", "testimonials", "pages", "gear", "haste"]
+    const sections = ["profile", "visitors", "links", "mods-active", "mods-past", "discord", "work", "testimonials", "pages", "gear", "haste"]
       .map((id) => document.getElementById(id))
       .filter(Boolean);
     const observer = new IntersectionObserver(
@@ -373,6 +373,14 @@ export default function AdminPanel() {
               Dashboard
             </AdminNavLink>
             <AdminNavLink
+              href="#visitors"
+              icon="visitors"
+              active={activeSection === "visitors"}
+              onClick={() => setActiveSection("visitors")}
+            >
+              Visitors
+            </AdminNavLink>
+            <AdminNavLink
               href="#links"
               icon="socials"
               active={activeSection === "links"}
@@ -499,6 +507,20 @@ export default function AdminPanel() {
             placeholder="A little more about what you do, care about, and share here"
           />
         </div>
+        <ListField
+          id="f-roles"
+          label="rotating roles (one per line)"
+          hint={'Shown one at a time after "I\'m a" under your name. Leave empty to hide that line.'}
+          values={profile.home?.roles || []}
+          onChange={(roles) => edit((p) => ({ ...p, home: { ...p.home, roles } }))}
+        />
+        <ListField
+          id="f-tags"
+          label="streamer section tags (one per line)"
+          hint={'The small pills under "Streamers I work with".'}
+          values={profile.home?.tags || []}
+          onChange={(tags) => edit((p) => ({ ...p, home: { ...p.home, tags } }))}
+        />
         <div className="field">
           <label htmlFor="f-years">years moderating</label>
           <input
@@ -521,6 +543,11 @@ export default function AdminPanel() {
           </p>
         </div>
       </section>
+
+      <VisitorsSection
+        showViews={Boolean(profile.stats?.showViews)}
+        onShowViews={(on) => edit((p) => ({ ...p, stats: { ...p.stats, showViews: on } }))}
+      />
 
       <section className="section" id="links">
         <h2 className="section__title">links</h2>
@@ -974,6 +1001,98 @@ export default function AdminPanel() {
   );
 }
 
+/* ---------- visitors ---------- */
+
+function VisitorsSection({ showViews, onShowViews }) {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/admin/views")
+      .then((r) => r.json())
+      .then(setData)
+      .catch((err) => setData({ error: err.message }));
+  }, []);
+
+  const n = (v) => (Number.isFinite(v) ? v.toLocaleString() : "–");
+  const max = Math.max(1, ...(data?.daily || []).map((d) => d.views));
+  const short = (iso) => new Date(`${iso}T12:00:00`).toLocaleDateString([], { month: "short", day: "numeric" });
+
+  return (
+    <section className="section" id="visitors">
+      <h2 className="section__title">visitors</h2>
+      {!data && <p className="hint">loading…</p>}
+      {data?.configured === false && (
+        <p className="hint">
+          The visit counter is off until a database is connected: in Vercel, open this project → Storage →
+          Create Database → <b>Upstash for Redis</b> (free plan), connect it to the project, then redeploy.
+        </p>
+      )}
+      {data?.error && <p className="hint">Could not load visitor stats: {data.error}</p>}
+      {data?.daily && (
+        <>
+          <div className="vis-cards">
+            {[
+              ["today", data.views.today, data.visitors.today],
+              ["last 7 days", data.views.last7, data.visitors.last7],
+              ["last 30 days", data.views.last30, data.visitors.last30],
+              ["all time", data.views.allTime, null],
+            ].map(([label, views, people]) => (
+              <div className="vis-card" key={label}>
+                <span className="vis-card__label">{label}</span>
+                <b>{n(views)}</b>
+                <span className="vis-card__sub">{people === null ? "views" : `views · ${n(people)} visitors`}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="vis-chart" role="img" aria-label="Views per day, last 30 days">
+            {data.daily.map((d) => (
+              <span key={d.date} className="vis-chart__bar" style={{ height: `${(d.views / max) * 100}%` }} title={`${short(d.date)}: ${d.views} views, ${d.visitors} visitors`} />
+            ))}
+          </div>
+          <div className="vis-chart__axis">
+            <span>{short(data.daily[0].date)}</span>
+            <span>today</span>
+          </div>
+
+          <div className="vis-lists">
+            <div>
+              <h3>top pages · 30 days</h3>
+              {data.topPages.length ? (
+                <ol>
+                  {data.topPages.map((p) => (
+                    <li key={p.name}><span>{p.name === "/haste/*" ? "/haste/… (pastes)" : p.name}</span><b>{n(p.count)}</b></li>
+                  ))}
+                </ol>
+              ) : <p className="hint">No views yet.</p>}
+            </div>
+            <div>
+              <h3>came from · 30 days</h3>
+              {data.topReferrers.length ? (
+                <ol>
+                  {data.topReferrers.map((r) => (
+                    <li key={r.name}><span>{r.name}</span><b>{n(r.count)}</b></li>
+                  ))}
+                </ol>
+              ) : <p className="hint">No outside links yet (direct visits aren&apos;t listed).</p>}
+            </div>
+          </div>
+        </>
+      )}
+      {data?.configured !== false && (
+        <label className="page-editor__published" style={{ marginTop: "var(--gap-sm)" }}>
+          <input type="checkbox" checked={showViews} onChange={(e) => onShowViews(e.target.checked)} />
+          show the all-time view count on the homepage
+        </label>
+      )}
+      <p className="hint">
+        Counts real page loads only: no bots or link previews, not your own visits while signed in here, and not
+        visitors with &ldquo;Do Not Track&rdquo; on. Unique visitors are counted per day without cookies or stored IPs.
+      </p>
+    </section>
+  );
+}
+
 /* ---------- pastes (/haste) ---------- */
 
 function PastesSection({ onStatus }) {
@@ -1091,6 +1210,7 @@ function AdminIcon({ name }) {
     mods: <><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="10" cy="7" r="4" /><path d="M20 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8" /></>,
     guides: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></>,
     gear: <><circle cx="12" cy="12" r="3" /><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.7 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.7-1l-1.7.7-1.4-2.4L7.3 15a8 8 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.7-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.7 1l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1-.1 2Z" /></>,
+    visitors: <><path d="M3 20h18" /><path d="M6 16v-5M11 16V7M16 16v-8M21 16v-3" /></>,
     haste: <><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2" /><rect x="8" y="2" width="8" height="4" rx="1" /><path d="M8 12h8M8 16h5" /></>,
     discord: <><path d="M8 4.5c-1.6.3-3 .8-4.2 1.5C2 9 1.6 12 2 15c1.3 1 2.8 1.7 4.4 2.2l1-1.7M16 4.5c1.6.3 3 .8 4.2 1.5C22 9 22.4 12 22 15c-1.3 1-2.8 1.7-4.4 2.2l-1-1.7" /><path d="M7 16c3.3 1.3 6.7 1.3 10 0" /><circle cx="9" cy="11.5" r="1.3" /><circle cx="15" cy="11.5" r="1.3" /></>,
     work: <><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18" /></>,
@@ -1489,6 +1609,27 @@ function PrefixField({ label, kind, value, onChange, placeholder, full }) {
         />
       </div>
       <span id={`${id}-hint`} className="sr-only">{`Starts with ${p.shown}`}</span>
+    </div>
+  );
+}
+
+// A textarea edited as one item per line. Blank lines are kept while typing
+// and dropped on save by the server.
+function ListField({ id, label, hint, values, onChange }) {
+  const [text, setText] = useState(values.join("\n"));
+  return (
+    <div className="field">
+      <label htmlFor={id}>{label}</label>
+      <textarea
+        id={id}
+        rows={Math.max(3, values.length + 1)}
+        value={text}
+        onChange={(e) => {
+          setText(e.target.value);
+          onChange(e.target.value.split("\n").map((v) => v.trim()).filter(Boolean));
+        }}
+      />
+      {hint && <p className="hint">{hint}</p>}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import "./globals.css";
+import ViewTracker from "@/components/site/ViewTracker";
 import { Bricolage_Grotesque, Geist } from "next/font/google";
 
 const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-display", display: "swap" });
@@ -23,18 +24,19 @@ export const metadata = {
     description:
       "Community moderation, streaming, tools, and field notes from mattothemoon.",
     url: "https://mattothemoon.xyz",
-    images: ["/opengraph-image"],
   },
   twitter: {
     card: "summary_large_image",
-    images: ["/opengraph-image"],
   },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${display.variable} ${sans.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <ViewTracker />
+      </body>
     </html>
   );
 }

@@ -18,7 +18,7 @@ function formatViewers(n) {
 
 // The "Streamers I work with" header pill and grid, with live status from
 // LiveProvider.
-export default function StreamerGrid({ communities = [], activeCount = 0 }) {
+export default function StreamerGrid({ communities = [], activeCount = 0, tags = [] }) {
   const channels = useLive();
 
   const info = (entry) => (channels && channels[loginOf(entry)]) || null;
@@ -40,11 +40,11 @@ export default function StreamerGrid({ communities = [], activeCount = 0 }) {
         ) : null}
       </div>
       <p className="sec-lede" data-reveal>The communities I help moderate and manage.</p>
-      <ul className="tags" data-reveal aria-label="What I do for streamers">
-        <li>Moderation</li>
-        <li>Discord management</li>
-        <li>Bots &amp; filters</li>
-      </ul>
+      {tags.length > 0 && (
+        <ul className="tags" data-reveal aria-label="What I do for streamers">
+          {tags.map((tag) => <li key={tag}>{tag}</li>)}
+        </ul>
+      )}
       <ul className="st-grid">
         {ordered.map(({ entry, i, live }, n) => {
           const data = info(entry);

@@ -21,6 +21,7 @@ import { profileStats } from "@/lib/profileStats";
 import { getLiveStatus, ownLogin, profileLogins } from "@/lib/twitch";
 import { withLiveFollowers } from "@/lib/twitchAuth";
 import { shownServers } from "@/lib/discordConnect";
+import { totalViews } from "@/lib/views";
 import DiscordServers from "@/components/home/DiscordServers";
 
 // Content comes from the profile, so the admin panel keeps controlling it.
@@ -37,7 +38,6 @@ export async function generateMetadata() {
   };
 }
 
-const ROLES = ["Community Mod", "Streamer", "Community Manager"];
 
 
 const ARROW = (
@@ -85,6 +85,7 @@ export default async function Home() {
   const myLogin = ownLogin(profile);
   const work = profile.work || { services: [] };
   const servers = await shownServers(profile);
+  const views = profile.stats?.showViews ? await totalViews() : null;
   const stats = profileStats(profile, { servers });
 
   return (
@@ -118,22 +119,34 @@ export default async function Home() {
                   <DiscordAvatar />
                 </LiveAvatar>
               </span>
-              {work.available && (
-                <a className="chip chip--open h-in" href="/work" style={{ "--d": "135ms" }}>
-                  <span className="chip__dot" aria-hidden="true" />
-                  Open to new communities
-                </a>
-              )}
+              <span className="hero-chips h-in" style={{ "--d": "135ms" }}>
+                {work.available && (
+                  <a className="chip chip--open" href="/work">
+                    <span className="chip__dot" aria-hidden="true" />
+                    Open to new communities
+                  </a>
+                )}
+                {Number.isFinite(views) && views > 0 && (
+                  <span className="chip" title="Total visits to this site">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path fill="currentColor" d="M12 5c-5 0-9 4.5-10 7 1 2.5 5 7 10 7s9-4.5 10-7c-1-2.5-5-7-10-7Zm0 11.5a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9Zm0-2.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+                    </svg>
+                    <b>{views.toLocaleString("en-US")}</b> views
+                  </span>
+                )}
+              </span>
             </div>
 
             <h1 className="hero-name h-in" style={{ "--d": "180ms" }}>
               {profile.name}
               {VERIFIED}
             </h1>
-            <p className="hero-role h-in" style={{ "--d": "225ms" }}>
-              <span className="hero-role__pre">I&apos;m a</span>
-              <RotatingRole roles={ROLES} />
-            </p>
+            {profile.home?.roles?.length > 0 && (
+              <p className="hero-role h-in" style={{ "--d": "225ms" }}>
+                <span className="hero-role__pre">I&apos;m a</span>
+                <RotatingRole roles={profile.home.roles} />
+              </p>
+            )}
             <div className="hero-bio h-in" style={{ "--d": "270ms" }}>
               {profile.about ? <p>{profile.about}</p> : <p>{profile.bio}</p>}
             </div>
@@ -179,6 +192,7 @@ export default async function Home() {
               <StreamerGrid
                 communities={communities}
                 activeCount={active.length}
+                tags={profile.home?.tags || []}
               />
             </section>
           )}
