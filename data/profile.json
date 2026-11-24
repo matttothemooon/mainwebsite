@@ -290,7 +290,7 @@
   },
   "testimonials": [],
   "work": {
-    "available": true,
+    "available": false,
     "intro": "I help streamers and communities stay welcoming and run smoothly, from daily streams to major events.",
     "services": [
       {
@@ -332,5 +332,10 @@
       "Discord management",
       "Bots & filters"
     ]
+  },
+  "themes": {
+    "mode": "auto",
+    "anniversary": "",
+    "since": null
   }
 }
