@@ -54,7 +54,6 @@ const VERIFIED = (
 // "@handle" for the contact grid, read from the link's URL.
 function handleFor(url) {
   try {
-    if (url.startsWith("mailto:")) return url.slice(7);
     const u = new URL(url);
     const seg = u.pathname.split("/").filter(Boolean);
     const last = seg[seg.length - 1] || u.hostname.replace(/^www\./, "");

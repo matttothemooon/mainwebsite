@@ -2,7 +2,7 @@ function safeHref(value) {
   try {
     if (value.startsWith("/") && !value.startsWith("//") && !value.includes("\\")) return value;
     const url = new URL(value);
-    return ["http:", "https:", "mailto:"].includes(url.protocol) ? value : null;
+    return ["http:", "https:"].includes(url.protocol) ? value : null;
   } catch {
     return null;
   }

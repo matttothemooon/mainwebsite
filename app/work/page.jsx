@@ -32,7 +32,6 @@ export const metadata = {
 // Quick ways to reach out, picked from the social links.
 function contactLinks(links = []) {
   const wanted = [
-    (l) => l.url.startsWith("mailto:"),
     (l) => /discord\.com\/users\//i.test(l.url),
     (l) => /(^|\.)(x|twitter)\.com\//i.test(l.url.replace(/^https?:\/\//, "")),
     (l) => /discord\.gg\//i.test(l.url),
