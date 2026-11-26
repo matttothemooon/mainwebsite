@@ -1,0 +1,10 @@
+{
+  "login": "mattothemoon",
+  "userId": "538374017",
+  "scopes": [
+    "moderator:read:followers",
+    "user:read:moderated_channels"
+  ],
+  "connectedAt": "2026-11-26T22:15:14.241Z",
+  "refresh": "7y9asra4EJ2RboAY.6zd0Y5IZUkQJs6ROKbu0jw.p_VFaGaYLdCk_3lVQQ3B06L-n8Js6RTRftGrNoWWTd8rwDAyFyJ-vTFz_KvRVAnl2As"
+}
