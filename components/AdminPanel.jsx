@@ -551,6 +551,13 @@ export default function AdminPanel() {
           />
           <p className="hint">On this day each year the site shows confetti and &ldquo;N years on Twitch today&rdquo;.</p>
         </div>
+        <PrefixField
+          label="mod help discord server (linked from the Tools page and /mod-kit)"
+          kind="discord"
+          value={profile.modServer || ""}
+          onChange={(modServer) => edit((p) => ({ ...p, modServer }))}
+          placeholder="invite code"
+        />
         <ListField
           id="f-roles"
           label="rotating roles (one per line)"

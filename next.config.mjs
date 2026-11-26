@@ -18,7 +18,6 @@ const nextConfig = {
   async redirects() {
     return [
       { source: "/specs", destination: "/what-i-use#setup", permanent: false },
-      { source: "/mod-kit", destination: "/pages/new-mod-guide", permanent: false },
     ];
   },
 

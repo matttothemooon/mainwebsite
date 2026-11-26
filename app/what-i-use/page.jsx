@@ -20,6 +20,7 @@ export default async function WhatIUsePage() {
   const moderationResources = profile.pages?.find(
     (page) => page.slug === "mod-resources" && page.published
   );
+  const discordServer = profile.modServer;
   const gearCount = profile.gear?.reduce((count, category) => count + (category.items?.length ?? 0), 0) ?? 0;
 
   return (
@@ -43,12 +44,14 @@ export default async function WhatIUsePage() {
             <p>Every moderation command worth knowing, searchable, with copy buttons.</p>
             <span className="cta">Open the cheat sheet <Arrow /></span>
           </a>
-          <a className="card guide" href="/pages/new-mod-guide" data-reveal style={{ "--d": "140ms" }}>
-            <span className="guide__kind">Guide</span>
-            <h3>New mod starter kit</h3>
-            <p>The page to send a new mod: when to time out vs ban, common situations and what to do in a hate raid.</p>
-            <span className="cta">Read the kit <Arrow /></span>
-          </a>
+          {discordServer && (
+            <a className="card guide" href={discordServer} target="_blank" rel="noopener noreferrer" data-reveal style={{ "--d": "140ms" }}>
+              <span className="guide__kind">Discord</span>
+              <h3>Join my Discord</h3>
+              <p>Got a modding question or need a hand with your community? Ask in my Discord server.</p>
+              <span className="cta">Join the server <Arrow /></span>
+            </a>
+          )}
           <a className="card guide" href="/haste" data-reveal style={{ "--d": "210ms" }}>
             <span className="guide__kind">Sharing</span>
             <h3>Haste</h3>
