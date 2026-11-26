@@ -600,3 +600,7 @@ a.quote__name:hover { text-decoration: underline; }
 .dc__role { position: absolute; top: 8px; right: 10px; color: var(--pf-muted); font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
 @media (max-width: 560px) { .dc-grid { grid-template-columns: 1fr; } }
 
+
+/* "What I do" as a single line on the home page */
+.do-line { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 18px 0 0; color: var(--pf-text); font-family: var(--font-display), sans-serif; font-size: clamp(20px, 3.2vw, 26px); font-weight: 600; letter-spacing: -.02em; }
+.do-line__sep { margin-right: 14px; color: var(--pf-muted); font-weight: 400; }

@@ -15,7 +15,6 @@ import LiveProvider from "@/components/home/LiveProvider";
 import { LiveAvatar, LiveBanner } from "@/components/home/SelfLive";
 import Testimonials from "@/components/home/Testimonials";
 import StatsStrip from "@/components/home/StatsStrip";
-import ServiceCards from "@/components/home/ServiceCards";
 import { profileStats } from "@/lib/profileStats";
 import { getLiveStatus, ownLogin, profileLogins } from "@/lib/twitch";
 import { withLiveFollowers } from "@/lib/twitchAuth";
@@ -51,34 +50,20 @@ const VERIFIED = (
   </svg>
 );
 
-// "@handle" for the contact grid, read from the link's URL.
-function handleFor(url) {
-  try {
-    const u = new URL(url);
-    const seg = u.pathname.split("/").filter(Boolean);
-    const last = seg[seg.length - 1] || u.hostname.replace(/^www\./, "");
-    if (u.hostname.includes("discord.com") && seg[0] === "users") return "profile";
-    if (u.hostname.includes("discord.gg")) return "server";
-    return last.startsWith("@") ? last : `@${last}`;
-  } catch {
-    return "";
-  }
-}
-
-
 const titleCase = (s) => s.replace(/\b\w/g, (c) => c.toUpperCase());
 
 export default async function Home() {
   // Follower counts come from Twitch when the owner has connected it.
   const profile = await withLiveFollowers(await getProfile({ fresh: true }));
   const links = profile.links || [];
+  // The Discord profile link is for the "DM me" card; the row shows the server.
+  const socials = links.filter((l) => !/discord\.com\/users\//i.test(l.url));
   const active = profile.experience?.active || [];
   const past = profile.experience?.past || [];
   const communities = [
     ...active.map((e) => ({ ...e, past: false })),
     ...past.map((e) => ({ ...e, past: true })),
   ];
-  const guides = (profile.pages || []).filter((p) => p.published);
   const liveChannels = await getLiveStatus(profileLogins(profile));
   const myLogin = ownLogin(profile);
   const work = profile.work || { services: [] };
@@ -123,9 +108,9 @@ export default async function Home() {
                   <p>{profile.about}</p>
                 </div>
               )}
-              {links.length > 0 && (
+              {socials.length > 0 && (
                 <ul className="socials h-in" style={{ "--d": "240ms" }}>
-                  {links.map((link, i) => {
+                  {socials.map((link, i) => {
                     const external = !link.url.startsWith("/");
                     return (
                       <li key={`${link.url}-${i}`}>
@@ -175,7 +160,14 @@ export default async function Home() {
           {work.services?.length > 0 && (
             <section className="sec" aria-labelledby="do-title">
               <h2 id="do-title" className="sec-title" data-reveal>What I do</h2>
-              <ServiceCards services={work.services} />
+              <p className="do-line" data-reveal>
+                {work.services.map((sv, i) => (
+                  <span key={sv.title}>
+                    {i > 0 && <span className="do-line__sep" aria-hidden="true">/</span>}
+                    {sv.title}
+                  </span>
+                ))}
+              </p>
               <a className="more-link" href="/work" data-reveal>Work with me {ARROW}</a>
             </section>
           )}
@@ -205,49 +197,8 @@ export default async function Home() {
             </section>
           )}
 
-          <section className="sec" aria-labelledby="guides-title">
-            <h2 id="guides-title" className="sec-title" data-reveal>Guides &amp; setup</h2>
-            <div className="guides">
-              {guides.map((g, i) => (
-                <a className="card guide" href={`/pages/${g.slug}`} key={g.slug} data-reveal style={{ "--d": `${i * 70}ms` }}>
-                  <span className="guide__kind">{g.category || "Guide"}</span>
-                  <h3>{g.title}</h3>
-                  {g.description && <p>{g.description}</p>}
-                  <span className="cta">Read guide {ARROW}</span>
-                </a>
-              ))}
-              <a className="card guide" href="/what-i-use" data-reveal style={{ "--d": `${guides.length * 70}ms` }}>
-                <span className="guide__kind">Gear</span>
-                <h3>What I use</h3>
-                <p>The PC, peripherals and desk setup behind my streams.</p>
-                <span className="cta">See my setup {ARROW}</span>
-              </a>
-            </div>
-            <a className="more-link" href="/pages" data-reveal>All guides {ARROW}</a>
-          </section>
-
           <section id="contact" className="sec" aria-labelledby="contact-title">
             <h2 id="contact-title" className="sec-title" data-reveal>Get in touch</h2>
-            <p className="sec-lede" data-reveal>Find me on any of these, or DM me on Discord.</p>
-            <ul className="contact-grid">
-              {links.map((link, i) => {
-                const external = !link.url.startsWith("/");
-                return (
-                  <li key={`${link.url}-${i}`} data-reveal style={{ "--d": `${Math.min(i * 40, 280)}ms` }}>
-                    <a
-                      className="card contact"
-                      href={link.url}
-                      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    >
-                      <span className="contact__icon"><LinkIcon link={link} /></span>
-                      <span className="contact__label">{titleCase(link.label)}</span>
-                      <span className="contact__handle">{handleFor(link.url)}</span>
-                      {ARROW}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
             <DiscordDm links={links} />
           </section>
         </main>
