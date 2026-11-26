@@ -15,7 +15,6 @@ import Reveal from "@/components/home/Reveal";
 import LiveProvider from "@/components/home/LiveProvider";
 import StatsStrip from "@/components/home/StatsStrip";
 import ServiceCards from "@/components/home/ServiceCards";
-import Testimonials from "@/components/home/Testimonials";
 
 export const revalidate = 60;
 
@@ -121,12 +120,6 @@ export default async function WorkPage() {
             </section>
           )}
 
-          {profile.testimonials?.length > 0 && (
-            <section className="sec" aria-labelledby="quotes-title">
-              <h2 id="quotes-title" className="sec-title" data-reveal>What streamers say</h2>
-              <Testimonials items={profile.testimonials} />
-            </section>
-          )}
 
           <section id="contact" className="sec" aria-labelledby="contact-title">
             <h2 id="contact-title" className="sec-title" data-reveal>Get in touch</h2>

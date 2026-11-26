@@ -20,7 +20,6 @@ const BLANK_ENTRY = {
 const BLANK_LINK = { label: "", url: "", iconUrl: "" };
 const BLANK_GEAR = { name: "", items: [] };
 const BLANK_GEAR_ITEM = { label: "", value: "", url: "", imageUrl: "" };
-const BLANK_TESTIMONIAL = { quote: "", name: "", role: "", twitch: "", url: "", avatar: "" };
 const BLANK_SERVICE = { title: "", text: "" };
 const BLANK_PAGE = { title: "", slug: "", category: "", description: "", content: "", published: false };
 
@@ -143,7 +142,7 @@ export default function AdminPanel() {
 
   useEffect(() => {
     if (state !== "ready") return;
-    const sections = ["profile", "visitors", "links", "mods-active", "mods-past", "discord", "work", "testimonials", "pages", "gear", "guestbook", "haste"]
+    const sections = ["profile", "visitors", "links", "mods-active", "mods-past", "discord", "work", "pages", "gear", "guestbook", "haste"]
       .map((id) => document.getElementById(id))
       .filter(Boolean);
     const observer = new IntersectionObserver(
@@ -197,12 +196,6 @@ export default function AdminPanel() {
   const patchService = (i, patch) =>
     edit((p) => {
       p.work.services[i] = { ...p.work.services[i], ...patch };
-      return p;
-    });
-
-  const patchTestimonial = (i, patch) =>
-    edit((p) => {
-      p.testimonials[i] = { ...p.testimonials[i], ...patch };
       return p;
     });
 
@@ -281,7 +274,6 @@ export default function AdminPanel() {
           items: category.items.filter((item) => item.label.trim() && item.value.trim()),
         }))
         .filter((category) => category.name.trim()),
-      testimonials: (profile.testimonials || []).filter((t) => t.quote.trim() && t.name.trim()),
       work: {
         ...profile.work,
         services: (profile.work?.services || []).filter((s) => s.title.trim()),
@@ -412,14 +404,6 @@ export default function AdminPanel() {
               onClick={() => setActiveSection("work")}
             >
               Work with me
-            </AdminNavLink>
-            <AdminNavLink
-              href="#testimonials"
-              icon="quote"
-              active={activeSection === "testimonials"}
-              onClick={() => setActiveSection("testimonials")}
-            >
-              Testimonials
             </AdminNavLink>
             <AdminNavLink
               href="#pages"
@@ -595,12 +579,7 @@ export default function AdminPanel() {
         </div>
       </section>
 
-      <VisitorsSection
-        showViews={Boolean(profile.stats?.showViews)}
-        onShowViews={(on) => edit((p) => ({ ...p, stats: { ...p.stats, showViews: on } }))}
-        viewsOffset={profile.stats?.viewsOffset || 0}
-        onViewsOffset={(n) => edit((p) => ({ ...p, stats: { ...p.stats, viewsOffset: n } }))}
-      />
+      <VisitorsSection />
 
       <section className="section" id="links">
         <h2 className="section__title">links</h2>
@@ -879,44 +858,6 @@ export default function AdminPanel() {
         </button>
       </section>
 
-      <section className="section" id="testimonials">
-        <h2 className="section__title">testimonials</h2>
-        <p className="hint" style={{ marginBottom: "var(--gap-sm)" }}>
-          Quotes from streamers you&apos;ve worked with, shown on the homepage and /work. The section stays hidden until you add one.
-          With a Twitch name, their current Twitch picture is used automatically.
-        </p>
-        {(profile.testimonials || []).map((t, i) => (
-          <div className="entry" key={i}>
-            <div className="entry__head">
-              <span className="entry__title">{t.name || "(new testimonial)"}</span>
-              <div className="entry__actions">
-                <button className="btn btn--icon" title="move up" onClick={() => edit((p) => ({ ...p, testimonials: move(p.testimonials, i, -1) }))}>↑</button>
-                <button className="btn btn--icon" title="move down" onClick={() => edit((p) => ({ ...p, testimonials: move(p.testimonials, i, 1) }))}>↓</button>
-                <button className="btn btn--icon btn--danger" title="remove" onClick={() => edit((p) => ({ ...p, testimonials: p.testimonials.filter((_, j) => j !== i) }))}>×</button>
-              </div>
-            </div>
-            <div className="grid">
-              <div className="field grid--full">
-                <label htmlFor={`f-quote-${i}`}>quote</label>
-                <textarea id={`f-quote-${i}`} maxLength={400} value={t.quote} onChange={(e) => patchTestimonial(i, { quote: e.target.value })} placeholder="What they said about working with you" />
-              </div>
-              <Field label="name" value={t.name} onChange={(e) => patchTestimonial(i, { name: e.target.value })} maxLength={60} placeholder="ChubsC" />
-              <Field label="role or context" value={t.role} onChange={(e) => patchTestimonial(i, { role: e.target.value })} maxLength={80} placeholder="Streamer · 11K followers" />
-              <Field label="twitch name" value={t.twitch} onChange={(e) => patchTestimonial(i, { twitch: e.target.value })} maxLength={30} placeholder="chubsc" />
-              <Field label="link (optional)" value={t.url} onChange={(e) => patchTestimonial(i, { url: e.target.value })} maxLength={500} placeholder="https://twitch.tv/chubsc" />
-              <Field label="picture url (optional)" value={t.avatar} onChange={(e) => patchTestimonial(i, { avatar: e.target.value })} maxLength={500} placeholder="https://…" full />
-            </div>
-          </div>
-        ))}
-        <button
-          className="btn"
-          disabled={(profile.testimonials || []).length >= 12}
-          onClick={() => edit((p) => ({ ...p, testimonials: [...(p.testimonials || []), { ...BLANK_TESTIMONIAL }] }))}
-        >
-          + add testimonial
-        </button>
-      </section>
-
       <section className="section" id="gear">
         <h2 className="section__title">what i use</h2>
         <p className="hint">Add, reorder, or remove guide sections and products.</p>
@@ -1184,7 +1125,7 @@ function ModSync({ profile, edit, dirty }) {
 
 /* ---------- visitors ---------- */
 
-function VisitorsSection({ showViews, onShowViews, viewsOffset, onViewsOffset }) {
+function VisitorsSection() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -1259,29 +1200,6 @@ function VisitorsSection({ showViews, onShowViews, viewsOffset, onViewsOffset })
             </div>
           </div>
         </>
-      )}
-      {data?.configured !== false && (
-        <label className="page-editor__published" style={{ marginTop: "var(--gap-sm)" }}>
-          <input type="checkbox" checked={showViews} onChange={(e) => onShowViews(e.target.checked)} />
-          show the all-time view count on the homepage
-        </label>
-      )}
-      {showViews && (
-        <div className="field" style={{ maxWidth: 320 }}>
-          <label htmlFor="f-views-offset">starting count</label>
-          <input
-            id="f-views-offset"
-            type="number"
-            min={0}
-            value={viewsOffset || ""}
-            placeholder="0"
-            onChange={(e) => onViewsOffset(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
-          />
-          <p className="hint">
-            Views from before counting began (e.g. a total from Vercel Analytics). Added to the homepage number only;
-            the stats above stay real counted visits.
-          </p>
-        </div>
       )}
       <p className="hint">
         Counts real page loads only: no bots or link previews, not your own visits while signed in here, and not
@@ -1503,7 +1421,6 @@ function AdminIcon({ name }) {
     haste: <><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2" /><rect x="8" y="2" width="8" height="4" rx="1" /><path d="M8 12h8M8 16h5" /></>,
     discord: <><path d="M8 4.5c-1.6.3-3 .8-4.2 1.5C2 9 1.6 12 2 15c1.3 1 2.8 1.7 4.4 2.2l1-1.7M16 4.5c1.6.3 3 .8 4.2 1.5C22 9 22.4 12 22 15c-1.3 1-2.8 1.7-4.4 2.2l-1-1.7" /><path d="M7 16c3.3 1.3 6.7 1.3 10 0" /><circle cx="9" cy="11.5" r="1.3" /><circle cx="15" cy="11.5" r="1.3" /></>,
     work: <><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18" /></>,
-    quote: <><path d="M7 11H4V8a3 3 0 0 1 3-3M17 11h-3V8a3 3 0 0 1 3-3" /><path d="M4 11h4v6H4zM14 11h4v6h-4z" /></>,
     signout: <><path d="M10 17l5-5-5-5M15 12H3" /><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7" /></>,
   };
   return (

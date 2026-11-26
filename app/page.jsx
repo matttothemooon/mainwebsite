@@ -13,13 +13,11 @@ import Reveal from "@/components/home/Reveal";
 import StreamerGrid from "@/components/home/StreamerGrid";
 import LiveProvider from "@/components/home/LiveProvider";
 import { LiveAvatar, LiveBanner } from "@/components/home/SelfLive";
-import Testimonials from "@/components/home/Testimonials";
 import StatsStrip from "@/components/home/StatsStrip";
 import { profileStats } from "@/lib/profileStats";
 import { getLiveStatus, ownLogin, profileLogins } from "@/lib/twitch";
 import { withLiveFollowers } from "@/lib/twitchAuth";
 import { shownServers } from "@/lib/discordConnect";
-import { totalViews } from "@/lib/views";
 import DiscordServers from "@/components/home/DiscordServers";
 
 // Content comes from the profile, so the admin panel keeps controlling it.
@@ -68,8 +66,6 @@ export default async function Home() {
   const myLogin = ownLogin(profile);
   const work = profile.work || { services: [] };
   const servers = await shownServers(profile);
-  const counted = profile.stats?.showViews ? await totalViews() : null;
-  const views = profile.stats?.showViews ? (counted || 0) + (profile.stats?.viewsOffset || 0) : null;
   const stats = profileStats(profile, { servers });
 
   return (
@@ -140,14 +136,6 @@ export default async function Home() {
                     Open to new communities
                   </a>
                 )}
-                {Number.isFinite(views) && views > 0 && (
-                  <span className="chip" title="Total visits to this site">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path fill="currentColor" d="M12 5c-5 0-9 4.5-10 7 1 2.5 5 7 10 7s9-4.5 10-7c-1-2.5-5-7-10-7Zm0 11.5a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9Zm0-2.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
-                    </svg>
-                    <b>{views.toLocaleString("en-US")}</b> views
-                  </span>
-                )}
               </div>
               <NowPlaying />
             </aside>
@@ -190,12 +178,6 @@ export default async function Home() {
             </section>
           )}
 
-          {profile.testimonials?.length > 0 && (
-            <section className="sec" aria-labelledby="quotes-title">
-              <h2 id="quotes-title" className="sec-title" data-reveal>What streamers say</h2>
-              <Testimonials items={profile.testimonials} />
-            </section>
-          )}
 
           <section id="contact" className="sec" aria-labelledby="contact-title">
             <h2 id="contact-title" className="sec-title" data-reveal>Get in touch</h2>
