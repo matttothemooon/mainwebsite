@@ -58,7 +58,6 @@ export async function PUT(request) {
   try {
     await saveProfile(profile);
     revalidatePath("/");
-    revalidatePath("/pages");
     revalidatePath("/work");
     revalidatePath("/what-i-use");
     revalidatePath("/pages/[slug]", "page");

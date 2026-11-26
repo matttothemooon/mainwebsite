@@ -5,19 +5,12 @@ const nextConfig = {
   // next/image's remote allowlist.
   images: { unoptimized: true },
 
-  // The Decap CMS is plain static files in public/. Next serves those by exact
-  // path only, so /cms needs pointing at its index.
-  async rewrites() {
-    return [
-      { source: "/cms", destination: "/cms/index.html" },
-      { source: "/cms/", destination: "/cms/index.html" },
-    ];
-  },
-
   // Short, shareable link to the gear list.
   async redirects() {
     return [
       { source: "/specs", destination: "/what-i-use#setup", permanent: false },
+      // Guides now live on the Tools page.
+      { source: "/pages", destination: "/what-i-use#guides", permanent: false },
     ];
   },
 

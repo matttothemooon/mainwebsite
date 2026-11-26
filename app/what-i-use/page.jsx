@@ -7,10 +7,10 @@ import Arrow from "@/components/site/Arrow";
 
 export const metadata = {
   title: "Tools · mattothemoon",
-  description: "The gear and tools I use for streaming, moderation, and work.",
+  description: "The tools, guides and gear I use for streaming, moderation, and work.",
   openGraph: {
     title: "Tools · mattothemoon",
-    description: "The gear and tools I use for streaming, moderation, and work.",
+    description: "The tools, guides and gear I use for streaming, moderation, and work.",
     url: "/what-i-use",
   },
 };
@@ -20,13 +20,14 @@ export default async function WhatIUsePage() {
   const moderationResources = profile.pages?.find(
     (page) => page.slug === "mod-resources" && page.published
   );
+  const guides = profile.pages?.filter((page) => page.published && page.slug !== "mod-resources") ?? [];
   const discordServer = profile.modServer;
   const gearCount = profile.gear?.reduce((count, category) => count + (category.items?.length ?? 0), 0) ?? 0;
 
   return (
     <SiteShell current="tools">
       <PageHeader eyebrow="Tools" title="What I use">
-        <p className="page-head__lede">The tools, resources and gear I use and recommend.</p>
+        <p className="page-head__lede">The tools, guides and gear I use and recommend.</p>
       </PageHeader>
 
       <section className="sec sec--tight" aria-labelledby="free-tools-heading">
@@ -60,6 +61,22 @@ export default async function WhatIUsePage() {
           </a>
         </div>
       </section>
+
+      {guides.length > 0 && (
+        <section className="sec sec--tight" id="guides" aria-labelledby="guides-heading">
+          <h2 id="guides-heading" className="sec-title sec-title--sm" data-reveal>Guides</h2>
+          <div className="guides">
+            {guides.map((page, i) => (
+              <a className="card guide" href={`/pages/${page.slug}`} key={page.slug} data-reveal style={{ "--d": `${i * 70}ms` }}>
+                <span className="guide__kind">{page.category || "Guide"}</span>
+                <h3>{page.title}</h3>
+                {page.description && <p>{page.description}</p>}
+                <span className="cta">Read guide <Arrow /></span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
 
       {moderationResources && (
         <section className="sec sec--tight" aria-labelledby="recommended-tools-heading">

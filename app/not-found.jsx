@@ -10,7 +10,7 @@ export default function NotFound() {
           <p className="page-head__lede">That page doesn’t exist, or it was moved.</p>
           <div className="page-actions">
             <a className="btn-primary" href="/">Back home</a>
-            <a className="chip" href="/pages">Browse guides</a>
+            <a className="chip" href="/what-i-use">Tools &amp; guides</a>
           </div>
         </PageHeader>
       </div>

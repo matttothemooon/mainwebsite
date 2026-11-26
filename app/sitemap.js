@@ -8,7 +8,6 @@ export default async function sitemap() {
 
   return [
     { url: siteUrl, priority: 1 },
-    { url: `${siteUrl}/pages`, priority: 0.8 },
     { url: `${siteUrl}/what-i-use`, priority: 0.8 },
     { url: `${siteUrl}/work`, priority: 0.8 },
     { url: `${siteUrl}/guestbook`, priority: 0.5 },

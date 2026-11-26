@@ -102,7 +102,7 @@ export default async function Home() {
               )}
               {profile.about && (
                 <div className="hero-bio h-in" style={{ "--d": "180ms" }}>
-                  <p>{profile.about}</p>
+                  <p>{profile.about.replaceAll("{years}", profile.stats?.yearsModding ?? "")}</p>
                 </div>
               )}
               {socials.length > 0 && (

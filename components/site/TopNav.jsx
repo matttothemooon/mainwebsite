@@ -1,6 +1,5 @@
 const LINKS = [
   { href: "/", label: "Home", key: "home" },
-  { href: "/pages", label: "Guides", key: "guides" },
   { href: "/what-i-use", label: "Tools", key: "tools" },
   { href: "/work", label: "Work with me", key: "work" },
 ];

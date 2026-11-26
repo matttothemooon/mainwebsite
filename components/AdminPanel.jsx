@@ -499,6 +499,7 @@ export default function AdminPanel() {
             onChange={setField("about")}
             placeholder="A little more about what you do, care about, and share here"
           />
+          <p className="hint">Write {"{years}"} to show your years moderating from the stats setting.</p>
         </div>
         <div className="field">
           <label htmlFor="f-season">seasonal theme</label>

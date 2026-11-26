@@ -40,9 +40,9 @@ export default async function CustomPage({ params }) {
         .slice(0, 3);
 
   return (
-    <SiteShell current="guides">
+    <SiteShell current="tools">
       <article>
-        <PageHeader eyebrow={page.category} title={page.title} back={{ href: "/pages", label: "All guides" }}>
+        <PageHeader eyebrow={page.category} title={page.title} back={{ href: "/what-i-use#guides", label: "Tools" }}>
           {page.description && <p className="page-head__lede">{page.description}</p>}
         </PageHeader>
         <div data-reveal>

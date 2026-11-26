@@ -1,7 +1,7 @@
 {
   "name": "Matt",
   "bio": "community mod & streamer.",
-  "about": "Hi, I'm Matthew, the person behind MattToTheMoon. For over 10 years, I've moderated Twitch chats and Discord communities in English for companies and some of the biggest streamers, from daily streams to major events.",
+  "about": "Hi, I'm Matthew, the person behind MattToTheMoon. For over {years} years, I've moderated Twitch chats and Discord communities in English for companies and some of the biggest streamers, from daily streams to major events.",
   "pages": [
     {
       "title": "My stream setup",
@@ -49,11 +49,6 @@
     {
       "label": "github",
       "url": "https://github.com/mattothemoon",
-      "iconUrl": ""
-    },
-    {
-      "label": "statsfm",
-      "url": "https://stats.fm/mattothemoon",
       "iconUrl": ""
     }
   ],
@@ -144,7 +139,7 @@
         "description": "Supported community management and day-to-day community needs.",
         "url": "https://www.twitch.tv/sinnski",
         "discordUrl": "",
-        "date": "June 2021-September 2026",
+        "date": "Jun 2021 – Sep 2026",
         "twitch": "sinnski",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/dbe7da08-e101-453a-82b9-ffc053f1da5e-profile_image-300x300.png",
         "followers": 8008
