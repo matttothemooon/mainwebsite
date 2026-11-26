@@ -240,11 +240,11 @@ body:has(.pf) {
 }
 .pf .tw-presence {
   position: absolute;
-  right: -4px;
-  bottom: -4px;
-  width: 18px;
-  height: 18px;
-  border: 3px solid var(--pf-card);
+  right: -3px;
+  bottom: -3px;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--pf-card);
   border-radius: 50%;
   background: #80848e;
 }
@@ -280,8 +280,6 @@ body:has(.pf) {
   transition: border-color .2s, background .2s;
 }
 a.np:hover { border-color: var(--pf-line-hi); background: var(--pf-card-hi); }
-.np.is-loading { background: linear-gradient(90deg, var(--pf-card) 25%, var(--pf-card-hi) 50%, var(--pf-card) 75%); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
-@keyframes shimmer { to { background-position: -200% 0; } }
 .np__icon { display: grid; flex: none; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: rgba(255, 255, 255, .05); }
 .np__icon svg { width: 20px; height: 20px; fill: currentColor; }
 .np__icon--spotify { color: #1ed760; }
