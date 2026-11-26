@@ -9,6 +9,7 @@ import PresenceProvider from "@/components/PresenceProvider";
 import DiscordAvatar from "@/components/DiscordAvatar";
 import RotatingRole from "@/components/home/RotatingRole";
 import NowPlaying from "@/components/home/NowPlaying";
+import DiscordName from "@/components/home/DiscordName";
 import Reveal from "@/components/home/Reveal";
 import StreamerGrid from "@/components/home/StreamerGrid";
 import LiveProvider from "@/components/home/LiveProvider";
@@ -129,12 +130,15 @@ export default async function Home() {
               <LiveAvatar login={myLogin}>
                 <DiscordAvatar />
               </LiveAvatar>
-              <div className="hero-card__chips">
+              <div className="hero-card__side">
+                <DiscordName fallback="Matt" />
                 {work.available && (
-                  <a className="chip chip--open" href="/work">
-                    <span className="chip__dot" aria-hidden="true" />
-                    Open to new communities
-                  </a>
+                  <div className="hero-card__chips">
+                    <a className="chip chip--open" href="/work">
+                      <span className="chip__dot" aria-hidden="true" />
+                      Open to new communities
+                    </a>
+                  </div>
                 )}
               </div>
               <NowPlaying />
