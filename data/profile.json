@@ -266,8 +266,6 @@
     }
   ],
   "stats": {
-    "showViews": false,
-    "viewsOffset": 0,
     "yearsModding": 11
   },
   "work": {
@@ -318,5 +316,6 @@
     "mode": "auto",
     "anniversary": "",
     "since": null
-  }
+  },
+  "modServer": "https://discord.gg/RMXvuqwcXj"
 }
