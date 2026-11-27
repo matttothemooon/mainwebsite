@@ -51,6 +51,7 @@ export default function AdminPanel() {
   const [followerCounts, setFollowerCounts] = useState(null);
   const [twitchCallbackUrl, setTwitchCallbackUrl] = useState("");
   const [discordConnection, setDiscordConnection] = useState(null);
+  const [spotifyInfo, setSpotifyInfo] = useState(null); // { enabled, connection, callbackUrl }
   const [discordServers, setDiscordServers] = useState(null);
   const [photoCheck, setPhotoCheck] = useState(null); // { running, summary, problems }
   const [guestbookWaiting, setGuestbookWaiting] = useState(0);
@@ -81,6 +82,7 @@ export default function AdminPanel() {
         setTwitchCallbackUrl(data.twitchCallbackUrl || "");
         setDiscordConnection(data.discordConnection || null);
         setDiscordServers(data.discordServers || null);
+        setSpotifyInfo(data.spotify || null);
 
         // Result of coming back from Discord's or Twitch's sign-in page.
         const query = new URLSearchParams(window.location.search);
@@ -99,6 +101,22 @@ export default function AdminPanel() {
           setStatus({
             text: discordMessages[discordOutcome][0] + (detail ? ` Reason: ${detail}` : ""),
             kind: discordMessages[discordOutcome][1],
+          });
+          window.history.replaceState(null, "", window.location.pathname + window.location.hash);
+        }
+
+        const spotifyOutcome = query.get("spotify");
+        const spotifyMessages = {
+          connected: ["Spotify connected. Your music now shows on the homepage.", "ok"],
+          cancelled: ["Spotify sign-in was cancelled.", "err"],
+          expired: ["Spotify sign-in took too long or came from another tab. Try again.", "err"],
+          error: ["Spotify sign-in failed.", "err"],
+          "not-configured": ["Set SPOTIFY_CLIENT_ID / SPOTIFY_CLIENT_SECRET in Vercel first.", "err"],
+        };
+        if (spotifyMessages[spotifyOutcome]) {
+          setStatus({
+            text: spotifyMessages[spotifyOutcome][0] + (detail ? ` Reason: ${detail}` : ""),
+            kind: spotifyMessages[spotifyOutcome][1],
           });
           window.history.replaceState(null, "", window.location.pathname + window.location.hash);
         }
@@ -578,6 +596,7 @@ export default function AdminPanel() {
             Combined followers and the community count come from your mod list.
           </p>
         </div>
+        <SpotifyConnect info={spotifyInfo} setInfo={setSpotifyInfo} setStatus={setStatus} dirty={dirty} />
       </section>
 
       <VisitorsSection />
@@ -1120,6 +1139,67 @@ function ModSync({ profile, edit, dirty }) {
         </>
       )}
       {(missing.length > 0 || gone.length > 0) && <p className="hint">Changes apply to the lists below; remember to save.</p>}
+    </div>
+  );
+}
+
+/* ---------- spotify ---------- */
+
+function SpotifyConnect({ info, setInfo, setStatus, dirty }) {
+  if (!info) return null;
+  const copy = () => navigator.clipboard?.writeText(info.callbackUrl).then(() => setStatus({ text: "copied", kind: "ok" }));
+  return (
+    <div className="twitch-connect" style={{ marginTop: "var(--gap-sm)" }}>
+      {!info.enabled ? (
+        <span>
+          <b>Spotify now playing.</b> Create an app at developer.spotify.com/dashboard, add{" "}
+          <code>{info.callbackUrl}</code> as its Redirect URI, then set SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET in
+          Vercel and redeploy.{" "}
+          <button className="btn btn--icon" type="button" onClick={copy}>copy</button>
+        </span>
+      ) : info.connection ? (
+        <>
+          <span>
+            <b>Spotify connected</b> as {info.connection.name}. The homepage shows what you&apos;re playing, or your
+            last song.
+          </span>
+          <button
+            className="btn"
+            type="button"
+            onClick={async () => {
+              const res = await fetch("/api/admin/spotify/disconnect", { method: "POST" });
+              if (res.ok) {
+                setInfo({ ...info, connection: null });
+                setStatus({ text: "Spotify disconnected.", kind: "ok" });
+              } else {
+                setStatus({ text: "Could not disconnect Spotify.", kind: "err" });
+              }
+            }}
+          >
+            disconnect
+          </button>
+        </>
+      ) : (
+        <>
+          <span>
+            <b>Show your music.</b> Sign in with Spotify once and the homepage shows what you&apos;re playing, even
+            with Discord closed.
+          </span>
+          <a
+            className="btn btn--primary"
+            href="/api/admin/spotify/connect"
+            onClick={(e) => {
+              if (dirty && !window.confirm("You have unsaved changes. Leave and connect Spotify anyway?")) e.preventDefault();
+            }}
+          >
+            connect spotify
+          </a>
+          <span className="twitch-connect__url">
+            Your Spotify app&apos;s Redirect URIs must include exactly: <code>{info.callbackUrl}</code>{" "}
+            <button className="btn btn--icon" type="button" onClick={copy}>copy</button>
+          </span>
+        </>
+      )}
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { requireAuth, isDevAuthBypass } from "@/lib/auth";
 import { getProfile, saveProfile, validateProfile } from "@/lib/storage";
 import { isConfigured } from "@/lib/twitch";
 import { getConnection, getFollowerCounts, callbackUrl } from "@/lib/twitchAuth";
+import * as spotify from "@/lib/spotify";
 import { getConnection as getDiscordConnection, getStaffServers } from "@/lib/discordConnect";
 
 const NO_STORE = { "Cache-Control": "no-store" };
@@ -23,6 +24,7 @@ export async function GET(request) {
       : null;
     const discord = await getDiscordConnection();
     const discordServers = discord ? await getStaffServers() : null;
+    const spotifyConnection = spotify.isConfigured() ? await spotify.getConnection() : null;
     return Response.json(
       {
         profile,
@@ -34,6 +36,11 @@ export async function GET(request) {
         // OAuth Redirect URLs, which must contain it exactly.
         twitchCallbackUrl: callbackUrl(request),
         followerCounts,
+        spotify: {
+          enabled: spotify.isConfigured(),
+          connection: spotifyConnection ? { name: spotifyConnection.name, connectedAt: spotifyConnection.connectedAt } : null,
+          callbackUrl: spotify.callbackUrl(request),
+        },
         devAuthBypass: isDevAuthBypass(request),
       },
       { headers: NO_STORE }
