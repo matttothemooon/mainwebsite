@@ -120,7 +120,7 @@
         "date": "Oct 2021 – Jan 2025",
         "twitch": "flynnislivee",
         "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/e558a0bc-5d67-415d-976f-9cd24a435f8f-profile_image-300x300.png",
-        "followers": 7093
+        "followers": 7092
       },
       {
         "role": "Community Manager",
@@ -266,8 +266,6 @@
     }
   ],
   "stats": {
-    "showViews": false,
-    "viewsOffset": 0,
     "yearsModding": 11
   },
   "work": {
@@ -318,5 +316,6 @@
     "mode": "auto",
     "anniversary": "",
     "since": null
-  }
+  },
+  "modServer": "https://discord.gg/RMXvuqwcXj"
 }
