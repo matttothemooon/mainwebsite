@@ -160,7 +160,7 @@ export default function AdminPanel() {
 
   useEffect(() => {
     if (state !== "ready") return;
-    const sections = ["profile", "links", "mods-active", "mods-past", "discord", "work", "pages", "gear", "guestbook", "haste"]
+    const sections = ["profile", "links", "mods-active", "mods-past", "discord", "work", "pages", "gear", "downloads", "apps", "faq", "guestbook", "haste"]
       .map((id) => document.getElementById(id))
       .filter(Boolean);
     const observer = new IntersectionObserver(
@@ -430,6 +430,15 @@ export default function AdminPanel() {
               onClick={() => setActiveSection("gear")}
             >
               Gear
+            </AdminNavLink>
+            <AdminNavLink href="#downloads" icon="download" active={activeSection === "downloads"} onClick={() => setActiveSection("downloads")}>
+              Settings files
+            </AdminNavLink>
+            <AdminNavLink href="#apps" icon="apps" active={activeSection === "apps"} onClick={() => setActiveSection("apps")}>
+              Bots &amp; apps
+            </AdminNavLink>
+            <AdminNavLink href="#faq" icon="faq" active={activeSection === "faq"} onClick={() => setActiveSection("faq")}>
+              FAQ
             </AdminNavLink>
             <AdminNavLink
               href="#guestbook"
@@ -904,6 +913,10 @@ export default function AdminPanel() {
         </button>
       </section>
 
+      <DownloadsSection profile={profile} edit={edit} onStatus={setStatus} />
+      <AppsSection profile={profile} edit={edit} />
+      <FaqSection profile={profile} edit={edit} />
+
       <GuestbookSection onStatus={setStatus} onWaiting={setGuestbookWaiting} />
 
       <PastesSection onStatus={setStatus} />
@@ -1130,6 +1143,184 @@ function ModSync({ profile, edit, dirty }) {
       )}
       {(missing.length > 0 || gone.length > 0) && <p className="hint">Changes apply to the lists below; remember to save.</p>}
     </div>
+  );
+}
+
+/* ---------- settings files, bots & apps, faq ---------- */
+
+const kb = (n) => (n >= 1024 * 1024 ? `${(n / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`);
+
+function DownloadsSection({ profile, edit, onStatus }) {
+  const items = profile.downloads || [];
+  const patch = (i, change) =>
+    edit((p) => {
+      p.downloads[i] = { ...p.downloads[i], ...change };
+      return p;
+    });
+  const [busy, setBusy] = useState(-1);
+
+  async function upload(i, file) {
+    if (!file) return;
+    setBusy(i);
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      const res = await fetch("/api/admin/files", { method: "POST", body });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `upload failed (${res.status})`);
+      const old = items[i].file;
+      patch(i, { file: data });
+      if (old) fetch(`/api/admin/files?id=${old.id}`, { method: "DELETE" }).catch(() => {});
+      onStatus({ text: `Uploaded ${data.name}. Save to publish it.`, kind: "ok" });
+    } catch (err) {
+      onStatus({ text: err.message, kind: "err" });
+    } finally {
+      setBusy(-1);
+    }
+  }
+
+  return (
+    <section className="section" id="downloads">
+      <h2 className="section__title">settings files</h2>
+      <p className="hint" style={{ marginBottom: "var(--gap-sm)" }}>
+        Files people can download from the Tools page, like your Chatterino settings.json or an FFZ backup. Each one
+        shows once it has a file. In the steps, every line is a numbered step; start a line with &ldquo;- &rdquo; for
+        a detail under the step above.
+      </p>
+      {items.map((d, i) => (
+        <div className="entry" key={d.id}>
+          <div className="entry__head">
+            <span className="entry__title">
+              {d.title || "(new file)"} {d.file ? `· ${d.file.name} (${kb(d.file.size)})` : "· no file yet, hidden"}
+            </span>
+            <div className="entry__actions">
+              <button className="btn btn--icon" title="move up" onClick={() => edit((p) => ({ ...p, downloads: move(p.downloads, i, -1) }))}>↑</button>
+              <button className="btn btn--icon" title="move down" onClick={() => edit((p) => ({ ...p, downloads: move(p.downloads, i, 1) }))}>↓</button>
+              <button
+                className="btn btn--icon btn--danger"
+                title="remove"
+                onClick={() => {
+                  if (d.file) fetch(`/api/admin/files?id=${d.file.id}`, { method: "DELETE" }).catch(() => {});
+                  edit((p) => ({ ...p, downloads: p.downloads.filter((_, j) => j !== i) }));
+                }}
+              >
+                ×
+              </button>
+            </div>
+          </div>
+          <div className="grid">
+            <Field label="title" value={d.title} onChange={(e) => patch(i, { title: e.target.value })} maxLength={80} />
+            <div className="field">
+              <label htmlFor={`f-dl-file-${i}`}>file (up to 3 MB)</label>
+              <input id={`f-dl-file-${i}`} type="file" disabled={busy === i} onChange={(e) => upload(i, e.target.files?.[0])} />
+            </div>
+            <Field label="description" value={d.description} onChange={(e) => patch(i, { description: e.target.value })} maxLength={300} full />
+            <div className="field grid--full">
+              <label htmlFor={`f-dl-steps-${i}`}>how to use it</label>
+              <textarea id={`f-dl-steps-${i}`} rows={6} maxLength={1500} value={d.steps} onChange={(e) => patch(i, { steps: e.target.value })} />
+            </div>
+          </div>
+        </div>
+      ))}
+      <button
+        className="btn"
+        disabled={items.length >= 20}
+        onClick={() =>
+          edit((p) => ({
+            ...p,
+            downloads: [...(p.downloads || []), { id: Math.random().toString(36).slice(2, 10), title: "", description: "", steps: "", file: null }],
+          }))
+        }
+      >
+        + add file
+      </button>
+    </section>
+  );
+}
+
+function AppsSection({ profile, edit }) {
+  const items = profile.recommendations || [];
+  const patch = (i, change) =>
+    edit((p) => {
+      p.recommendations[i] = { ...p.recommendations[i], ...change };
+      return p;
+    });
+  return (
+    <section className="section" id="apps">
+      <h2 className="section__title">bots &amp; apps</h2>
+      <p className="hint" style={{ marginBottom: "var(--gap-sm)" }}>
+        Shown on the Tools page, grouped by category (e.g. Twitch bots, Mobile chat).
+      </p>
+      {items.map((r, i) => (
+        <div className="entry" key={i}>
+          <div className="entry__head">
+            <span className="entry__title">{r.name || "(new)"} <span className="hint">· {r.category}</span></span>
+            <div className="entry__actions">
+              <button className="btn btn--icon" title="move up" onClick={() => edit((p) => ({ ...p, recommendations: move(p.recommendations, i, -1) }))}>↑</button>
+              <button className="btn btn--icon" title="move down" onClick={() => edit((p) => ({ ...p, recommendations: move(p.recommendations, i, 1) }))}>↓</button>
+              <button className="btn btn--icon btn--danger" title="remove" onClick={() => edit((p) => ({ ...p, recommendations: p.recommendations.filter((_, j) => j !== i) }))}>×</button>
+            </div>
+          </div>
+          <div className="grid">
+            <Field label="name" value={r.name} onChange={(e) => patch(i, { name: e.target.value })} maxLength={60} />
+            <Field label="category" value={r.category} onChange={(e) => patch(i, { category: e.target.value })} maxLength={40} list="rec-categories" />
+            <Field label="link" value={r.url} onChange={(e) => patch(i, { url: e.target.value })} maxLength={500} placeholder="https://" />
+            <Field label="short note" value={r.note} onChange={(e) => patch(i, { note: e.target.value })} maxLength={160} />
+          </div>
+        </div>
+      ))}
+      <datalist id="rec-categories">
+        {[...new Set(items.map((r) => r.category))].map((c) => (
+          <option key={c} value={c} />
+        ))}
+      </datalist>
+      <button
+        className="btn"
+        disabled={items.length >= 60}
+        onClick={() => edit((p) => ({ ...p, recommendations: [...(p.recommendations || []), { category: "Twitch bots", name: "", note: "", url: "" }] }))}
+      >
+        + add bot or app
+      </button>
+    </section>
+  );
+}
+
+function FaqSection({ profile, edit }) {
+  const items = profile.faq || [];
+  const patch = (i, change) =>
+    edit((p) => {
+      p.faq[i] = { ...p.faq[i], ...change };
+      return p;
+    });
+  return (
+    <section className="section" id="faq">
+      <h2 className="section__title">faq</h2>
+      <p className="hint" style={{ marginBottom: "var(--gap-sm)" }}>
+        Shown on /faq. Answers support links like [Tools page](/what-i-use), **bold** and lists.
+      </p>
+      {items.map((f, i) => (
+        <div className="entry" key={i}>
+          <div className="entry__head">
+            <span className="entry__title">{f.q || "(new question)"}</span>
+            <div className="entry__actions">
+              <button className="btn btn--icon" title="move up" onClick={() => edit((p) => ({ ...p, faq: move(p.faq, i, -1) }))}>↑</button>
+              <button className="btn btn--icon" title="move down" onClick={() => edit((p) => ({ ...p, faq: move(p.faq, i, 1) }))}>↓</button>
+              <button className="btn btn--icon btn--danger" title="remove" onClick={() => edit((p) => ({ ...p, faq: p.faq.filter((_, j) => j !== i) }))}>×</button>
+            </div>
+          </div>
+          <div className="grid">
+            <Field label="question" value={f.q} onChange={(e) => patch(i, { q: e.target.value })} maxLength={200} full />
+            <div className="field grid--full">
+              <label htmlFor={`f-faq-a-${i}`}>answer</label>
+              <textarea id={`f-faq-a-${i}`} rows={4} maxLength={2000} value={f.a} onChange={(e) => patch(i, { a: e.target.value })} />
+            </div>
+          </div>
+        </div>
+      ))}
+      <button className="btn" disabled={items.length >= 50} onClick={() => edit((p) => ({ ...p, faq: [...(p.faq || []), { q: "", a: "" }] }))}>
+        + add question
+      </button>
+    </section>
   );
 }
 
@@ -1400,6 +1591,9 @@ function AdminIcon({ name }) {
     socials: <><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.7 10.7 6.6-4.4m-6.6 7 6.6 4.4" /></>,
     mods: <><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="10" cy="7" r="4" /><path d="M20 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8" /></>,
     guides: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" /></>,
+    download: <><path d="M12 4v11M7 10l5 5 5-5M5 20h14" /></>,
+    apps: <><rect x="4" y="4" width="7" height="7" rx="1.5" /><rect x="13" y="4" width="7" height="7" rx="1.5" /><rect x="4" y="13" width="7" height="7" rx="1.5" /><rect x="13" y="13" width="7" height="7" rx="1.5" /></>,
+    faq: <><circle cx="12" cy="12" r="9" /><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01" /></>,
     gear: <><circle cx="12" cy="12" r="3" /><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.7 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.7-1l-1.7.7-1.4-2.4L7.3 15a8 8 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.7-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.7 1l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1-.1 2Z" /></>,
     guestbook: <><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21.5v-17Z" /><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M9 7h7M9 11h5" /></>,
     haste: <><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2" /><rect x="8" y="2" width="8" height="4" rx="1" /><path d="M8 12h8M8 16h5" /></>,

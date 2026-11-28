@@ -10,6 +10,7 @@ export default async function sitemap() {
     { url: siteUrl, priority: 1 },
     { url: `${siteUrl}/what-i-use`, priority: 0.8 },
     { url: `${siteUrl}/work`, priority: 0.8 },
+    { url: `${siteUrl}/faq`, priority: 0.7 },
     { url: `${siteUrl}/guestbook`, priority: 0.5 },
     { url: `${siteUrl}/blocked-terms`, priority: 0.7 },
     { url: `${siteUrl}/commands`, priority: 0.7 },

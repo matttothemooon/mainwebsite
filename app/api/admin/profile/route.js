@@ -67,6 +67,7 @@ export async function PUT(request) {
     revalidatePath("/");
     revalidatePath("/work");
     revalidatePath("/what-i-use");
+    revalidatePath("/faq");
     revalidatePath("/pages/[slug]", "page");
     return Response.json({ profile }, { headers: NO_STORE });
   } catch (err) {

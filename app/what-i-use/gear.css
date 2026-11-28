@@ -122,3 +122,35 @@ a.gear-row__name:hover > svg { transform: translate(2px, -2px); }
   .gear-row { grid-template-columns: 1fr; gap: 4px; }
   .gear-row__label { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; }
 }
+
+/* Settings downloads */
+.dl { display: grid; gap: 10px; margin-top: 18px; }
+.dl__item { padding: 20px 22px; }
+.dl__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.dl__head h3 { font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
+.dl__head p { margin: 4px 0 0; color: var(--pf-soft); }
+.dl__btn { flex: none; gap: 8px; }
+.dl__size { color: #55555c; font-size: 12px; font-weight: 500; }
+.dl__how { margin-top: 14px; border-top: 1px solid var(--pf-line); padding-top: 12px; }
+.dl__how summary { display: inline-flex; align-items: center; gap: 6px; color: var(--pf-soft); font-size: 14px; font-weight: 600; cursor: pointer; list-style: none; }
+.dl__how summary::-webkit-details-marker { display: none; }
+.dl__how summary::after { content: "+"; color: var(--pf-muted); font-family: var(--pf-mono); font-weight: 400; }
+.dl__how[open] summary::after { content: "−"; }
+.dl__how summary:hover { color: #fff; }
+.dl__steps { margin: 12px 0 0; padding-left: 22px; color: var(--pf-soft); line-height: 1.7; }
+.dl__steps ul { margin: 2px 0 4px; padding-left: 18px; color: var(--pf-muted); font-family: var(--pf-mono); font-size: 13px; overflow-wrap: anywhere; }
+@media (max-width: 560px) {
+  .dl__head { flex-direction: column; align-items: stretch; }
+  .dl__btn { justify-content: center; }
+}
+
+/* Bots & apps */
+.recs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 40px; margin-top: 18px; }
+.recs__group h3 { margin: 0 0 6px; color: var(--pf-muted); font-family: var(--pf-mono); font-size: 12px; font-weight: 500; text-transform: lowercase; }
+.recs__group ul { margin: 0; padding: 0; list-style: none; }
+.recs__group li { display: flex; flex-direction: column; gap: 2px; padding: 10px 0; border-bottom: 1px solid var(--pf-line); }
+.recs__group a { display: inline-flex; align-items: center; gap: 6px; width: fit-content; }
+.recs__group a:hover .arrow { transform: translate(2px, -2px); }
+.recs__group b { font-weight: 600; }
+.recs__group span { color: var(--pf-soft); font-size: 14px; }
+@media (max-width: 700px) { .recs { grid-template-columns: 1fr; } }

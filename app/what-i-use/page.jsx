@@ -4,6 +4,8 @@ import GearGuide from "@/components/GearGuide";
 import PageContent from "@/components/PageContent";
 import SiteShell, { PageHeader } from "@/components/site/SiteShell";
 import Arrow from "@/components/site/Arrow";
+import SettingsDownloads from "@/components/SettingsDownloads";
+import Recommendations from "@/components/Recommendations";
 
 export const metadata = {
   title: "Tools · mattothemoon",
@@ -22,12 +24,14 @@ export default async function WhatIUsePage() {
   );
   const guides = profile.pages?.filter((page) => page.published && page.slug !== "mod-resources") ?? [];
   const discordServer = profile.modServer;
+  const downloads = (profile.downloads || []).filter((d) => d.file);
+  const recommendations = profile.recommendations || [];
   const gearCount = profile.gear?.reduce((count, category) => count + (category.items?.length ?? 0), 0) ?? 0;
 
   return (
     <SiteShell current="tools">
       <PageHeader eyebrow="Tools" title="What I use">
-        <p className="page-head__lede">The tools, guides and gear I use and recommend.</p>
+        <p className="page-head__lede">The tools, settings, apps and gear I use and recommend.</p>
       </PageHeader>
 
       <section className="sec sec--tight" aria-labelledby="free-tools-heading">
@@ -67,6 +71,21 @@ export default async function WhatIUsePage() {
           </a>
         </div>
       </section>
+
+      {downloads.length > 0 && (
+        <section className="sec sec--tight" id="settings" aria-labelledby="settings-heading">
+          <h2 id="settings-heading" className="sec-title sec-title--sm" data-reveal>My settings</h2>
+          <p className="sec-lede" data-reveal>Copy my setup. Steps for importing are under each file.</p>
+          <SettingsDownloads items={downloads} />
+        </section>
+      )}
+
+      {recommendations.length > 0 && (
+        <section className="sec sec--tight" id="apps" aria-labelledby="apps-heading">
+          <h2 id="apps-heading" className="sec-title sec-title--sm" data-reveal>Bots &amp; apps I recommend</h2>
+          <Recommendations items={recommendations} />
+        </section>
+      )}
 
       {guides.length > 0 && (
         <section className="sec sec--tight" id="guides" aria-labelledby="guides-heading">
