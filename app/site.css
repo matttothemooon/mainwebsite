@@ -34,20 +34,6 @@
 .page-head h1 { max-width: 20ch; font-size: clamp(40px, 7.5vw, 64px); font-weight: 700; letter-spacing: -.05em; line-height: 1; }
 .page-head__lede { max-width: 60ch; margin: 18px 0 0; color: var(--pf-soft); font-size: 17px; line-height: 1.7; }
 
-/* Pill links that jump to a section (guide categories). */
-.pill-nav { display: flex; flex-wrap: wrap; gap: 6px; margin: 24px 0 0; padding: 0; list-style: none; }
-.pill-nav a {
-  display: inline-block;
-  padding: 6px 13px;
-  border: 1px solid var(--pf-line-hi);
-  border-radius: 999px;
-  color: var(--pf-soft);
-  font-size: 13px;
-  transition: border-color .2s, color .2s;
-}
-.pill-nav a:hover { border-color: rgba(255, 255, 255, .3); color: #fff; }
-.pill-nav span { margin-left: 6px; color: var(--pf-muted); }
-
 /* Smaller section titles inside a page (e.g. guide categories). */
 .sec--tight { padding-top: 64px; }
 .sec-title--sm { font-size: clamp(24px, 4.5vw, 30px); }

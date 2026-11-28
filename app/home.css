@@ -422,7 +422,6 @@ a.st.is-live:hover .st__live { border-color: var(--pf-card-hi); }
 .contact__icon { display: grid; place-items: center; width: 22px; color: var(--pf-soft); }
 .contact__icon svg, .contact__icon img { width: 18px; height: 18px; fill: currentColor; object-fit: contain; }
 .contact__label { font-weight: 600; white-space: nowrap; }
-.contact__handle { flex: 1; min-width: 0; overflow: hidden; color: var(--pf-muted); font-size: 13px; text-align: right; text-overflow: ellipsis; white-space: nowrap; }
 .contact .arrow { color: var(--pf-muted); }
 
 .dm-card { display: flex; align-items: center; gap: 16px; margin-top: 10px; padding: 20px 22px; }

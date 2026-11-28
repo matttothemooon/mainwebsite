@@ -1,48 +1,35 @@
 # mainwebsite
 
-Personal site for [mattothemoon.xyz](https://mattothemoon.xyz) — a minimal profile, mod list with streamer hover cards, guides, gear, contact form, and Discord-locked admin panel.
+Personal site for [mattothemoon.xyz](https://mattothemoon.xyz): profile, mod list, guides, free mod tools, gear,
+a "work with me" page, a paste bin and a guestbook, all edited from a Discord-locked admin panel.
 
 ## Stack
 
-- **Next.js 16 (App Router) + React 19**
-- GitHub Contents API for profile data and custom icon storage
-- **Discord OAuth** for admin login, restricted to an allowlist of Discord user IDs
-- `simple-icons` for social link glyphs
-- Twitch Helix API (optional) for autofilling streamer avatars
+- Next.js 16 (App Router) + React 19, on Vercel
+- Profile data in `data/profile.json`, read and written through the GitHub Contents API
+- Vercel Blob for pastes and the guestbook
+- Discord OAuth for the admin login, limited to an allowlist of Discord user IDs
+- Lanyard for Discord presence; optional Twitch and Spotify connections
 
 ## Structure
 
 ```
-app/layout.jsx                  html shell + global styles
-app/page.jsx                    homepage — server-rendered from the profile
-app/pages/page.jsx              index of published custom pages
-app/pages/[slug]/page.jsx       server-rendered custom page
-app/globals.css                 shared minimal dark theme
-app/admin/page.jsx              /admin route
-app/admin/admin.css             admin-only styles
+app/page.jsx                 homepage
+app/work, what-i-use, ...    the other pages (Work with me, Tools, guides, haste, guestbook,
+                             blocked-terms, commands)
+app/admin                    /admin
+app/api/admin/*              admin-only routes (profile, Twitch/Discord/Spotify connect, uploads, ...)
+app/api/auth/*               Discord login
+app/mod-kit/route.js         short link to the mod help Discord server
 
-components/SocialLinks.jsx      social links with automatic icons
-components/Experience.jsx       mod experience + streamer hover cards (client)
-components/AdminPanel.jsx       the whole editor (client)
-components/IconPreview.jsx      shared link-icon preview
-components/LinkIcon.jsx         icon rendering with image fallback
-components/ContactForm.jsx      contact form
-components/PresenceProvider.jsx shared Discord presence data
-components/DiscordAvatar.jsx    profile avatar and minimal presence
-
-app/api/profile/route.js        public read endpoint
-app/api/admin/profile/route.js  protected read/write of the whole profile
-app/api/admin/twitch/route.js   protected Twitch channel lookup
-app/api/admin/upload/route.js   protected custom link-icon upload
-app/api/auth/{login,callback,logout}/route.js   Discord OAuth
-
-lib/auth.js                     session cookie, allowlist, OAuth state
-lib/storage.js                  profile + icon storage, validation
-lib/icons.js                    URL/label -> brand icon resolution
-lib/twitch.js                   Twitch app token + channel lookup
-
-public/                         robots.txt, uploads/
-app/sitemap.js                  generated sitemap
+components/                  page pieces; AdminPanel.jsx is the whole editor
+lib/storage.js               profile storage and validation
+lib/auth.js                  session cookie, allowlist, OAuth state
+lib/seal.js                  encrypts saved OAuth refresh tokens
+lib/twitch.js, twitchAuth.js Twitch app token, live status, follower counts, mod sync
+lib/discordConnect.js        Discord servers you're staff in
+lib/spotify.js               Spotify now playing
+lib/blobStore.js             Vercel Blob (pastes via lib/haste.js, guestbook via lib/guestbook.js)
 ```
 
 ## Running locally
@@ -52,166 +39,40 @@ npm install
 npm run dev
 ```
 
-Then open <http://localhost:3000> and <http://localhost:3000/admin>.
+Open <http://localhost:3000> and <http://localhost:3000/admin>. No Discord app, Vercel account or GitHub token is
+needed:
 
-The homepage contact form delivers messages through Resend. Configure
-`RESEND_API_KEY` and `RESEND_FROM_EMAIL` in `.env.local` for local testing; the
-sender address must belong to a domain verified in Resend. Messages are sent to
-the email address in the profile's `mailto:` link.
+- Auth is bypassed and the admin panel says so.
+- The profile starts from `data/profile.json`; admin edits save to `.dev-profile.json` (gitignored). Delete it to reset.
+- Pastes and guestbook entries go to `.dev-blob/`.
 
-No Discord app, Vercel account, or GitHub token is needed. Locally:
+`npm test` runs the unit tests; `npm run build` checks the production build.
 
-- **Auth is bypassed** — the admin panel opens straight into the editor, with a
-  banner saying so.
-- **The initial profile comes from `data/profile.json`**, so the local site
-  matches the profile checked into the current checkout. Admin edits save to
-  `.dev-profile.json` and uploaded icons to `public/uploads/` (both gitignored)
-  instead of GitHub. Delete `.dev-profile.json` to reset to the checked-in
-  profile.
-
-To exercise the real Discord login flow locally, run `npm run dev:auth` with
-`DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `DISCORD_ALLOWED_IDS`, and
-`SESSION_SECRET` set, and add `http://localhost:3000/api/auth/callback` to the
-Discord app's redirect list.
-
-### Why the local bypass cannot affect production
-
-`ADMIN_DEV_NO_AUTH` (set only by `npm run dev`) does nothing on its own. The
-bypass additionally requires that the process is **not running on Vercel**
-(which always sets `VERCEL=1`) and that the request's `Host` is loopback.
-Setting the variable in the deployed environment therefore cannot unlock the
-live admin panel, and neither can spoofing a `Host` header at the real domain.
+The bypass only works when `ADMIN_DEV_NO_AUTH` is set (only `npm run dev` sets it), the process is not on Vercel
+(`VERCEL=1`), and the request's Host is loopback, so it can't unlock the live admin panel. To try the real Discord
+login locally, run `npm run dev:auth` with the Discord variables and `SESSION_SECRET` set, and add
+`http://localhost:3000/api/auth/callback` to the Discord app's redirects.
 
 ## Setup
 
-1. Create a Discord application at <https://discord.com/developers/applications>:
-   - OAuth2 → Redirects → add `https://mattothemoon.xyz/api/auth/callback`
-   - Note the **Client ID** and **Client Secret**.
+Set these in Vercel → Settings → Environment Variables (see `.env.example`):
 
-2. In Vercel → project settings → Environment Variables, add:
-   - `DISCORD_CLIENT_ID` — from the Discord app above
-   - `DISCORD_CLIENT_SECRET` — from the Discord app above
-   - `DISCORD_ALLOWED_IDS` — *optional.* Comma-separated Discord **user IDs**
-     allowed to edit (e.g. `436300903927119873,111111111111111111`). Leave it
-     unset and it falls back to `OWNER_ID` in `lib/auth.js`, so a fresh deploy
-     is never locked out. Setting it replaces that list entirely.
-   - `SESSION_SECRET` — any long random string, used to sign the session cookie
-   - Create a GitHub fine-grained personal access token with **Contents: Read
-    and write** access to `matttothemooon/mainwebsite`.
-   - Add `GITHUB_TOKEN` in Vercel. Keep it server-only; never expose it to
-     browser code.
+- `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`: Discord app, with `https://mattothemoon.xyz/api/auth/callback` as a
+  redirect.
+- `DISCORD_ALLOWED_IDS` (optional): Discord user IDs allowed into /admin. Unset falls back to `OWNER_ID` in
+  `lib/auth.js`; clearing it does not lock the owner out.
+- `SESSION_SECRET`: a long random string.
+- `GITHUB_TOKEN`: fine-grained token with Contents read and write on this repo.
+- Blob store connected to the project (adds `BLOB_READ_WRITE_TOKEN` / `BLOB_STORE_ID`).
+- Optional: `TWITCH_CLIENT_ID` / `TWITCH_CLIENT_SECRET`, `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET`. Connect
+  each from the admin panel, which shows the redirect URL to register.
 
-   Optional, enables the "fetch" button on streamer entries:
-   - `TWITCH_CLIENT_ID` / `TWITCH_CLIENT_SECRET` — from <https://dev.twitch.tv/console/apps>
+## Storage and safety
 
-3. Push to `main`. Vercel detects Next.js automatically.
+Each admin save is a commit to `data/profile.json`, and Vercel redeploys. Everything is validated server-side in
+`lib/storage.js`: unknown fields are dropped, lengths capped, and URLs limited to `http(s):` and site paths.
+Twitch, Discord and Spotify refresh tokens are stored encrypted with a key derived from `SESSION_SECRET`, since the
+repo is public. Uploaded link icons go to `public/uploads/` and SVGs are served with a sandboxing CSP.
 
-To find your Discord user ID: Discord → Settings → Advanced → enable Developer
-Mode, then right-click your name → Copy User ID.
-
-## Using the admin panel
-
-Go to `mattothemoon.xyz/admin` and sign in with Discord. Accounts not in
-`DISCORD_ALLOWED_IDS` are rejected with an explanation. From there you can edit:
-
-- **display name** and **bio**
-- **links** — see below
-- **mod experience** — active and past groups, each entry with role, name, date,
-  Twitch channel URL, optional Discord server URL, and hover-card fields
-- **pages** — guide pages and resource lists with a title, URL slug, category,
-  description, and Markdown content. The Mod resources
-  page is a plain list of links; edit them here like any other page. Published
-  pages are grouped by category on `/pages` and linked from the homepage. Draft
-  pages stay private; unpublishing or deleting a page makes its URL return 404.
-  Content supports headings, lists, quotes, code blocks, formatting, links, and
-  HTTPS images.
-
-Saving revalidates the homepage and page routes, so changes appear immediately.
-
-Removing an ID from `DISCORD_ALLOWED_IDS` revokes access immediately — the
-allowlist is re-checked on every request, not just at login.
-
-Note the one asymmetry: *clearing the variable entirely* does not lock everyone
-out, it reverts to `OWNER_ID` in `lib/auth.js`. To revoke the owner account, set
-`DISCORD_ALLOWED_IDS` to a different ID rather than emptying it, or change that
-constant.
-
-## Social links
-
-Links render with their labels and an automatically selected icon. Each row in
-the admin panel shows a live preview of what the homepage will render. The icon
-is chosen in this order:
-
-1. **A custom upload**, if you've added one.
-2. **The URL's domain** — `twitch.tv`, `github.com`, `youtube.com`, and ~30 other
-   platforms, using the real brand artwork from `simple-icons`.
-3. **The label**, for URLs with no domain to read. This is how the seeded
-   `/discord` link gets the Discord icon.
-4. **The linked site's favicon** for other web domains.
-5. **A generic link glyph** if no icon or usable web domain is available.
-
-The label also serves as the link's accessible name and as a fallback icon hint.
-
-The admin panel previews the selected icon and offers an **upload icon** button
-(PNG, JPEG, WebP, GIF or SVG, up to 512KB) to override automatic detection.
-Uploaded icons are recoloured to a white silhouette so they match the rest of the
-set; press **use auto icon** to drop the upload and go back to detection.
-
-LinkedIn has no `simple-icons` icon, so the link uses LinkedIn's favicon when
-available.
-
-Uploaded SVGs are served with a `sandbox` Content-Security-Policy (see
-`next.config.mjs`) so a script embedded in one cannot execute. In production
-uploads are committed to `public/uploads/` and become available after Vercel
-redeploys the commit.
-
-## Streamer hover cards
-
-Hovering (or keyboard-focusing) a streamer's name shows their profile picture,
-Twitch handle, and follower count when available, or their role and dates as
-fallback details.
-
-With `TWITCH_CLIENT_ID`/`TWITCH_CLIENT_SECRET` set, the **fetch** button next to
-a Twitch name pulls the avatar and display name automatically.
-
-**Follower counts usually have to be typed in by hand.** In June 2023 Twitch put
-follower counts behind a *user* access token carrying the
-`moderator:read:followers` scope for that specific channel. An app token — which
-is all a server can hold — cannot read another channel's count, so the API
-returns nothing and the panel falls back to the number you enter. The fetch
-button still fills in the avatar and display name.
-
-## How storage works
-
-The profile is stored as `data/profile.json` in the GitHub repository. Custom
-icons are committed under `public/uploads/`. The homepage reads the profile
-through the GitHub Contents API, while the admin panel updates it through the
-same API. Each save creates a GitHub commit and Vercel redeploys automatically.
-The homepage remains a **server component**, so the content is in the initial
-HTML — no client fetch, no flash, and it is indexable.
-
-Everything written through the admin panel is validated and normalised
-server-side in `lib/storage.js` before it is stored — unknown fields are dropped,
-lengths are capped, and URLs are restricted to `http(s):`, `mailto:`, and
-site-relative paths so a `javascript:` URL can never reach the page.
-
-### GitHub storage setup
-
-Create a GitHub fine-grained personal access token restricted to this repository
-with **Contents: Read and write** permission. Add it to Vercel as
-`GITHUB_TOKEN`, then redeploy. `GITHUB_REPOSITORY`, `GITHUB_BRANCH`, and
-`GITHUB_PROFILE_PATH` have useful defaults in `lib/storage.js` and only need to
-be added if your repository layout differs. Without `GITHUB_TOKEN`, local
-development uses `.dev-profile.json` and `public/uploads/` fallbacks, seeding
-the local profile from `data/profile.json` until the first local edit;
-production reads the profile from GitHub and reports a configuration error
-when saving if the token is missing.
-
-## Auth notes
-
-- Discord OAuth restricted to `DISCORD_ALLOWED_IDS`, via an HMAC-signed HttpOnly
-  cookie — no admin password to manage or leak.
-- The OAuth flow uses a signed, single-use `state` cookie to block CSRF.
-- Cookie signatures are compared in constant time.
-- Sessions last 12 hours.
-
+The admin session is an HMAC-signed HttpOnly cookie (12 hours). The allowlist is re-checked on every request, and
+the OAuth flow uses a signed single-use `state` cookie.
