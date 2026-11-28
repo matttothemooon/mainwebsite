@@ -45,6 +45,12 @@ export default async function WhatIUsePage() {
             <p>Every moderation command worth knowing, searchable, with copy buttons.</p>
             <span className="cta">Open the cheat sheet <Arrow /></span>
           </a>
+          <a className="card guide" href="/raffle" data-reveal style={{ "--d": "140ms" }}>
+            <span className="guide__kind">Twitch</span>
+            <h3>Chat raffle</h3>
+            <p>Run a giveaway in any Twitch chat: people type a keyword to enter, then draw a winner.</p>
+            <span className="cta">Start a raffle <Arrow /></span>
+          </a>
           {discordServer && (
             <a className="card guide" href={discordServer} target="_blank" rel="noopener noreferrer" data-reveal style={{ "--d": "140ms" }}>
               <span className="guide__kind">Discord</span>

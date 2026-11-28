@@ -1,0 +1,69 @@
+.rf { display: grid; gap: 12px; }
+.rf > * { min-width: 0; }
+.rf button { font: inherit; cursor: pointer; }
+.rf button:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.rf .btn-primary { border: 0; }
+.rf .chip { padding: 8px 12px; font-size: 13px; color: var(--pf-soft); }
+.rf .chip:hover { border-color: rgba(255, 255, 255, .3); color: #fff; }
+
+.rf__setup { padding: 20px; }
+.rf__fields { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 12px; }
+.rf__field { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; }
+.rf__field small { color: var(--pf-muted); font-weight: 400; }
+.rf input, .rf select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--pf-line-hi);
+  border-radius: 10px;
+  background: #0d0d0f;
+  color: var(--pf-text);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 400;
+}
+.rf input:focus, .rf select:focus { border-color: rgba(255, 255, 255, .4); outline: none; }
+.rf input:disabled { opacity: .6; }
+.rf__opts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.rf__opts .bt__opt { align-items: center; }
+.rf__opts .bt__opt input { width: auto; margin: 0; }
+.rf__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; }
+.rf__state { display: inline-flex; align-items: center; gap: 8px; margin-right: auto; color: var(--pf-soft); font-size: 14px; }
+.rf__state > span { width: 8px; height: 8px; border-radius: 50%; background: #80848e; }
+.rf__state--open > span { background: #23a55a; box-shadow: 0 0 0 4px rgba(35, 165, 90, .18); }
+.rf__note { margin: 12px 0 0; color: #f0b232; font-size: 14px; }
+
+.rf__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.rf__entries, .rf__winner { padding: 20px; }
+.rf__head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.rf__head h2 { margin: 0; font-size: 18px; }
+.rf__muted { margin: 0; color: var(--pf-muted); font-size: 13px; }
+.rf__empty { margin: 12px 0 0; color: var(--pf-muted); font-size: 14px; line-height: 1.6; }
+.rf__search { margin-top: 12px; }
+.rf__list { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 6px; max-height: 340px; margin: 12px 0 0; padding: 0; overflow-y: auto; list-style: none; }
+.rf__list li { display: inline-flex; align-items: center; gap: 6px; padding: 4px 4px 4px 10px; border: 1px solid var(--pf-line); border-radius: 8px; background: #0d0d10; font-size: 14px; }
+.rf__list li.is-won { border-color: rgba(240, 178, 50, .5); }
+.rf__name { font-weight: 600; overflow-wrap: anywhere; }
+.rf__badge { padding: 1px 5px; border-radius: 4px; font-family: var(--pf-mono); font-size: 10px; text-transform: uppercase; }
+.rf__badge--sub { background: rgba(145, 70, 255, .22); color: #c9a8ff; }
+.rf__badge--mod { background: rgba(35, 165, 90, .2); color: #7ee2a8; }
+.rf__badge--vip { background: rgba(233, 25, 22, .18); color: #ff9a98; }
+.rf__remove { width: 22px; height: 22px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--pf-muted); line-height: 1; }
+.rf__remove:hover { background: rgba(255, 255, 255, .08); color: #fff; }
+
+.rf__winner { display: flex; flex-direction: column; }
+.rf__winner.has-winner { border-color: rgba(240, 178, 50, .45); }
+.rf__label { color: var(--pf-muted); font-family: var(--pf-mono); font-size: 11px; letter-spacing: .04em; text-transform: lowercase; }
+.rf__big { margin: 4px 0 6px; font-family: var(--font-display); font-size: clamp(28px, 5vw, 40px); line-height: 1.1; }
+.rf__rolling { margin: auto 0; padding: 24px 0; font-family: var(--font-display); font-size: clamp(24px, 4vw, 34px); font-weight: 600; text-align: center; overflow-wrap: anywhere; }
+.rf__winner .rf__muted { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.rf__chat { margin-top: 16px; }
+.rf__chat ul { display: grid; gap: 4px; max-height: 180px; margin: 6px 0 0; padding: 0; overflow-y: auto; list-style: none; }
+.rf__chat li { font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+.rf__chat time { color: var(--pf-muted); font-family: var(--pf-mono); font-size: 11px; }
+.rf__chat .rf__muted { margin-top: 6px; }
+.rf__winner .rf__actions { margin-top: auto; padding-top: 16px; }
+.rf__past { margin-top: 10px !important; }
+
+@media (max-width: 760px) {
+  .rf__fields, .rf__grid { grid-template-columns: 1fr; }
+}
