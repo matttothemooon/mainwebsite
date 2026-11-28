@@ -837,26 +837,6 @@ body:has(.admin-wrap) {
 .paste-admin li > .btn { grid-area: del; }
 .paste-admin__source { padding: 0; border: 0; background: none; color: #f0b232; font: inherit; text-decoration: underline; cursor: pointer; }
 
-/* Visitors */
-.vis-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
-.vis-card { display: flex; flex-direction: column; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; }
-.vis-card b { color: var(--text); font-size: 1.4rem; line-height: 1.2; }
-.vis-card__label, .vis-card__sub { color: var(--text-dim); font-size: 0.72rem; }
-.vis-chart { display: flex; align-items: flex-end; gap: 3px; height: 90px; padding: 6px; border: 1px solid var(--border); border-radius: 8px; }
-.vis-chart__bar { flex: 1; min-height: 2px; border-radius: 2px 2px 0 0; background: var(--accent-dim); }
-.vis-chart__bar:hover { background: var(--accent); }
-.vis-chart__axis { display: flex; justify-content: space-between; margin: 4px 2px 14px; color: var(--text-dim); font-size: 0.7rem; }
-.vis-lists { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.vis-lists h3 { margin: 0 0 6px; color: var(--text-dim); font-size: 0.72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
-.vis-lists ol { margin: 0; padding: 0; list-style: none; }
-.vis-lists li { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
-.vis-lists li span { overflow: hidden; color: var(--text); text-overflow: ellipsis; white-space: nowrap; }
-.vis-lists li b { color: var(--text-dim); font-weight: 500; }
-@media (max-width: 640px) {
-  .vis-cards { grid-template-columns: 1fr 1fr; }
-  .vis-lists { grid-template-columns: 1fr; }
-}
-
 /* Guestbook queue */
 .gb-admin__title { margin: 14px 0 6px; color: var(--text-dim); font-size: 0.72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
 .gb-admin { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }

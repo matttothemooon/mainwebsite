@@ -1,6 +1,5 @@
 import "./globals.css";
 import "./seasons.css";
-import ViewTracker from "@/components/site/ViewTracker";
 import SeasonalDecor from "@/components/site/SeasonalDecor";
 import { getProfile } from "@/lib/storage";
 import { pickSeason } from "@/lib/seasons";
@@ -44,7 +43,6 @@ export default async function RootLayout({ children }) {
     <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`} data-season={season || undefined}>
       <body>
         {children}
-        <ViewTracker />
         <SeasonalDecor season={season} years={years} />
       </body>
     </html>

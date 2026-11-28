@@ -106,11 +106,6 @@ live admin panel, and neither can spoofing a `Host` header at the real domain.
 
 3. Push to `main`. Vercel detects Next.js automatically.
 
-To enable the contact form in production, verify a sender domain in Resend, then
-add `RESEND_API_KEY` and `RESEND_FROM_EMAIL` to Vercel's environment variables
-and redeploy. The form sends to the email address configured in the profile's
-`mailto:` link; visitor addresses are used only as the reply-to address.
-
 To find your Discord user ID: Discord → Settings → Advanced → enable Developer
 Mode, then right-click your name → Copy User ID.
 
