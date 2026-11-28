@@ -323,7 +323,11 @@
       "title": "Chatterino settings",
       "description": "My Chatterino setup: highlights, filters, mod buttons and layout.",
       "steps": "Close Chatterino.\nOpen your Chatterino settings folder:\n- Windows: press Win+R and enter %APPDATA%\\Chatterino2\\Settings\n- macOS: ~/Library/Application Support/chatterino/Settings\n- Linux: ~/.local/share/chatterino/Settings\nBack up your own settings.json, then replace it with this one.\nOpen Chatterino again.",
-      "file": null
+      "file": {
+        "id": "423f505d40",
+        "name": "jilchat-chatterino-settings-2026-11-27.json",
+        "size": 97211
+      }
     },
     {
       "id": "ffz",
