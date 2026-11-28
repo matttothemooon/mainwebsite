@@ -23,11 +23,11 @@ export default function RafflePage() {
         </p>
       </PageHeader>
       <div className="sec sec--tight" data-reveal>
-        <RaffleTool />
+        <RaffleTool clientId={process.env.TWITCH_CLIENT_ID || ""} />
       </div>
       <p className="sec-lede bt__privacy">
-        Runs in your browser and only reads chat, so there&apos;s nothing to sign in to. Announce the winner in chat
-        yourself.
+        Runs in your browser. Without signing in it only reads chat. If you sign in, your Twitch login stays in this
+        browser and is only used to post the raffle messages.
       </p>
     </SiteShell>
   );

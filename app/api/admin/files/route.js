@@ -2,7 +2,7 @@
 import { requireAuth } from "@/lib/auth";
 import { isConfigured } from "@/lib/blobStore";
 import { cleanFileName } from "@/lib/storage";
-import { MAX_BYTES, saveFile, removeFile } from "@/lib/files";
+import { MAX_BYTES, saveFile, removeFile, stripSecrets } from "@/lib/files";
 
 export async function POST(request) {
   const denied = requireAuth(request);
@@ -19,8 +19,10 @@ export async function POST(request) {
   if (file.size > MAX_BYTES) return Response.json({ error: "Files can be up to 3 MB." }, { status: 413 });
 
   try {
-    const saved = await saveFile({ name: cleanFileName(file.name), type: file.type, bytes: await file.arrayBuffer() });
-    return Response.json(saved);
+    // Never share a login by accident: drop accounts and tokens from JSON settings.
+    const { bytes, removed } = stripSecrets(await file.arrayBuffer());
+    const saved = await saveFile({ name: cleanFileName(file.name), type: file.type, bytes });
+    return Response.json({ ...saved, removed });
   } catch (err) {
     console.error("File upload failed:", err);
     return Response.json({ error: "Upload failed" }, { status: 500 });

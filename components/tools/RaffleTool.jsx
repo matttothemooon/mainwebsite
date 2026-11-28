@@ -1,9 +1,41 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CHAT_URL, cleanChannel, parseLine, toChatMessage, enters, pickWinner } from "@/lib/raffle";
+import {
+  CHAT_URL,
+  cleanChannel,
+  parseLine,
+  toChatMessage,
+  enters,
+  pickWinner,
+  openMessage,
+  CLOSED_MESSAGE,
+  winnerMessage,
+  addToHistory,
+  HISTORY_KEY,
+} from "@/lib/raffle";
 
 const ROLL_MS = 1800;
+const AUTH_KEY = "raffle-twitch";
+const STATE_KEY = "raffle-oauth-state";
+// Read chat as the signed-in account and post the announcements.
+const SCOPES = "chat:read chat:edit";
+
+const store = {
+  get(key) {
+    try {
+      return JSON.parse(localStorage.getItem(key));
+    } catch {
+      return null;
+    }
+  },
+  set(key, value) {
+    try {
+      if (value === null) localStorage.removeItem(key);
+      else localStorage.setItem(key, JSON.stringify(value));
+    } catch {}
+  },
+};
 const FEED_MAX = 30;
 
 const since = (ms) => {
@@ -29,7 +61,71 @@ function Badges({ person }) {
   );
 }
 
-export default function RaffleTool() {
+// Signs in with Twitch in the browser (implicit flow): the token stays in this
+// browser and is only used to talk to Twitch chat.
+function useTwitchLogin(clientId) {
+  const [auth, setAuth] = useState(null); // { token, login }
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const hash = new URLSearchParams(window.location.hash.slice(1));
+    const token = hash.get("access_token");
+    const fromTwitch = token || hash.get("error");
+    if (fromTwitch) {
+      const expected = sessionStorage.getItem(STATE_KEY);
+      sessionStorage.removeItem(STATE_KEY);
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      if (!token) return setError("Twitch sign-in was cancelled.");
+      if (!expected || hash.get("state") !== expected) return setError("Twitch sign-in expired. Try again.");
+    }
+    const candidate = token || store.get(AUTH_KEY)?.token;
+    if (!candidate) return;
+    fetch("https://id.twitch.tv/oauth2/validate", { headers: { Authorization: `OAuth ${candidate}` } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((who) => {
+        if (who?.login && (who.scopes || []).includes("chat:edit")) {
+          const value = { token: candidate, login: who.login };
+          store.set(AUTH_KEY, value);
+          setAuth(value);
+        } else {
+          store.set(AUTH_KEY, null);
+          if (token) setError("Twitch didn't allow posting in chat. Try signing in again.");
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const signIn = () => {
+    const state = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    sessionStorage.setItem(STATE_KEY, state);
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: `${window.location.origin}/raffle`,
+      response_type: "token",
+      scope: SCOPES,
+      state,
+    });
+    window.location.href = `https://id.twitch.tv/oauth2/authorize?${params}`;
+  };
+  const signOut = () => {
+    if (auth) {
+      fetch("https://id.twitch.tv/oauth2/revoke", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ client_id: clientId, token: auth.token }),
+      }).catch(() => {});
+    }
+    store.set(AUTH_KEY, null);
+    setAuth(null);
+  };
+  return { auth, error, signIn, signOut };
+}
+
+export default function RaffleTool({ clientId = "" }) {
+  const { auth, error: authError, signIn, signOut } = useTwitchLogin(clientId);
+  const [post, setPost] = useState(true);
+  const [history, setHistory] = useState([]);
+  useEffect(() => setHistory(store.get(HISTORY_KEY) || []), []);
   const [channel, setChannel] = useState("");
   const [keyword, setKeyword] = useState("!enter");
   const [subsOnly, setSubsOnly] = useState(false);
@@ -49,7 +145,15 @@ export default function RaffleTool() {
   const ws = useRef(null);
   const live = useRef({}); // what the socket handler reads
   const winner = winners[winners.length - 1] || null;
-  live.current = { status, keyword, subsOnly, excludeMods, winnerId: winner?.id };
+  const announced = useRef(false);
+  live.current = { status, keyword, subsOnly, excludeMods, winnerId: winner?.id, post: post && Boolean(auth), auth, channel: joined };
+
+  // Posts in the raffle's chat as the signed-in account.
+  function say(text) {
+    const s = live.current;
+    if (!s.post || !s.channel || ws.current?.readyState !== 1) return;
+    ws.current.send(`PRIVMSG #${s.channel} :${text}`);
+  }
 
   // Clock for "drawn 0:12 ago".
   useEffect(() => {
@@ -75,8 +179,14 @@ export default function RaffleTool() {
     ws.current = socket;
     socket.onopen = () => {
       socket.send("CAP REQ :twitch.tv/tags twitch.tv/commands");
-      // Anonymous, read-only login: Twitch allows any justinfan<number>.
-      socket.send(`NICK justinfan${Math.floor(10000 + Math.random() * 89999)}`);
+      const a = live.current.auth;
+      if (a) {
+        socket.send(`PASS oauth:${a.token}`);
+        socket.send(`NICK ${a.login}`);
+      } else {
+        // Anonymous, read-only login: Twitch allows any justinfan<number>.
+        socket.send(`NICK justinfan${Math.floor(10000 + Math.random() * 89999)}`);
+      }
       socket.send(`JOIN #${name}`);
     };
     socket.onmessage = (event) => {
@@ -87,6 +197,14 @@ export default function RaffleTool() {
         else if (parsed.command === "JOIN" || parsed.command === "ROOMSTATE") {
           setStatus((st) => (st === "connecting" ? "open" : st));
           setJoined(name);
+          live.current.channel = name;
+          if (!announced.current) {
+            announced.current = true;
+            say(openMessage(live.current));
+          }
+        } else if (parsed.command === "NOTICE" && /login authentication failed|improperly formatted auth/i.test(parsed.params[1] || "")) {
+          setNote("Your Twitch sign-in has expired. Sign in again, or sign out to run without posting.");
+          setStatus("error");
         } else if (parsed.command === "NOTICE" && /does not exist|suspended|banned/i.test(parsed.params[1] || "")) {
           setNote(parsed.params[1]);
           setStatus("error");
@@ -116,6 +234,7 @@ export default function RaffleTool() {
     setWinners([]);
     setWinnerChat([]);
     setStatus("connecting");
+    announced.current = false;
     connect(name);
   }
 
@@ -148,6 +267,19 @@ export default function RaffleTool() {
         setRolling("");
         setWinnerChat([]);
         setWinners((list) => [...list, { ...pick, drawnAt: Date.now() }]);
+        say(winnerMessage(pick.name));
+        setHistory((list) => {
+          const next = addToHistory(list, {
+            at: Date.now(),
+            channel: live.current.channel,
+            keyword: live.current.keyword.trim(),
+            entries: entrants.length,
+            winner: pick.name,
+            color: pick.color,
+          });
+          store.set(HISTORY_KEY, next);
+          return next;
+        });
         return;
       }
       setRolling(pool[Math.floor(Math.random() * pool.length)].name);
@@ -179,7 +311,13 @@ export default function RaffleTool() {
           </label>
           <label className="rf__field">
             <span>Keyword <small>(blank = any message)</small></span>
-            <input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="!enter" spellCheck={false} maxLength={40} />
+            <input
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value.replace(/\s/g, ""))}
+              placeholder="!enter"
+              spellCheck={false}
+              maxLength={40}
+            />
           </label>
           <label className="rf__field">
             <span>Sub luck</span>
@@ -201,6 +339,28 @@ export default function RaffleTool() {
             <span>Leave out mods</span>
           </label>
         </div>
+        <div className="rf__twitch">
+          {auth ? (
+            <>
+              <label className={`bt__opt${post ? " is-on" : ""}`}>
+                <input type="checkbox" checked={post} onChange={(e) => setPost(e.target.checked)} />
+                <span>Post in chat as {auth.login}</span>
+              </label>
+              <span className="rf__muted">Announces when entries open and close, and who won.</span>
+              <button className="rf__link" type="button" onClick={signOut} disabled={running}>Sign out</button>
+            </>
+          ) : clientId ? (
+            <>
+              <button className="chip rf__signin" type="button" onClick={signIn}>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11.6 11.4V6.7h1.6v4.7h-1.6Zm4.3 0V6.7h1.6v4.7h-1.6ZM7 2 3.1 5.9v14.2h4.7V24l3.9-3.9h3.1L21.9 13V2H7Zm13.3 10.2-3.1 3.1h-3.2l-2.7 2.7v-2.7H7.8V3.6h12.5v8.6Z" /></svg>
+                Sign in with Twitch to post in chat
+              </button>
+              <span className="rf__muted">Optional. Needed for the OBS overlay.</span>
+            </>
+          ) : null}
+        </div>
+        {authError && <p className="rf__note">{authError}</p>}
+
         <div className="rf__actions">
           {!running ? (
             <button className="btn-primary" type="submit" disabled={status === "connecting"}>
@@ -212,7 +372,15 @@ export default function RaffleTool() {
                 <span aria-hidden="true" />
                 {status === "open" ? `Entries open in ${joined}'s chat` : "Entries closed"}
               </span>
-              <button className="chip" type="button" onClick={() => setStatus(status === "open" ? "closed" : "open")}>
+              <button
+                className="chip"
+                type="button"
+                onClick={() => {
+                  const next = status === "open" ? "closed" : "open";
+                  setStatus(next);
+                  say(next === "open" ? openMessage(live.current) : CLOSED_MESSAGE);
+                }}
+              >
                 {status === "open" ? "Close entries" : "Reopen entries"}
               </button>
               <button className="chip" type="button" onClick={reset}>New raffle</button>
@@ -228,7 +396,7 @@ export default function RaffleTool() {
             <h2 id="rf-entries">
               Entries <span className="sec-count">{entrants.length}</span>
             </h2>
-            {subs > 0 && <span className="rf__muted">{subs} subs</span>}
+            {subs > 0 && <span className="rf__muted">{subs} {subs === 1 ? "sub" : "subs"}</span>}
           </div>
           {entrants.length > 8 && (
             <input className="rf__search" value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Find a name" />
@@ -304,6 +472,75 @@ export default function RaffleTool() {
           )}
         </section>
       </div>
+
+      <OverlayLink auth={auth} channel={joined || cleanChannel(channel)} />
+
+      {history.length > 0 && (
+        <section className="card rf__history" aria-labelledby="rf-history">
+          <div className="rf__head">
+            <h2 id="rf-history">Past raffles</h2>
+            <button
+              className="rf__link"
+              type="button"
+              onClick={() => {
+                if (!window.confirm("Clear your raffle history?")) return;
+                store.set(HISTORY_KEY, null);
+                setHistory([]);
+              }}
+            >
+              Clear
+            </button>
+          </div>
+          <ul>
+            {history.map((h) => (
+              <li key={h.at}>
+                <span className="rf__name" style={h.color ? { color: h.color } : undefined}>{h.winner}</span>
+                <span className="rf__muted">
+                  {h.channel} · {h.keyword || "any message"} · {h.entries} {h.entries === 1 ? "entry" : "entries"}
+                </span>
+                <time className="rf__muted" dateTime={new Date(h.at).toISOString()}>
+                  {new Date(h.at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}
+                </time>
+              </li>
+            ))}
+          </ul>
+          <p className="rf__muted rf__past">Saved in this browser only.</p>
+        </section>
+      )}
     </div>
+  );
+}
+
+// A link for an OBS browser source that follows this raffle through chat.
+function OverlayLink({ auth, channel }) {
+  const [copied, setCopied] = useState(false);
+  const [origin, setOrigin] = useState("");
+  useEffect(() => setOrigin(window.location.origin), []);
+  if (!auth) return null;
+  const url = `${origin}/raffle/overlay?channel=${channel || "yourchannel"}&by=${auth.login}`;
+  return (
+    <section className="card rf__overlay" aria-labelledby="rf-overlay">
+      <div className="rf__head">
+        <h2 id="rf-overlay">OBS overlay</h2>
+      </div>
+      <p className="rf__muted">
+        Add this as a Browser source in OBS (800 × 300). It shows the raffle on stream: entries open, how many have
+        joined, and the winner. It follows the announcements this page posts in chat, so keep &ldquo;Post in
+        chat&rdquo; on.
+      </p>
+      <div className="rf__copyrow">
+        <code>{url}</code>
+        <button
+          className="chip"
+          type="button"
+          onClick={() => navigator.clipboard?.writeText(url).then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1500);
+          })}
+        >
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+    </section>
   );
 }

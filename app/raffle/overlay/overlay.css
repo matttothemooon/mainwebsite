@@ -1,0 +1,30 @@
+/* OBS browser source: transparent page, nothing but the card. */
+html:has(.ov), body:has(.ov) { background: transparent !important; }
+body:has(.ov) { display: block; min-height: 0; }
+body:has(.ov) .season { display: none; }
+
+.ov { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: 24px; font-family: var(--font-sans), system-ui, sans-serif; }
+.ov__card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 320px;
+  max-width: 100%;
+  padding: 18px 22px;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 16px;
+  background: rgba(12, 12, 14, .88);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .45);
+  color: #f4f4f5;
+  animation: ov-in .4s cubic-bezier(.2, .8, .2, 1);
+}
+@keyframes ov-in { from { opacity: 0; transform: translateY(16px); } }
+.ov__label { color: #a1a1aa; font-family: var(--font-code), monospace; font-size: 14px; letter-spacing: .04em; text-transform: lowercase; }
+.ov__label b { color: #23a55a; font-weight: 500; }
+.ov__title { margin: 0; font-family: var(--font-display), sans-serif; font-size: 34px; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; overflow-wrap: anywhere; }
+.ov__title kbd { padding: 0 8px; border-radius: 8px; background: rgba(255, 255, 255, .1); font: inherit; }
+.ov__count { color: #d4d4d8; font-size: 18px; }
+.ov__rolling { color: #d4d4d8; }
+.ov__winner { color: #f0b232; }
+.ov__card.is-winner { border-color: rgba(240, 178, 50, .55); }
+.ov__hint { padding: 12px 16px; border-radius: 12px; background: rgba(12, 12, 14, .8); color: #a1a1aa; font-size: 15px; }

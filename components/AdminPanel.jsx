@@ -1169,9 +1169,13 @@ function DownloadsSection({ profile, edit, onStatus }) {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || `upload failed (${res.status})`);
       const old = items[i].file;
-      patch(i, { file: data });
+      patch(i, { file: { id: data.id, name: data.name, size: data.size } });
       if (old) fetch(`/api/admin/files?id=${old.id}`, { method: "DELETE" }).catch(() => {});
-      onStatus({ text: `Uploaded ${data.name}. Save to publish it.`, kind: "ok" });
+      const { removed, ...saved } = data;
+      onStatus({
+        text: `Uploaded ${saved.name}${removed ? `, with ${removed} login ${removed === 1 ? "detail" : "details"} (accounts, tokens) removed` : ""}. Save to publish it.`,
+        kind: "ok",
+      });
     } catch (err) {
       onStatus({ text: err.message, kind: "err" });
     } finally {

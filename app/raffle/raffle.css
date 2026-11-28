@@ -67,3 +67,23 @@
 @media (max-width: 760px) {
   .rf__fields, .rf__grid { grid-template-columns: 1fr; }
 }
+
+.rf__twitch { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--pf-line); }
+.rf__twitch .bt__opt { align-items: center; }
+.rf__twitch .bt__opt input { width: auto; margin: 0; }
+.rf__signin { display: inline-flex; align-items: center; gap: 8px; }
+.rf__signin svg { width: 16px; height: 16px; color: #a970ff; }
+.rf__link { padding: 0; border: 0; background: none; color: var(--pf-soft); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; }
+.rf__link:hover { color: #fff; }
+
+.rf__overlay, .rf__history { padding: 20px; }
+.rf__overlay .rf__muted { margin-top: 8px; line-height: 1.6; }
+.rf__copyrow { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+.rf__copyrow code { flex: 1; min-width: 0; overflow: hidden; padding: 9px 12px; border: 1px solid var(--pf-line); border-radius: 8px; background: #0d0d10; color: var(--pf-soft); font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.rf__history ul { margin: 12px 0 0; padding: 0; list-style: none; }
+.rf__history li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 10px 0; border-bottom: 1px solid var(--pf-line); }
+.rf__history li time { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+@media (max-width: 560px) {
+  .rf__history li { grid-template-columns: 1fr; }
+  .rf__history li time { grid-column: 1; grid-row: auto; }
+}
