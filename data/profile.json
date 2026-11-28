@@ -317,5 +317,84 @@
     "anniversary": "",
     "since": null
   },
+  "downloads": [
+    {
+      "id": "chatterino",
+      "title": "Chatterino settings",
+      "description": "My Chatterino setup: highlights, filters, mod buttons and layout.",
+      "steps": "Close Chatterino.\nOpen your Chatterino settings folder:\n- Windows: press Win+R and enter %APPDATA%\\Chatterino2\\Settings\n- macOS: ~/Library/Application Support/chatterino/Settings\n- Linux: ~/.local/share/chatterino/Settings\nBack up your own settings.json, then replace it with this one.\nOpen Chatterino again.",
+      "file": null
+    },
+    {
+      "id": "ffz",
+      "title": "FrankerFaceZ settings",
+      "description": "My FFZ setup for modding on Twitch in the browser.",
+      "steps": "Open Twitch with FrankerFaceZ installed.\nOpen the FFZ Control Center (the FFZ icon above chat).\nGo to Data Management > Backup and Restore.\nChoose Restore and pick this file.",
+      "file": null
+    },
+    {
+      "id": "p2inke8e",
+      "title": "FFZ Settings",
+      "description": "",
+      "steps": "",
+      "file": {
+        "id": "2a9682bf9b",
+        "name": "ffz-settings-2026-5-2-.json",
+        "size": 132461
+      }
+    }
+  ],
+  "recommendations": [
+    {
+      "category": "Twitch bots",
+      "name": "Fossabot",
+      "note": "Commands, timers and spam filters.",
+      "url": "https://fossabot.com"
+    },
+    {
+      "category": "Twitch bots",
+      "name": "Sery_Bot",
+      "note": "Stops follow-bot and hate raids.",
+      "url": "https://sery.bot"
+    },
+    {
+      "category": "Discord bots",
+      "name": "Carl-bot",
+      "note": "Reaction roles, logging and automod.",
+      "url": "https://carl.gg"
+    },
+    {
+      "category": "Desktop chat",
+      "name": "Chatterino",
+      "note": "Chat client built for modding.",
+      "url": "https://chatterino.com"
+    },
+    {
+      "category": "Desktop chat",
+      "name": "FrankerFaceZ",
+      "note": "Browser extension with mod tools for Twitch.",
+      "url": "https://www.frankerfacez.com"
+    },
+    {
+      "category": "Desktop chat",
+      "name": "7TV",
+      "note": "Extra emotes and chat features.",
+      "url": "https://7tv.app"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Can you mod my channel?",
+      "a": "Maybe! I take on new communities when I have room. See [Work with me](/work) or DM me on Discord."
+    },
+    {
+      "q": "Which bots should I use?",
+      "a": "The ones I recommend are listed on the [Tools page](/what-i-use#apps)."
+    },
+    {
+      "q": "How do I use your Chatterino or FFZ settings?",
+      "a": "Download them from the [Tools page](/what-i-use#settings). The steps are under each file."
+    }
+  ],
   "modServer": "https://discord.gg/RMXvuqwcXj"
 }
