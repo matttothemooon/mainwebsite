@@ -380,6 +380,12 @@
       "name": "7TV",
       "note": "Extra emotes and chat features.",
       "url": "https://7tv.app"
+    },
+    {
+      "category": "Twitch bots",
+      "name": "Limerino",
+      "note": "Mobile Twitch With 7TV Emotes/Paints",
+      "url": "https://limerino.com/"
     }
   ],
   "faq": [
